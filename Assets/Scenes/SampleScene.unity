@@ -738,7 +738,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1320273661}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99985874
+  m_Size: 0.9999385
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1897,7 +1897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.00024414062}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1424, y: 1900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &316072551
@@ -7131,7 +7131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.00024414062}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1424, y: 1900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1188615279
@@ -9290,16 +9290,7 @@ MonoBehaviour:
   stage1Txt:
   - {fileID: 4900000, guid: 02af38b4a8ae8364c9addaaad9f56de3, type: 3}
   stage2Txt:
-  - {fileID: 4900000, guid: 01524da36e6c2774da445ce6ae68c435, type: 3}
-  - {fileID: 4900000, guid: 35e823663abc9a048b24ad6e18853147, type: 3}
-  - {fileID: 4900000, guid: a334e268a8be18848b9f7afbf54adb73, type: 3}
-  - {fileID: 4900000, guid: 2449ba1895793d9478a5ba8efec72652, type: 3}
-  - {fileID: 4900000, guid: e8aca71de83cefa44a37e44b1632e164, type: 3}
-  - {fileID: 4900000, guid: 04a23e60bb6a28b468504001424eebf5, type: 3}
-  - {fileID: 4900000, guid: 7eec180239960f547819d4a88e135125, type: 3}
-  - {fileID: 4900000, guid: cba712a3036e5e943851b49b6ba2807a, type: 3}
-  - {fileID: 4900000, guid: 4672fb013937c87448a252f0bcbe6066, type: 3}
-  - {fileID: 4900000, guid: 7e85729207242b94dae8e7bf977c28b3, type: 3}
+  - {fileID: 4900000, guid: 04ccf7bea8e4f18449af794655038aee, type: 3}
   stage3Txt:
   - {fileID: 4900000, guid: 02af38b4a8ae8364c9addaaad9f56de3, type: 3}
   cubeSide3: {fileID: 1995228120}
@@ -10303,7 +10294,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1116573537}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99985874
+  m_Size: 0.9999385
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12065,7 +12056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1971288118
 RectTransform:
   m_ObjectHideFlags: 0

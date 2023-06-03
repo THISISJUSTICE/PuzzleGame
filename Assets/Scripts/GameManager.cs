@@ -8,11 +8,9 @@ using UnityEngine.UI;
 //로비 스크롤 위치 맨 위로 초기화해두기(안 해도 지장은 없음)
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
-// - git에 백업하기
 
 // - **3차원 큐브 생성 중
 // - **스테이지 만들기
-
 // - 버튼 누르는 소리, 플립 효과음, 배경음
 
 // 2. 육각형 모양(2차원)
@@ -228,7 +226,7 @@ public class GameManager : MonoBehaviour
         Define_AdjacentSide();
 
         //보드의 말 수 * 2 + 최소 플립
-        maxFlip = u * v * s * 2 + (minFlip % u) * 2;
+        maxFlip = (u * v * s) / 10 * 17 + (minFlip % u) * 2;
         realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
     }
 
