@@ -922,21 +922,21 @@ public class GameManager : MonoBehaviour
     }
 
     bool isRandom = false;
-    public void CreateStage(int random){
+    public void CreateStage(int range){
         if(!isRandom){
             isRandom = true;
-            StartCoroutine(CreateRandomStage(random));
+            StartCoroutine(CreateRandomStage(range));
         }
     }
 
-    IEnumerator CreateRandomStage(int random){
+    IEnumerator CreateRandomStage(int range){
         int randomFlip;
         for(int i=0; i<s; i++){
             for(int j=0; j<u; j++){
                 for(int k=0; k<v; k++){
                     if(board[i,j,k] != 5){
-                        randomFlip = UnityEngine.Random.Range(0,random);
-                        if(randomFlip == 0){
+                        randomFlip = UnityEngine.Random.Range(0,100);
+                        if(randomFlip <= range){
                             StartCoroutine(Flip_in_Board(j,k,i));
                             yield return new WaitForSeconds(1);
                         }

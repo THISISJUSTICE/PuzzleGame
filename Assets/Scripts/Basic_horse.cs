@@ -39,7 +39,6 @@ public class Basic_horse : MonoBehaviour
         if (!AnimPlayCheck())
         {
             StartCoroutine(gameManager.Flip_in_Board(u, v, s));
-            Debug.Log("On Click True");
         }
     }
 
