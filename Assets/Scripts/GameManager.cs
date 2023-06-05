@@ -9,11 +9,11 @@ using UnityEngine.UI;
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
 
-// - **3차원 큐브 생성 중
-// - **스테이지 만들기
 // - 버튼 누르는 소리, 플립 효과음, 배경음
-
 // 2. 육각형 모양(2차원)
+// - 스테이지 제작
+
+
 // 3. 벌집 입체
 // - 올클리어(관련 UI)
 
@@ -89,7 +89,9 @@ public class GameManager : MonoBehaviour
     {
         basic_horse = new GameObject[4];
         basic_horse[0] = Resources.Load("Prefabs/Prefab_Basic_horse") as GameObject;
+        basic_horse[1] = Resources.Load("Prefabs/Prefab_Hexagon_horse") as GameObject;
         basic_horse[2] = Resources.Load("Prefabs/Prefab_Cube_horse") as GameObject;
+        //basic_horse[3] = Resources.Load("Prefabs/Prefab_Cube_horse") as GameObject;
         finalClear = false;
         isCreatorMode = false;
         flipCount = 0;
@@ -226,8 +228,9 @@ public class GameManager : MonoBehaviour
         Define_AdjacentSide();
 
         //보드의 말 수 * 2 + 최소 플립
-        maxFlip = (u * v * s) / 10 * 17 + (minFlip % u) * 2;
+        maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
         realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
+        Debug.Log($"u: {u}, v: {v}, s: {s}, maxFlip: {maxFlip}, realMaxFlip: {realMaxFlip}");
     }
 
     //3차원에 한 면에 인접한 면이 무엇인지 정의
@@ -441,7 +444,57 @@ public class GameManager : MonoBehaviour
     //kind 1
     void HorsePos1()
     {
-
+        float x, y, z;
+        switch (u)
+        {
+            case 3:
+                x = -1.5f;
+                z = -1.5f;
+                y = 1;
+                break;
+            case 4:
+                x = -1.5f;
+                z = -2.2f;
+                y = 1;
+                break;
+            case 5:
+                x = -2.5f;
+                z = -3.2f;
+                y = -2;
+                break;
+            case 6:
+                x = -3;
+                z = -4;
+                y = -4;
+                break;
+            case 7:
+                x = -3;
+                z = -4.6f;
+                y = -6;   
+                break;
+            case 8:
+                x = -3.5f;
+                z = -5.35f;
+                y = -9;
+                break;
+            case 9:
+                x = -2.5f;
+                z = -6;
+                y = -11;
+                break;
+            default:
+                x = 0;
+                z = 0;
+                y = 0;
+                break;
+        }
+        cameraInitX = (u - 3) * (-0.5f) + 4.5f;
+        mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
+        mainCamera.transform.rotation = Quaternion.Euler((u-3) * 5 + 60, -90, 0);
+        //z = (v - 3) * (-0.5f) - 1;
+        cameraInitZoom = 60;
+        mainCamera.fieldOfView = cameraInitZoom;
+        createHorsePos = new Vector3(x, y, z);
     }
 
     //kind 2
@@ -546,6 +599,10 @@ public class GameManager : MonoBehaviour
                 initz = createPosition.z;
                 break;
             case 1:
+                initPos = createPosition;
+                addx = 1;
+                addz = 1;
+                initz = createPosition.z;
                 break;
             case 2:
                 initPos = new Vector3(0, 0, 0);
@@ -578,6 +635,7 @@ public class GameManager : MonoBehaviour
                 }
                 pos.z = initz;
                 pos.x += addx;
+                if(curKind == 1) pos.z += (j + 1)*0.5f;
             }
         }
 
@@ -645,13 +703,16 @@ public class GameManager : MonoBehaviour
             //뒤집은 말 주변의 말들도 뒤집기(스테이지 종류에 따라 로직 변경)
             switch (curKind) {
                 case 0:
+                case 1:
                     for (int i = -1; i <= 1; i++)
                     {
+                        tu = hu + i;
                         for (int j = -1; j <= 1; j++)
-                        {
-                            tu = hu + i;
+                        {   
                             tv = hv + j;
-                            if (tu == hu && tv == hv) continue;
+                            if(i == j){
+                                if(i==0 || curKind == 1) continue;            
+                            }
                             if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
                             {
                                 board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
@@ -663,8 +724,23 @@ public class GameManager : MonoBehaviour
                         }
                     }
                     break;
-                case 1:
-                    break;
+                // case 1:
+                //     for(int i=-1; i<=1; i++){
+                //         tu = hv + i;
+                //         for(int j=-1; j<=1; j++){
+                //             if(i == j) continue;
+                //             tv = hv + j;
+                //             if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
+                //             {
+                //                 board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
+                //                 lu = tu;
+                //                 lv = tv;
+                //                 yield return new WaitForSeconds(0.1f);
+                //             }
+                //         }
+
+                //     }
+                //     break;
                 case 2:
                     //adj 3면
                     if (s == 6 && hv == v - 1) {
