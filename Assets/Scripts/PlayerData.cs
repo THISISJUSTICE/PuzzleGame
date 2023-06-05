@@ -44,6 +44,9 @@ public class PlayerData : MonoBehaviour
         public List<int> stage2Score; //2스테이지 별 클리어 시 점수
         public List<int> stage3Score; //3스테이지 별 클리어 시 점수
 
+        // public bool isBGMOn;
+        // public bool isSoundOn;
+
         public Data()
         {
             stageTotalScore = new int[4];

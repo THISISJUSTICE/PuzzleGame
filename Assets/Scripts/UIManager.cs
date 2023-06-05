@@ -146,11 +146,18 @@ public class UIManager : MonoBehaviour
     public ExitMenu exitMenu; //나가기 창 (yes or no)
 
     GameObject loadingUI;
+    AudioSource btnSound;
+    AudioSource clearStarSound;
 
     private void Awake()
     {
         Init();
         UISetting();
+    }
+
+    void SoundsMute(bool isMute){
+        btnSound.mute = isMute;
+        
     }
 
     void Init()
@@ -184,6 +191,7 @@ public class UIManager : MonoBehaviour
 
     //Task 혹은 델리게이트로 바꾸기
     void LateTask() {
+        AudioInit();
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < lobbyMenu.stageBtns[i].stageBtns.Length; j++)
@@ -200,6 +208,12 @@ public class UIManager : MonoBehaviour
         failMenu.failMenu.SetActive(false);
         exitMenu.exitMenu.SetActive(false);
         loadingUI.gameObject.SetActive(false);
+    }
+
+    //오디오 설정 초기화
+    void AudioInit(){
+        btnSound = GetComponent<AudioSource>();
+        //clearStarSound = GetComponent<AudioSource>();
     }
 
     #region MainMenu
@@ -227,10 +241,12 @@ public class UIManager : MonoBehaviour
     void DoExit()
     {
         exitMenu.exitMenu.SetActive(true);
+        btnSound.Play();
     }
 
     void DoSetting() {
         settingMenu.settingMenu.SetActive(true);
+        btnSound.Play();
     }
 
     //스테이지 버튼 4 종류(누를 시 게임 시작)
@@ -243,6 +259,7 @@ public class UIManager : MonoBehaviour
         ingameMenu.stageTitle.gameObject.SetActive(true);
         ingameMenu.flipCount.gameObject.SetActive(true);
         ingameMenu.maxFlipCount.gameObject.SetActive(true);
+        btnSound.Play();
     }
 
     #endregion
@@ -261,6 +278,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.lobbyMenu.SetActive(false);
         mainMenu.mainMenu.SetActive(true);
         gameManager.RealDeleteHorse();
+        btnSound.Play();
     }
 
     //뒤로 가기 버튼(로비에서 게임 화면으로 다시 넘어감)
@@ -270,6 +288,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.lobbyMenu.SetActive(false);
         lobbyMenu.stageBtns[kind].gameObject.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
+        btnSound.Play();
     }
 
     #endregion
@@ -291,6 +310,17 @@ public class UIManager : MonoBehaviour
         ingameMenu.cameraDownBtn.onClick.AddListener(() => gameManager.CameraVerticalSetting(false));
         ingameMenu.cameraZoom.onValueChanged.AddListener(gameManager.CameraZoomSetting);
         ingameMenu.exitBtn.onClick.AddListener(() => ingameMenu.ingameSettingMenu.SetActive(false));
+
+        //버튼 소리 세팅
+        ingameMenu.settingBtn.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.resetBtn.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.cameraReset.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.cameraUpBtn.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.cameraDownBtn.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+
+        // ingameMenu.vScroll.onValueChanged.AddListener(gameManager.RotateVertical3Dobject);
+        // ingameMenu.cameraZoom.onValueChanged.AddListener(gameManager.CameraZoomSetting);
         //공유 버튼
         //ingameMenu.shareBtn.onClick.AddListener();
         //소리 온오프
@@ -301,6 +331,7 @@ public class UIManager : MonoBehaviour
         ingameMenu.gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(true);
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(true);
+        btnSound.Play();
     }
 
 
@@ -319,6 +350,7 @@ public class UIManager : MonoBehaviour
         DoStageBack();
         clearMenu.clearMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
+        btnSound.Play();
     }
 
     //방금 진행한 스테이지를 다시 시작
@@ -326,6 +358,7 @@ public class UIManager : MonoBehaviour
         int kind = gameManager.curKind; //현재 스테이지 종류를 담는 변수
         gameManager.GameStart(gameManager.stage[kind], kind);
         ClearInit();
+        btnSound.Play();
     }
 
     //스테이지 클리어 후 다음 스테이지로 진행
@@ -336,6 +369,7 @@ public class UIManager : MonoBehaviour
         clearMenu.clearMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
         ClearInit();
+        btnSound.Play();
     }
 
     //스테이지 클리어 후 로비 화면으로 이동
@@ -344,6 +378,7 @@ public class UIManager : MonoBehaviour
         clearMenu.clearMenu.SetActive(false);
         DoLobby();
         ClearInit();
+        btnSound.Play();
     }
 
     //클리어 UI 초기화
@@ -403,6 +438,7 @@ public class UIManager : MonoBehaviour
         if (isRenew)
         {
             clearMenu.animStar.Play("Appear");
+            clearStarSound.Play();
         }
         for (int i = 0; i < 3; i++)
             clearMenu.scoreStar[i].gameObject.SetActive(true);
@@ -421,12 +457,14 @@ public class UIManager : MonoBehaviour
         DoStageBack();
         failMenu.failMenu.SetActive(false);
         DoLobby();
+        btnSound.Play();
     }
 
     void DoFailBack() {
         DoStageBack();
         failMenu.failMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
+        btnSound.Play();
     }
 
     #endregion
