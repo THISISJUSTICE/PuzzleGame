@@ -171,7 +171,7 @@ public class UIManager : MonoBehaviour
         UISetting();
     }
 
-    //설정 변경이 있으면 일정 시간 주기가 지난 후에 저장
+    //설정 변경이 있으면 저장
     IEnumerator SaveCycle(){
         if(!isSaveCoolDown){
             PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
@@ -180,8 +180,8 @@ public class UIManager : MonoBehaviour
             PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
             Debug.Log($"SaveCycle [sound: {PlayerData.Instance.data.soundVolume}, ck: {PlayerData.Instance.data.soundCk}]");
             PlayerData.Instance.SaveData();
+            yield return new WaitForSeconds(1);
             isSaveCoolDown = true;
-            yield return new WaitForSeconds(30);
             isSaveCoolDown = false;
         }       
     }
@@ -215,7 +215,7 @@ public class UIManager : MonoBehaviour
         LateTask();
     }
 
-    //Task 혹은 델리게이트로 바꾸기
+    //나중에 진행할 작업
     void LateTask() {
         AudioInit();
         //DoMute(true);
@@ -546,15 +546,16 @@ public class UIManager : MonoBehaviour
             DoSoundVolume(0);
         }
         else DoSoundVolume(0.1f);
-        StartCoroutine(SaveCycle());
+        StopCoroutine(SettingChangeCheck());
+        StartCoroutine(SettingChangeCheck());
     }
 
     void SoundVolume(float value){
         DoSoundVolume(value);
         if(value == 0) DoSoundMute(true);
         else DoSoundMute(false);
-        StopCoroutine(VolumeChangeCheck());
-        StartCoroutine(VolumeChangeCheck());
+        StopCoroutine(SettingChangeCheck());
+        StartCoroutine(SettingChangeCheck());
     }
 
     //무한 재귀에 빠지지 않도록 Mute와 Volume 변경을 별도로 실행
@@ -593,15 +594,16 @@ public class UIManager : MonoBehaviour
             DoBGM_Volume(0);
         }
         else DoBGM_Volume(0.1f);
-        StartCoroutine(SaveCycle());
+        StopCoroutine(SettingChangeCheck());
+        StartCoroutine(SettingChangeCheck());
     }
 
     void BGM_Volume(float value){
         DoBGM_Volume(value);
         if(value == 0) DoBGM_Mute(true);
         else DoBGM_Mute(false);
-        StopCoroutine(VolumeChangeCheck());
-        StartCoroutine(VolumeChangeCheck());
+        StopCoroutine(SettingChangeCheck());
+        StartCoroutine(SettingChangeCheck());
     }
 
     void DoBGM_Mute(bool on){
@@ -618,10 +620,10 @@ public class UIManager : MonoBehaviour
         ingameMenu.bgmScroll.value = value;
     }
 
-    //볼륨 스크롤 변화를 확인해서 변화가 멈추면 데이터 저장
-    IEnumerator VolumeChangeCheck(){
+    //설정 변화를 확인해서 변화가 멈추면 데이터 저장
+    IEnumerator SettingChangeCheck(){
         //볼륨의 변화를 확인하기 위한 시험 사운드 재생    
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
         StartCoroutine(SaveCycle());
     }
     

@@ -205,6 +205,10 @@ public class PlayerData : MonoBehaviour
         stageScores[1] = data.stage1Score;
         stageScores[2] = data.stage2Score;
         stageScores[3] = data.stage3Score;
+        data.bgmCk = false;
+        data.bgmVolume = 1;
+        data.soundCk = false;
+        data.soundVolume = 1;
     }
 
     //문자열로 된 JSON 데이터를 받아서 원하는 타입의 객체로 반환
