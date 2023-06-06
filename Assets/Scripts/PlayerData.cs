@@ -44,8 +44,10 @@ public class PlayerData : MonoBehaviour
         public List<int> stage2Score; //2스테이지 별 클리어 시 점수
         public List<int> stage3Score; //3스테이지 별 클리어 시 점수
 
-        // public bool isBGMOn;
-        // public bool isSoundOn;
+        public bool soundCk;
+        public float soundVolume;
+        public bool bgmCk;
+        public float bgmVolume;
 
         public Data()
         {
@@ -115,7 +117,12 @@ public class PlayerData : MonoBehaviour
         data.rank = 1; //최초엔 총 인원수 +1
         data.lastDate = DateTime.Now.ToString("F");
 
-        //SaveData();
+        data.soundCk = false;
+        data.soundVolume = 1.0f;
+        data.bgmCk = false;
+        data.bgmVolume = 1.0f;
+
+        SaveData();
         Debug.Log("NewData");
     }
 
@@ -212,7 +219,7 @@ public class PlayerData : MonoBehaviour
     }
 
     //저장하기
-    void SaveData()
+    public void SaveData()
     {
         //클래스를 문자열로 된 Json 데이터로 변환
         string ToJsonData = JsonConvert.SerializeObject(data);

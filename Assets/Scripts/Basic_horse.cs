@@ -30,7 +30,12 @@ public class Basic_horse : MonoBehaviour
         {
             anim.Play("WSummon");
         }
-        
+        StartCoroutine(FlipSoundPlay(0.19f));
+    }
+
+    IEnumerator FlipSoundPlay(float time){
+        yield return new WaitForSeconds(time);
+        gameManager.uiManger.horseFlipSound.Play();
     }
 
     //말이 마우스로 클릭되었을 때 호출
@@ -63,6 +68,7 @@ public class Basic_horse : MonoBehaviour
             curState = 1;
             anim.Play("FlipBtoW");
         }
+        StartCoroutine(FlipSoundPlay(0.32f));
         return curState;
     }
 

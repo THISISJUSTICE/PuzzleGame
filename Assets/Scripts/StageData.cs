@@ -33,8 +33,6 @@ public class StageData : MonoBehaviour
         this.clearFlipCount = clearFlipCount;
         this.score = score;
 
-        Debug.Log("SD InputData");
-
         //입력된 정보를 바탕으로 필요한 정보를 UI에 표시       
         if (isLock) IndicateLock();
         else

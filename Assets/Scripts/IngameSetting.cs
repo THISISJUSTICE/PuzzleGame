@@ -20,8 +20,10 @@ public class IngameSetting : MonoBehaviour
     public GameObject ingameSettingMenu; //인게임 세팅 메뉴
     public Button cameraReset, cameraUpBtn, cameraDownBtn; //카메라 조정한 것을 리셋하는 버튼, 카메라 위 이동 버튼, 카메라 아래 이동 버튼
     public Scrollbar cameraZoom; //카메라 줌 스크롤
-    public Button exitBtn, shareBtn; //나가기 버튼, 공유 버튼
-    public Toggle soundCk; //소리 on/off
+    public Button exitBtn; //나가기 버튼
+    public Toggle soundCk, bgmCK; //효과음, 배경음 on/off
+    public GameObject soundoffImg; //효과음 토글 off 이미지
+    public Scrollbar soundScroll, bgmScroll; //효과음 볼륨, 배경음 볼륨
     Image[] albedoImg;
 
     bool isActing; //코루틴이 현재 실행 중인지 확인
@@ -51,9 +53,12 @@ public class IngameSetting : MonoBehaviour
         cameraZoom.value = 0.5f;
         exitBtn = ingameSettingMenu.transform.GetChild(1).GetComponent<Button>();
         soundCk = ingameSettingMenu.transform.GetChild(2).GetComponent<Toggle>();
-        shareBtn = ingameSettingMenu.transform.GetChild(3).GetComponent<Button>();
+        soundoffImg = soundCk.transform.GetChild(1).GetChild(0).gameObject;
+        soundScroll = ingameSettingMenu.transform.GetChild(3).GetComponent<Scrollbar>();
+        bgmCK = ingameSettingMenu.transform.GetChild(4).GetComponent<Toggle>();
+        bgmScroll = ingameSettingMenu.transform.GetChild(5).GetComponent<Scrollbar>();
 
-        albedoImg = new Image[9];
+        albedoImg = new Image[17];
         albedoImg[0] = ingameSettingMenu.GetComponent<Image>();
         albedoImg[1] = cameraReset.image;
         albedoImg[2] = cameraUpBtn.image;
@@ -62,7 +67,16 @@ public class IngameSetting : MonoBehaviour
         albedoImg[5] = cameraZoom.transform.GetChild(0).GetChild(0).GetComponent<Image>();
         albedoImg[6] = exitBtn.image;
         albedoImg[7] = soundCk.transform.GetChild(0).GetComponent<Image>();
-        albedoImg[8] = shareBtn.image;
+        albedoImg[8] = soundCk.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        albedoImg[9] = soundCk.transform.GetChild(1).GetChild(1).GetComponent<Image>();
+        albedoImg[10] = soundScroll.GetComponent<Image>();
+        albedoImg[11] = soundScroll.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        albedoImg[12] = bgmCK.transform.GetChild(0).GetComponent<Image>();
+        albedoImg[13] = bgmCK.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        albedoImg[14] = bgmCK.transform.GetChild(1).GetComponent<Image>();
+        albedoImg[15] = bgmScroll.GetComponent<Image>();
+        albedoImg[16] = bgmScroll.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+
 
         isActing = false;
     }
@@ -74,7 +88,7 @@ public class IngameSetting : MonoBehaviour
             //필요에 따라 다른 버튼 투명도도 조정
             albedoImg[0].color = new Color(1, 1, 1, 0.3f);
             for (int i = 1; i < albedoImg.Length; i++)
-                albedoImg[i].color = new Color(1, 1, 1, 0.6f);
+                albedoImg[i].color = new Color(albedoImg[i].color.r, albedoImg[i].color.g, albedoImg[i].color.b, 0.6f);
             if (type == 0) albedoImg[1].color = new Color(1, 1, 1, 0.8f);
             else if (type == 1)
             {
@@ -88,7 +102,7 @@ public class IngameSetting : MonoBehaviour
             isActing = true;
             yield return new WaitForSeconds(2);
             for(int i=0; i<albedoImg.Length; i++)
-                albedoImg[i].color = new Color(1, 1, 1, 1);
+                albedoImg[i].color = new Color(albedoImg[i].color.r, albedoImg[i].color.g, albedoImg[i].color.b, 1);
             isActing = false;
         }
     }

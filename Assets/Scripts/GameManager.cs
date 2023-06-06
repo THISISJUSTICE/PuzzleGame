@@ -110,7 +110,6 @@ public class GameManager : MonoBehaviour
             stdPos[i] = new Vector3();
             stdRot[i] = new Quaternion();
         }
-        
     }
 
     //시작할 스테이지, 스테이지 종류를 입력받아 스테이지 실행
@@ -234,7 +233,6 @@ public class GameManager : MonoBehaviour
         //보드의 말 수 * 2 + 최소 플립
         maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
         realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
-        Debug.Log($"u: {u}, v: {v}, s: {s}, maxFlip: {maxFlip}, realMaxFlip: {realMaxFlip}");
     }
 
     //3차원에 한 면에 인접한 면이 무엇인지 정의
@@ -1062,6 +1060,7 @@ public class GameManager : MonoBehaviour
     public void RotateVertical3Dobject(float value)
     {
         rotateObject.rotation = Quaternion.Euler(rotateObject.eulerAngles.x, rotateObject.eulerAngles.y, 540 * value);
+        uiManger.objectRotateSound.Play();
     }
 
     public void CameraReset() {

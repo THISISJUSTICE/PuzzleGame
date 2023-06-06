@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// - 세팅 화면(공유 버튼, 효과음), 닫기 기능
+// - 세팅 화면(공유 버튼)
+// - 세팅 화면이 켜져있을 땐, 메인 화면 UI가 눌리지 않도록 
 
 public class UIManager : MonoBehaviour
 {
@@ -112,7 +113,9 @@ public class UIManager : MonoBehaviour
     {
         public GameObject settingMenu;
         public Button exitBtn, shareBtn;
-        public Toggle soundCk;
+        public Toggle soundCk, bgmCK;
+        public GameObject soundoffImg;
+        public Scrollbar soundScroll, bgmScroll;
 
         public SettingMenu(GameObject settingMenu)
         {
@@ -124,7 +127,11 @@ public class UIManager : MonoBehaviour
         {
             exitBtn = settingMenu.transform.GetChild(0).GetComponent<Button>();
             soundCk = settingMenu.transform.GetChild(1).GetComponent<Toggle>();
-            shareBtn = settingMenu.transform.GetChild(2).GetComponent<Button>();          
+            soundoffImg = soundCk.transform.GetChild(1).GetChild(0).gameObject;
+            soundScroll = settingMenu.transform.GetChild(2).GetComponent<Scrollbar>();
+            bgmCK = settingMenu.transform.GetChild(3).GetComponent<Toggle>();
+            bgmScroll = settingMenu.transform.GetChild(4).GetComponent<Scrollbar>();
+            shareBtn = settingMenu.transform.GetChild(5).GetComponent<Button>();          
         }
     }
     public SettingMenu settingMenu; //세팅 화면
@@ -146,18 +153,37 @@ public class UIManager : MonoBehaviour
     public ExitMenu exitMenu; //나가기 창 (yes or no)
 
     GameObject loadingUI;
-    AudioSource btnSound;
-    AudioSource clearStarSound;
+    AudioSource btnSound; //버튼 누르는 소리
+    AudioSource clearSound; //클리어 시 발생하는 소리
+    AudioSource clearStarSound; //클리어 시 별이 떨어지는 소리
+    AudioSource achieve100Sound; //만점 시 발생하는 소리
+    AudioSource failSound; //실패 시 발생하는 소리
+    AudioSource slideUISound; //슬라이드 UI가 값을 변경할 때 나는 소리
 
+    //다른 곳에
+    public AudioSource horseFlipSound; //말이 뒤집는 소리
+    public AudioSource objectRotateSound; // 오브젝트가 회전하면서 나는 소리
+
+    bool isSaveCoolDown = false;
     private void Awake()
     {
         Init();
         UISetting();
     }
 
-    void SoundsMute(bool isMute){
-        btnSound.mute = isMute;
-        
+    //설정 변경이 있으면 일정 시간 주기가 지난 후에 저장
+    IEnumerator SaveCycle(){
+        if(!isSaveCoolDown){
+            PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
+            PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
+            PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
+            PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
+            Debug.Log($"SaveCycle [sound: {PlayerData.Instance.data.soundVolume}, ck: {PlayerData.Instance.data.soundCk}]");
+            PlayerData.Instance.SaveData();
+            isSaveCoolDown = true;
+            yield return new WaitForSeconds(30);
+            isSaveCoolDown = false;
+        }       
     }
 
     void Init()
@@ -192,6 +218,7 @@ public class UIManager : MonoBehaviour
     //Task 혹은 델리게이트로 바꾸기
     void LateTask() {
         AudioInit();
+        //DoMute(true);
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < lobbyMenu.stageBtns[i].stageBtns.Length; j++)
@@ -200,6 +227,13 @@ public class UIManager : MonoBehaviour
             }
             lobbyMenu.stageBtns[i].gameObject.SetActive(false);
         }
+        //효과음, 배경음을 이전에 세팅한데로 세팅
+        if(PlayerData.Instance.data.soundCk) DoSoundMute(true);
+        else DoSoundVolume(PlayerData.Instance.data.soundVolume);
+
+        if(PlayerData.Instance.data.bgmCk) DoBGM_Mute(true);
+        else DoBGM_Volume(PlayerData.Instance.data.bgmVolume);
+
         lobbyMenu.lobbyMenu.SetActive(false);
         ingameMenu.ingameSettingMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(false);
@@ -213,7 +247,11 @@ public class UIManager : MonoBehaviour
     //오디오 설정 초기화
     void AudioInit(){
         btnSound = GetComponent<AudioSource>();
-        //clearStarSound = GetComponent<AudioSource>();
+        clearSound = clearMenu.clearMenu.GetComponent<AudioSource>();
+        clearStarSound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetComponent<AudioSource>();
+        achieve100Sound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetChild(2).GetComponent<AudioSource>();
+        failSound = failMenu.failMenu.GetComponent<AudioSource>();
+        horseFlipSound = gameManager.GetComponent<AudioSource>();
     }
 
     #region MainMenu
@@ -319,12 +357,9 @@ public class UIManager : MonoBehaviour
         ingameMenu.cameraDownBtn.onClick.AddListener(() => btnSound.Play());
         ingameMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
 
-        // ingameMenu.vScroll.onValueChanged.AddListener(gameManager.RotateVertical3Dobject);
-        // ingameMenu.cameraZoom.onValueChanged.AddListener(gameManager.CameraZoomSetting);
-        //공유 버튼
-        //ingameMenu.shareBtn.onClick.AddListener();
-        //소리 온오프
-        //ingameMenu.soundCk.isOn;
+        //소리 온오프, 볼륨
+        ingameMenu.soundCk.onValueChanged.AddListener(SoundMute);
+        ingameMenu.soundScroll.onValueChanged.AddListener(SoundVolume);
     }
 
     void DoLobby() {
@@ -437,11 +472,28 @@ public class UIManager : MonoBehaviour
 
         if (isRenew)
         {
+            float[] starFill = new float[3];
+            for(int i=0; i<3; i++) starFill[i] = clearMenu.scoreStar[i].fillAmount;
             clearMenu.animStar.Play("Appear");
-            clearStarSound.Play();
+            StartCoroutine(StarSoundPlay(score, starFill));
         }
         for (int i = 0; i < 3; i++)
             clearMenu.scoreStar[i].gameObject.SetActive(true);
+    }
+
+    public float timing;
+    public float startiming;
+    IEnumerator StarSoundPlay(int score, float[] starFill){
+        for(int i=0; i<3; i++){
+            if(starFill[i] > 0) {
+                yield return new WaitForSeconds(0.275f);
+                clearStarSound.Play();
+            }
+        }
+        if(score == 100) {
+            yield return new WaitForSeconds(0.3f);
+            achieve100Sound.Play();
+        }
     }
 
     #endregion
@@ -473,11 +525,106 @@ public class UIManager : MonoBehaviour
     void SetSettingMenu()
     {
         settingMenu.exitBtn.onClick.AddListener(() => settingMenu.settingMenu.SetActive(false));
+        settingMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+        
+        //소리 온오프, 볼륨
+        settingMenu.soundCk.onValueChanged.AddListener(SoundMute);
+        settingMenu.soundScroll.onValueChanged.AddListener(SoundVolume);
+
+        //배경음 온오프, 볼륨
+        settingMenu.bgmCK.onValueChanged.AddListener(BGM_Mute);
+        settingMenu.bgmScroll.onValueChanged.AddListener(BGM_Volume);
+
         //공유 버튼
         //settingMenu.shareBtn.onClick.AddListener();
-        //소리 온오프
-        //settingMenu.soundCk.isOn
     }
+
+    //on이 true면 mute
+    void SoundMute(bool on){
+        DoSoundMute(on);
+        if(on){
+            DoSoundVolume(0);
+        }
+        else DoSoundVolume(0.1f);
+        StartCoroutine(SaveCycle());
+    }
+
+    void SoundVolume(float value){
+        DoSoundVolume(value);
+        if(value == 0) DoSoundMute(true);
+        else DoSoundMute(false);
+        StopCoroutine(VolumeChangeCheck());
+        StartCoroutine(VolumeChangeCheck());
+    }
+
+    //무한 재귀에 빠지지 않도록 Mute와 Volume 변경을 별도로 실행
+    void DoSoundMute(bool on){
+        btnSound.mute = on;
+        clearSound.mute = on;
+        clearStarSound.mute = on;
+        achieve100Sound.mute = on;
+        failSound.mute = on;
+        horseFlipSound.mute = on;
+
+        //다른 세팅화면에서 눌렀어도 동기화
+        settingMenu.soundCk.isOn = on;
+        ingameMenu.soundCk.isOn = on;
+        settingMenu.soundoffImg.SetActive(!on);
+        ingameMenu.soundoffImg.SetActive(!on);
+
+    }    
+
+    void DoSoundVolume(float value){
+        btnSound.volume = value;
+        clearSound.volume = value;
+        clearStarSound.volume = value;
+        achieve100Sound.volume = value;
+        failSound.volume = value;
+        horseFlipSound.volume = value;
+
+        //다른 세팅화면에서 눌렀어도 동기화
+        settingMenu.soundScroll.value = value;
+        ingameMenu.soundScroll.value = value;
+    }
+
+    void BGM_Mute(bool on){
+        DoBGM_Mute(on);
+        if(on){
+            DoBGM_Volume(0);
+        }
+        else DoBGM_Volume(0.1f);
+        StartCoroutine(SaveCycle());
+    }
+
+    void BGM_Volume(float value){
+        DoBGM_Volume(value);
+        if(value == 0) DoBGM_Mute(true);
+        else DoBGM_Mute(false);
+        StopCoroutine(VolumeChangeCheck());
+        StartCoroutine(VolumeChangeCheck());
+    }
+
+    void DoBGM_Mute(bool on){
+
+        //다른 세팅화면에서 눌렀어도 동기화
+        settingMenu.bgmCK.isOn = on;
+        ingameMenu.bgmCK.isOn = on;
+    }
+
+    void DoBGM_Volume(float value){
+
+        //다른 세팅화면에서 눌렀어도 동기화
+        settingMenu.bgmScroll.value = value;
+        ingameMenu.bgmScroll.value = value;
+    }
+
+    //볼륨 스크롤 변화를 확인해서 변화가 멈추면 데이터 저장
+    IEnumerator VolumeChangeCheck(){
+        //볼륨의 변화를 확인하기 위한 시험 사운드 재생    
+        yield return new WaitForSeconds(3);
+        StartCoroutine(SaveCycle());
+    }
+    
 
     #endregion
 
@@ -485,6 +632,9 @@ public class UIManager : MonoBehaviour
     void SetExitMenu() {
         exitMenu.noBtn.onClick.AddListener(() => exitMenu.exitMenu.SetActive(false));
         exitMenu.yesBtn.onClick.AddListener(() => Application.Quit());
+
+        exitMenu.noBtn.onClick.AddListener(() => btnSound.Play());
+        exitMenu.yesBtn.onClick.AddListener(() => btnSound.Play());
     }
 
     #endregion
