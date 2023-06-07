@@ -61,6 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horseMesh: {fileID: 7860989231663420844}
   kind: 2
+  horseAudio: {fileID: 0}
 --- !u!1001 &7050017839984748797
 PrefabInstance:
   m_ObjectHideFlags: 0

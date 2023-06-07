@@ -160,8 +160,9 @@ public class UIManager : MonoBehaviour
     AudioSource failSound; //실패 시 발생하는 소리
     AudioSource slideUISound; //슬라이드 UI가 값을 변경할 때 나는 소리
 
+    public BGM_Player bgm_Player; //배경 음악
+
     //다른 곳에
-    public AudioSource horseFlipSound; //말이 뒤집는 소리
     public AudioSource objectRotateSound; // 오브젝트가 회전하면서 나는 소리
 
     bool isSaveCoolDown = false;
@@ -180,7 +181,7 @@ public class UIManager : MonoBehaviour
             PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
             Debug.Log($"SaveCycle [sound: {PlayerData.Instance.data.soundVolume}, ck: {PlayerData.Instance.data.soundCk}]");
             PlayerData.Instance.SaveData();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(4);
             isSaveCoolDown = true;
             isSaveCoolDown = false;
         }       
@@ -251,7 +252,7 @@ public class UIManager : MonoBehaviour
         clearStarSound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetComponent<AudioSource>();
         achieve100Sound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetChild(2).GetComponent<AudioSource>();
         failSound = failMenu.failMenu.GetComponent<AudioSource>();
-        horseFlipSound = gameManager.GetComponent<AudioSource>();
+        gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
     }
 
     #region MainMenu
@@ -565,7 +566,7 @@ public class UIManager : MonoBehaviour
         clearStarSound.mute = on;
         achieve100Sound.mute = on;
         failSound.mute = on;
-        horseFlipSound.mute = on;
+        gameManager.horseAudio.mute = on;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundCk.isOn = on;
@@ -581,7 +582,7 @@ public class UIManager : MonoBehaviour
         clearStarSound.volume = value;
         achieve100Sound.volume = value;
         failSound.volume = value;
-        horseFlipSound.volume = value;
+        gameManager.horseAudio.volume = value;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundScroll.value = value;
@@ -607,6 +608,7 @@ public class UIManager : MonoBehaviour
     }
 
     void DoBGM_Mute(bool on){
+        bgm_Player.bgmAudio.mute = on;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.bgmCK.isOn = on;
@@ -614,6 +616,7 @@ public class UIManager : MonoBehaviour
     }
 
     void DoBGM_Volume(float value){
+        bgm_Player.bgmAudio.volume = value;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.bgmScroll.value = value;
@@ -621,8 +624,7 @@ public class UIManager : MonoBehaviour
     }
 
     //설정 변화를 확인해서 변화가 멈추면 데이터 저장
-    IEnumerator SettingChangeCheck(){
-        //볼륨의 변화를 확인하기 위한 시험 사운드 재생    
+    IEnumerator SettingChangeCheck(){   
         yield return new WaitForSeconds(5);
         StartCoroutine(SaveCycle());
     }

@@ -6,6 +6,7 @@ public class Basic_horse : MonoBehaviour
 {
     public GameObject horseMesh;
     public int kind;
+
     
     GameManager gameManager;
     Animator anim;
@@ -25,17 +26,20 @@ public class Basic_horse : MonoBehaviour
         if (curState == 0)
         {
             anim.Play("BSummon");
+            StartCoroutine(FlipSoundPlay(0.19f, 0));
         }
         else
         {
             anim.Play("WSummon");
+            StartCoroutine(FlipSoundPlay(0.19f, 1));
         }
-        StartCoroutine(FlipSoundPlay(0.19f));
     }
 
-    IEnumerator FlipSoundPlay(float time){
+    //흰색이 바닥에 닿으면 0, 검은색은 1번 클립 재생
+    IEnumerator FlipSoundPlay(float time, int sound){
         yield return new WaitForSeconds(time);
-        gameManager.uiManger.horseFlipSound.Play();
+        gameManager.horseAudio.clip = gameManager.horseSounds[sound];
+        gameManager.horseAudio.Play();
     }
 
     //말이 마우스로 클릭되었을 때 호출
@@ -62,13 +66,14 @@ public class Basic_horse : MonoBehaviour
         {
             curState = 0;
             anim.Play("FlipWtoB");    
+            StartCoroutine(FlipSoundPlay(0.32f, 0));
         }
         else
         {
             curState = 1;
             anim.Play("FlipBtoW");
+            StartCoroutine(FlipSoundPlay(0.32f, 1));
         }
-        StartCoroutine(FlipSoundPlay(0.32f));
         return curState;
     }
 

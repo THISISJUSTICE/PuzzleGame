@@ -9,7 +9,9 @@ using UnityEngine.UI;
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
 
-// - 배경음
+// - 배경음(메인 화면 용, 각 4종류의 스테이지 종류별로 나누기), (아예 하나로 통일해서 틀기)
+
+// - 효과음 다시 선택(선택 완료 후에는 적절히 소리 키우기)
 
 // 2. 육각형 모양(2차원)
 // - 스테이지 제작
@@ -49,6 +51,9 @@ public class GameManager : MonoBehaviour
     public int[] stage; //각 모드의 현재 스테이지
     public float createHorseTime; //말을 다 소환할 때까지 걸리는 시간
     public int curKind; //현재 진행하고 있는 스테이지의 종류(0: 사각형, 1: 육각형, 2: 큐브, 3: 벌집)
+
+    public AudioSource horseAudio; //말 재생 소리
+    public List<AudioClip> horseSounds; //말의 면에 따라 다른 소리 적용
 
     GameObject[] basic_horse; //말 오브젝트(종류 별로 나누기 위해 배열로 선언)
 
@@ -307,7 +312,7 @@ public class GameManager : MonoBehaviour
                             }
                         }
                         instantHorse[i, j, k].gameObject.SetActive(false);
-                    }
+                    }                    
                 }
             }
         }
