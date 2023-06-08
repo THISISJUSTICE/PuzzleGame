@@ -9,8 +9,6 @@ using UnityEngine.UI;
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
 
-// - 배경음(메인 화면 용, 각 4종류의 스테이지 종류별로 나누기), (아예 하나로 통일해서 틀기)
-
 // - 효과음 다시 선택(선택 완료 후에는 적절히 소리 키우기)
 
 // 2. 육각형 모양(2차원)
@@ -133,6 +131,7 @@ public class GameManager : MonoBehaviour
             uiManger.ingameMenu.flipCount.text += flipCount;
             uiManger.ingameMenu.maxFlipCount.text = "";
             uiManger.ingameMenu.maxFlipCount.text += realMaxFlip - flipCount;
+            uiManger.BGMPlay(1);
         }
         else
         {
@@ -896,6 +895,9 @@ public class GameManager : MonoBehaviour
         //만약 로비 메뉴가 실행이 안되면 setactive 활성화 후 함수 실행, 비활성화 진행
         bool isRenew = stageManager.CurrentStageClear(stage[curKind], minFlip, flipCount, maxFlip);
 
+        //BMG 일시 정지
+        uiManger.BGMPause();
+
         //스테이지 표시
         uiManger.clearMenu.title.text = "STAGE " + (stage[curKind] + 1);
 
@@ -947,6 +949,9 @@ public class GameManager : MonoBehaviour
     //스테이지에 실패했을 때 실행
     IEnumerator StageFail()
     {
+        //BMG 일시 정지
+        uiManger.BGMPause();
+
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(DeleteHorse());
         uiManger.ingameMenu.gameObject.SetActive(false);

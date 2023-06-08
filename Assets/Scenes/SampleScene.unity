@@ -814,7 +814,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1320273661}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.8723155
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1969,7 +1969,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 1424, y: 1900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &316072551
@@ -2746,9 +2746,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf0a46f2aca96ed44802c50ee2ebcb16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgms: []
+  bgms:
+  - {fileID: 8300000, guid: 079b16d65b3b04fe8aee9e756c46e985, type: 3}
+  - {fileID: 8300000, guid: 3d26fa936c245aa4f976c89bb8b52473, type: 3}
   bgmAudio: {fileID: 0}
-  playKind: 0
 --- !u!82 &382072849
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2760,10 +2761,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -7478,8 +7479,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1563349460}
   ingameMenu: {fileID: 0}
-  bgm_Player: {fileID: 382072848}
   objectRotateSound: {fileID: 0}
+  bgm_Player: {fileID: 382072848}
   timing: 0
   startiming: 0.275
 --- !u!82 &1026369467
@@ -8409,7 +8410,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 1424, y: 1900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1187118805
@@ -11343,7 +11344,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 1767b79afbf3b604fbd90c92d7d96fc4, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.36
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -12558,7 +12559,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1116573537}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.8723155
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

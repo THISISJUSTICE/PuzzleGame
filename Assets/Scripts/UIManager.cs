@@ -160,12 +160,14 @@ public class UIManager : MonoBehaviour
     AudioSource failSound; //실패 시 발생하는 소리
     AudioSource slideUISound; //슬라이드 UI가 값을 변경할 때 나는 소리
 
-    public BGM_Player bgm_Player; //배경 음악
-
     //다른 곳에
     public AudioSource objectRotateSound; // 오브젝트가 회전하면서 나는 소리
 
-    bool isSaveCoolDown = false;
+    bool isSaveCoolDown = false; //저장 대기 시간
+
+    public BGM_Player bgm_Player; //배경 음악
+    float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
+    
     private void Awake()
     {
         Init();
@@ -243,6 +245,8 @@ public class UIManager : MonoBehaviour
         failMenu.failMenu.SetActive(false);
         exitMenu.exitMenu.SetActive(false);
         loadingUI.gameObject.SetActive(false);
+
+        BGMPlay(0);
     }
 
     //오디오 설정 초기화
@@ -253,6 +257,10 @@ public class UIManager : MonoBehaviour
         achieve100Sound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetChild(2).GetComponent<AudioSource>();
         failSound = failMenu.failMenu.GetComponent<AudioSource>();
         gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
+
+        //bgm
+        bgm_Player.bgmAudio = bgm_Player.GetComponent<AudioSource>();
+        pauseTime = 0;
     }
 
     #region MainMenu
@@ -316,6 +324,8 @@ public class UIManager : MonoBehaviour
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
         mainMenu.mainMenu.SetActive(true);
+
+        BGMPlay(0);
         gameManager.RealDeleteHorse();
         btnSound.Play();
     }
@@ -627,6 +637,22 @@ public class UIManager : MonoBehaviour
     IEnumerator SettingChangeCheck(){   
         yield return new WaitForSeconds(5);
         StartCoroutine(SaveCycle());
+    }
+
+    public void BGMPlay(int type){
+        bgm_Player.bgmAudio.clip = bgm_Player.bgms[type];
+        if(type == 0){
+            bgm_Player.bgmAudio.Play();
+        }
+        else{
+            bgm_Player.bgmAudio.time = pauseTime;
+            bgm_Player.bgmAudio.Play();
+        }
+    }
+
+    public void BGMPause(){
+        pauseTime = bgm_Player.bgmAudio.time;
+        bgm_Player.bgmAudio.Pause();
     }
     
 
