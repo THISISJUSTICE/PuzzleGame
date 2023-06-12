@@ -72,6 +72,7 @@ public class StageManager : MonoBehaviour
     //스테이지 클리어 시 게임 매니저에서 호출
     public bool CurrentStageClear(int curStage, int minFlip, int clearFlip, int maxFlip) {
         bool isRenew;
+        Debug.Log($"curStage: {curStage}");
         //스테이지, 플립 관련 인수를 받아 해당하는 스테이지 버튼 정보 최신화(정보를 최신화할 필요가 있으면 true 반환)
         isRenew = stageBtns[curStage].StageClear(minFlip, clearFlip, maxFlip);
 

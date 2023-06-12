@@ -44,6 +44,12 @@ public class PlayerData : MonoBehaviour
         public List<int> stage2Score; //2스테이지 별 클리어 시 점수
         public List<int> stage3Score; //3스테이지 별 클리어 시 점수
 
+        // public int[] masterCurrentClear; //마스터 모드의 현재 클리어한 횟수
+        // public int[] masterMaxScore; //마스터 모드에서 지금까지 최대로 얻은 점수
+        // public int[] masterCurrentScore; //마스터 모드에서 현재 얻은 점수
+        // public int[] masterCurrentFlip; //마스터 모드에서 현재 남은 플립 횟수
+        //보드도 저장해야하는데...
+
         public bool soundCk;
         public float soundVolume;
         public bool bgmCk;

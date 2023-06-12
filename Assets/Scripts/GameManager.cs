@@ -8,24 +8,28 @@ using UnityEngine.UI;
 //로비 스크롤 위치 맨 위로 초기화해두기(안 해도 지장은 없음)
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
-
-// - 효과음 다시 선택(선택 완료 후에는 적절히 소리 키우기)
-
-// 2. 육각형 모양(2차원)
-// - 스테이지 제작
+// - 두번째 입체는 완전히 보류(현재는 삼각형을 사용한 것을 생각중)
 
 
-// 3. 벌집 입체
-// - 올클리어(관련 UI)
+// - **기존 파일에 있는 맵을 모두 클리어 시 랜덤 생성 스테이지 모드로 전환(올 클리어 없음, 점수 무한)
+// - **랜덤 보드 생성
+// - stageManager 마지막 버튼 하나 더 추가
+// - 인게임 UI 리셋 버튼 비활성화, 적절히 수정
+// - 마스터 모드 상태의 보드가 끝나지 않을 경우, 플레이어 데이터에 저장하기
 
-// 4. 특수한 모드 후보
-// - 테트리스처럼 무한대로 지속가능한 모드
-// - 멀티 플레이로 다른 사람과 퍼즐을 풀거나 하는 등의 모드
 
-// - 3. 마피아 모드(기본 맵과 동일 혹은 비슷한 맵을 푸는데, 한 명은 푸는걸 방해하고, 나머지는 방해자가 누군지 찾는 모드, 총 투표횟수 제한, 투표 수 동일시 무효처리,
-// 방해자는 해당 스테이지를 클리어하지 못하게 하면 승리, 나머지는 방해자를 찾거나 스테이지를 클리어하면 승리)
+// - UI 폰트 수정
+// - UI 디자인 다시 꾸미기 + 메인 UI 스테이지 버튼에 점수, 레벨 표시
+// - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)? , (효과음 속도가 살짝 느린 거 조정하기)
+// - 퍼즐 모드 제작
 
-// - 4. 퍼즐 모드(스테이지 종류는 랜덤, 크기가 큰 보드가 판이고, 그보다는 조금 작은 보드가 주어지는데, 큰 보드에서 작은 보드의 모양을 완성하면 그 스테이지 클리어)
+
+// 4. 퍼즐 모드(스테이지 종류는 랜덤, 크기가 큰 보드가 판이고, 그보다는 조금 작은 보드가 주어지는데, 큰 보드에서 작은 보드의 모양을 완성하면 그 스테이지 클리어)
+// - (최초에 최대 횟수를 정해주고, 스테이지 클리어때 마다 추가적으로 플립 횟수 지급, 플립 횟수가 0이 되면 실패, 총 플립 횟수와 클리어 횟수로 최고 점수 기록)
+// - 보드 연산(전체 보드, 정답 보드가 있을 때, 정답 보드의 수 만큼 임시 보드를 생성하고, 임시 보드의 변수는 전체 보드의 좌표를 참조하도록 연산)
+
+// 5. 테트리스 모드(흰색, 검은색이 섞인 블록이 떨어지고 이를 배치, 배치한 말을 플립하여 한 줄이 같은 색이면 사라지는 테트리스
+// - (블록 1개 당 2번의 플립 가능, 플립을 두 번하면 블록이 떨어짐)
 
 
 // 5. 구글 플레이 연동
@@ -142,6 +146,7 @@ public class GameManager : MonoBehaviour
             uiManger.ingameMenu.maxFlipCount.gameObject.SetActive(false);
             uiManger.ingameMenu.stageTitle.gameObject.SetActive(false);
             uiManger.ingameMenu.allClearTitle.gameObject.SetActive(true);
+            //MasterGame();
         }
     }
 
@@ -352,6 +357,70 @@ public class GameManager : MonoBehaviour
         else if (s == 6)
         {
             cubeSide6.gameObject.SetActive(false);
+        }
+    }
+
+    #endregion
+
+    #region MasterMode
+
+    //모든 스테이지를 클리어했을 때, 플레이할 수 있는 모드
+    void MasterGame(){
+        //랜덤 보드 생성
+        //초기 플립 횟수(s * u * v * 2)
+        //1번 플립 할때마다 score += 5;
+        //스테이지 클리어 시 마다 [{플립 += (s * u * v)}, {score += (s * u * v)}]
+        //초기화 버튼 없음
+        //플립이 0이 될 때까지 무한정 실행
+
+    }
+
+    //마스터 모드의 랜덤 보드를 생성
+    void CreateMasterBoard(int curClear){
+        int boardWhiteCount, boardBlankCount; //랜덤 보드의 흰색, 공백의 개수
+        int x,y,z;
+        switch(curKind){
+            case 0:
+                //보드 칸 계산
+                if(curClear < 40){
+                    u = curClear/4 % 5 + 4;
+                }
+                else u = 6;
+                s = 1;
+                v = u;
+                
+                board = new int[s, u, v];
+                boardBlankCount = UnityEngine.Random.Range(0, 7);
+                boardWhiteCount = UnityEngine.Random.Range(2, (u*v) - boardBlankCount);
+
+                //최초엔 0으로 보드 초기화
+                for(int i=0; i<s; i++){
+                    for(int j=0; j<u; j++){
+                        for(int k=0; k<v; k++){
+                            board[i,j,k] = 0;
+                        }
+                    }
+                }
+
+                //보드에 블랭크 채우기
+                for(int i=0; i<boardBlankCount; i++){
+                    do{
+                        x = UnityEngine.Random.Range(0, u);
+                        y = UnityEngine.Random.Range(0, v);
+                    }while(board[0, x, y] == 5);
+                    board[0, x, y] = 5;
+                }
+
+                //보드에 흰색 채우기
+                for(int i=0; i<boardWhiteCount; i++){
+                    do{
+                        x = UnityEngine.Random.Range(0, u);
+                        y = UnityEngine.Random.Range(0, v);
+                    }while(board[0, x, y] == 5 || board[0,x,y] == 1);
+                    board[0, x, y] = 1;
+                }
+
+                break;
         }
     }
 

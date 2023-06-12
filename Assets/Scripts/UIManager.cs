@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 // - 세팅 화면(공유 버튼)
 // - 세팅 화면이 켜져있을 땐, 메인 화면 UI가 눌리지 않도록 하기
-// - 세팅, 인게임 세팅 음성 동기화 제대로 되지 않는 부분 고치기
 
 public class UIManager : MonoBehaviour
 {
