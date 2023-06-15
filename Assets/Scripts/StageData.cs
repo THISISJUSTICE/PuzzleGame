@@ -14,6 +14,7 @@ public class StageData : MonoBehaviour
     public Button opened; //잠겨있지 않을 때 표시
     GameObject locked; //잠겨있을 때 표시
     Text stageTxt; //현재 스테이지를 표시하는 UI
+    GameObject starGroup; //별, 별 바탕의 부모
     Image[] scoreStar; //점수에 따라 얻는 별
 
     int clearFlipCount; //스테이지 클리어 시 뒤집은 횟수
@@ -44,17 +45,22 @@ public class StageData : MonoBehaviour
     }
 
     void UIInit() {
-        opened = transform.Find("OpenedStage").GetComponent<Button>();
-        locked = transform.Find("LockedStage").gameObject;
-        stageTxt = opened.transform.Find("Title").GetComponent<Text>();
+        opened = transform.GetChild(0).GetComponent<Button>();
+        locked = transform.GetChild(1).gameObject;
+        stageTxt = opened.transform.GetChild(0).GetComponent<Text>();
+        starGroup = opened.transform.GetChild(1).gameObject;
         for (int i = 0; i < scoreStar.Length; i++) 
-            scoreStar[i] = opened.transform.Find("Score").Find("StarGroup" + i).Find("FilledStar").GetComponent<Image>();
+            scoreStar[i] = starGroup.transform.GetChild(i).GetChild(1).GetComponent<Image>();
     }
 
     //버튼 기능, 텍스트 세팅
     public void UISet(GameManager gameManager) {
         opened.onClick.AddListener(() => StageStart(gameManager));
-        stageTxt.text = "" + (curstage + 1);
+        if(curstage == 1000) {
+            stageTxt.text = "M";
+            starGroup.SetActive(false);
+        }
+        else stageTxt.text = "" + (curstage + 1);
     }
 
     void StageStart(GameManager gameManager) {

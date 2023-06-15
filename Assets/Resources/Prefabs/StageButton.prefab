@@ -573,6 +573,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8291771961502987116}
+  - component: {fileID: 846284641350254871}
   m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
@@ -603,6 +604,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 250, y: 330}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &846284641350254871
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8291771961502987117}
+  m_CullTransparentMesh: 1
 --- !u!1 &8291771961641047522
 GameObject:
   m_ObjectHideFlags: 0

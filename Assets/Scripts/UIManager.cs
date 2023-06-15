@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    #region Variable Declaration
     public GameManager gameManager;
     //public PlayerData playerData;
 
@@ -168,6 +169,8 @@ public class UIManager : MonoBehaviour
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
     
+    #endregion
+
     private void Awake()
     {
         Init();
@@ -229,6 +232,7 @@ public class UIManager : MonoBehaviour
                 lobbyMenu.stageBtns[i].stageBtns[j].opened.onClick.AddListener(DoBack);
             }
             lobbyMenu.stageBtns[i].gameObject.SetActive(false);
+            lobbyMenu.stageBtns[i].masterStageBtn.opened.onClick.AddListener(DoBack);
         }
         //효과음, 배경음을 이전에 세팅한데로 세팅
         if(PlayerData.Instance.data.soundCk) DoSoundMute(true);
@@ -302,9 +306,8 @@ public class UIManager : MonoBehaviour
         gameManager.GameStart(PlayerData.Instance.data.clearStage[kind] + 1, kind); //플레이어 데이터에서 받은 정보로 매개 변수 입력
         ingameMenu.gameObject.SetActive(true);
 
-        ingameMenu.allClearTitle.gameObject.SetActive(false);
         ingameMenu.stageTitle.gameObject.SetActive(true);
-        ingameMenu.flipCount.gameObject.SetActive(true);
+        //ingameMenu.flipCount.gameObject.SetActive(true);
         ingameMenu.maxFlipCount.gameObject.SetActive(true);
         btnSound.Play();
     }
@@ -333,7 +336,6 @@ public class UIManager : MonoBehaviour
     //뒤로 가기 버튼(로비에서 게임 화면으로 다시 넘어감)
     void DoBack() {
         int kind = gameManager.curKind;
-        lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
         lobbyMenu.stageBtns[kind].gameObject.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
@@ -390,7 +392,12 @@ public class UIManager : MonoBehaviour
     void SetClearMenu() {
         clearMenu.backBtn.onClick.AddListener(DoClearBack);
         clearMenu.nextBtn.onClick.AddListener(DoClearNext);
-        clearMenu.exitBtn.onClick.AddListener(DoClearExit);
+        clearMenu.exitBtn.onClick.AddListener(() => StartCoroutine(DoClearExit()));
+
+        //소리 세팅
+        clearMenu.backBtn.onClick.AddListener(() => btnSound.Play());
+        clearMenu.nextBtn.onClick.AddListener(() => btnSound.Play());
+        clearMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
     }
 
     //스테이지 클리어 후 방금 진행한 스테이지를 바로 또 진행
@@ -421,8 +428,11 @@ public class UIManager : MonoBehaviour
     }
 
     //스테이지 클리어 후 로비 화면으로 이동
-    void DoClearExit() {
+    IEnumerator DoClearExit() {
         DoStageBack();
+        //로딩 화면 켜기
+        yield return new WaitForSeconds(1);
+        //로딩 화면 끄기
         clearMenu.clearMenu.SetActive(false);
         DoLobby();
         ClearInit();
@@ -514,12 +524,19 @@ public class UIManager : MonoBehaviour
     #region FailMenu
 
     void SetFailMenu() {
-        failMenu.exitBtn.onClick.AddListener(DoFailExit);
+        failMenu.exitBtn.onClick.AddListener(() => StartCoroutine(DoFailExit()));
         failMenu.backBtn.onClick.AddListener(DoFailBack);
+
+        //소리 세팅
+        failMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+        failMenu.backBtn.onClick.AddListener(() => btnSound.Play());
     }
 
-    void DoFailExit() {
+    IEnumerator DoFailExit() {
         DoStageBack();
+        //로딩 화면 켜기
+        yield return new WaitForSeconds(1);
+        //로딩 화면 끄기
         failMenu.failMenu.SetActive(false);
         DoLobby();
         btnSound.Play();
@@ -649,6 +666,9 @@ public class UIManager : MonoBehaviour
         else{
             bgm_Player.bgmAudio.time = pauseTime;
             bgm_Player.bgmAudio.Play();
+
+            //if(bgm_Player.bgmAudio.isPlaying){}
+            //bgm_Player.bgmAudio.UnPause();
         }
     }
 

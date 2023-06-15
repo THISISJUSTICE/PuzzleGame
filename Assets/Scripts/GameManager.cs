@@ -9,18 +9,18 @@ using UnityEngine.UI;
 
 // - 가로 회전 축은 큐브에서는 안 써도 문제 없음(벌집 때 다시 확인 해보기, 가로 축을 넣을 시 부모가 하나 더 필요할 가능성 있음)
 // - 두번째 입체는 완전히 보류(현재는 삼각형을 사용한 것을 생각중)
+// - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
+// - 클리어, 실패 UI에서 닫기 버튼 눌렀을 때, 로비와 재시작 사이의 오류 수정(로딩 UI 하나 더 만들어서 해결하기)
 
 
 // - **기존 파일에 있는 맵을 모두 클리어 시 랜덤 생성 스테이지 모드로 전환(올 클리어 없음, 점수 무한)
-// - **랜덤 보드 생성
-// - stageManager 마지막 버튼 하나 더 추가
-// - 인게임 UI 리셋 버튼 비활성화, 적절히 수정
-// - 마스터 모드 상태의 보드가 끝나지 않을 경우, 플레이어 데이터에 저장하기
+// - UI 적절히 추가
+// - 마스터 모드 스테이지 별 난이도 조절, 다른 스테이지 테스트
 
 
 // - UI 폰트 수정
 // - UI 디자인 다시 꾸미기 + 메인 UI 스테이지 버튼에 점수, 레벨 표시
-// - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)? , (효과음 속도가 살짝 느린 거 조정하기)
+// - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
 // - 퍼즐 모드 제작
 
 
@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
     //kind 0, 1
     int[,,] board; //0: 검은색, 1: 흰색, 5: 없음
     int[,,] initBoard; //파일을 불러왔을 초기 상태의 보드
+    int[,,] masterTempBoard; //게임이 종료되지 않은 상태의 보드를 저장할 보드
     int s, u, v; //보드 칸(s: 면, u: 세로, v: 가로)
     int[,] adjSide; //3차원 보드의 한 면당 인접한 면을 표시
 
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
     int maxFlip; //말 뒤집기 최대 횟수(점수용)
     int realMaxFlip; //실제로 한 스테이지에서 최대로 뒤집을 수 있는 횟수
     int minFlip; //스테이지를 클리어하기 위한 최소 뒤집기 횟수
+    int[] masterTempFlip; //마스터 모드의 남은 플립 수를 임시로 담을 변수
 
     Vector3[] stdPos; //위치를 정한 회전 오브젝트와 면 오브젝트의 초깃값을 저장
     Quaternion[] stdRot; //각도를 정한 회전 오브젝트와 면 오브젝트의 초깃값을 저장
@@ -106,6 +108,8 @@ public class GameManager : MonoBehaviour
         finalClear = false;
         isCreatorMode = false;
         flipCount = 0;
+        masterTempBoard = null;
+        masterTempFlip = new int[4];
         queHorse = new Queue<Basic_horse>[4];
         for (int i = 0; i < 4; i++)
             queHorse[i] = new Queue<Basic_horse>();
@@ -121,41 +125,8 @@ public class GameManager : MonoBehaviour
 
     //시작할 스테이지, 스테이지 종류를 입력받아 스테이지 실행
     public void GameStart(int curstage, int kind) {
-        curKind = kind;
-        ReadStageFile(curstage, kind);
-        stage[kind] = curstage;
-        flipCount = 0;
-
-        //게임 시작 직전에는 UI 버튼을 비활성화
-        UI_Btn_OnOff(false);
-
-        if (!finalClear)
-        {
-            CreateHorse();
-            DefineHorsePos();
-            StartCoroutine(PlaceHorse(createHorsePos));
-            uiManger.ingameMenu.flipCount.text = "";
-            uiManger.ingameMenu.flipCount.text += flipCount;
-            uiManger.ingameMenu.maxFlipCount.text = "";
-            uiManger.ingameMenu.maxFlipCount.text += realMaxFlip - flipCount;
-            uiManger.BGMPlay(1);
-        }
-        else
-        {
-            uiManger.ingameMenu.flipCount.gameObject.SetActive(false);
-            uiManger.ingameMenu.maxFlipCount.gameObject.SetActive(false);
-            uiManger.ingameMenu.stageTitle.gameObject.SetActive(false);
-            uiManger.ingameMenu.allClearTitle.gameObject.SetActive(true);
-            //MasterGame();
-        }
-    }
-
-    #region Horse_Create_and_Delete
-
-    //변수에 저장된 텍스트 파일을 읽어 보드 입력 (맵 파일을 드래그 앤 드롭으로 받음)
-    void ReadStageFile(int stage, int kind) {
         List<TextAsset> textFile = stage0Txt;
-
+        
         switch (kind) {
             case 0:
                 textFile = stage0Txt;
@@ -171,15 +142,60 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        if (textFile.Count <= stage) {
-            Debug.Log("파일 없음");
+        if (textFile.Count <= curstage) {
             finalClear = true;
-            return;
         }
+        else finalClear = false;
+
+        curKind = kind;
+        stage[kind] = curstage;
+        flipCount = 0;
+
+        //게임 시작 직전에는 UI 버튼을 비활성화
+        UI_Btn_OnOff(false);
+
+        if (!finalClear)
+        {          
+            ReadStageFile(curstage, textFile);
+            CreateHorse();
+            DefineHorsePos();
+            StartCoroutine(PlaceHorse(createHorsePos));
+            uiManger.ingameMenu.masterGroup.SetActive(false);
+            uiManger.ingameMenu.resetBtn.gameObject.SetActive(true);
+            // uiManger.ingameMenu.flipCount.gameObject.SetActive(true);
+            // uiManger.ingameMenu.flipCount.text = "" + flipCount;
+            uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);       
+        }
+        else
+        {
+            uiManger.ingameMenu.stageTitle.text = " MASTER";
+            uiManger.ingameMenu.resetBtn.gameObject.SetActive(false);
+            uiManger.ingameMenu.masterGroup.SetActive(true);
+            uiManger.ingameMenu.masterScore.text = "0";
+            // uiManger.ingameMenu.flipCount.gameObject.SetActive(false);
+            StartCoroutine(MasterGame());
+        }
+        uiManger.BGMPlay(1);
+    }
+
+    #region Horse_Create_and_Delete
+
+    //변수에 저장된 텍스트 파일을 읽어 보드 입력 (맵 파일을 드래그 앤 드롭으로 받음)
+    void ReadStageFile(int stage, List<TextAsset> textFile) {
 
         uiManger.ingameMenu.stageTitle.text = "STAGE " + (stage + 1);
 
-        StringReader strRea = new StringReader(textFile[stage].text);
+        FiletoBoard(textFile[stage].text);
+        Define_AdjacentSide();
+
+        //보드의 말 수 * 2 + 최소 플립
+        maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
+        realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
+    }
+
+    //텍스트 파일의 정보를 보드에 입력
+    void FiletoBoard(String txtFile){
+        StringReader strRea = new StringReader(txtFile);
         bool first = true;
         int uIndex = 0, sIndex = 0;
 
@@ -200,7 +216,7 @@ public class GameManager : MonoBehaviour
                 //첫 번째 줄에는 행, 열의 수를 입력
                 int start = 0;
                 first = false;
-                switch (kind) {
+                switch (curKind) {
                     //2차원
                     case 0:
                     case 1:
@@ -236,12 +252,6 @@ public class GameManager : MonoBehaviour
 
             }
         }
-
-        Define_AdjacentSide();
-
-        //보드의 말 수 * 2 + 최소 플립
-        maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
-        realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
     }
 
     //3차원에 한 면에 인접한 면이 무엇인지 정의
@@ -365,33 +375,80 @@ public class GameManager : MonoBehaviour
     #region MasterMode
 
     //모든 스테이지를 클리어했을 때, 플레이할 수 있는 모드
-    void MasterGame(){
-        //랜덤 보드 생성
+    IEnumerator MasterGame(bool next = false){
+        //이전 스테이지를 클리어하고 다음 스테이지를 진행하려는 상황일 때
+        if(next){
+            CreateMasterBoard(PlayerData.Instance.data.masterCurrentClear[curKind]);
+            Debug.Log("MasterGame next Start");
+        }
+        //이전에 진행한 스테이지를 불러올 때
+        else if(PlayerData.Instance.data.isMasterDoing[curKind] && !next){
+            // if(masterTempBoard == null)
+            //     MasterLoad();
+            // else{
+            //     BoardCopy(board, masterTempBoard);
+            //     realMaxFlip = masterTempFlip[curKind];
+            // }
+            MasterLoad();
+            uiManger.ingameMenu.masterScore.text = "" + PlayerData.Instance.data.masterCurrentScore[curKind];
+            Debug.Log($"MasterGame Doing Start: a: {PlayerData.Instance.data.isMasterDoing[curKind]}, b: !next");
+        }
+        //처음부터 시작
+        else{
+            realMaxFlip = 0;
+            StartCoroutine(MasterFlipRise(5));
+            CreateMasterBoard(PlayerData.Instance.data.masterCurrentClear[curKind]);
+            Debug.Log("MasterGame first Start");
+        }
+        
+        uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;  
+        yield return new WaitForSeconds(0.1f);
+        CreateHorse();
+        DefineHorsePos();
+        StartCoroutine(PlaceHorse(createHorsePos));
+
         //초기 플립 횟수(s * u * v * 2)
-        //1번 플립 할때마다 score += 5;
-        //스테이지 클리어 시 마다 [{플립 += (s * u * v)}, {score += (s * u * v)}]
-        //초기화 버튼 없음
+        //스테이지 클리어 시 마다 [{다음 스테이지 플립 += (s * u * v)}, {score += (s * u * v)}]
         //플립이 0이 될 때까지 무한정 실행
 
+        PlayerData.Instance.data.isMasterDoing[curKind] = true;
+        MasterSave();
+    }
+
+    //현재 클리어한 스테이지 수에 따른 난이도 설정
+    void DefineMasterLevel(int curClear){
+        switch(curKind){
+            case 0:
+                break;
+
+            case 1:
+                break;
+            
+            case 2:
+                break;
+        }
     }
 
     //마스터 모드의 랜덤 보드를 생성
     void CreateMasterBoard(int curClear){
         int boardWhiteCount, boardBlankCount; //랜덤 보드의 흰색, 공백의 개수
         int x,y,z;
+        int[,] flipCdn;
         switch(curKind){
             case 0:
-                //보드 칸 계산
+                //스테이지에 따른 보드 생성(텍스트 파일 열린 거데로 )
                 if(curClear < 40){
-                    u = curClear/4 % 5 + 4;
+                    u = 4;
                 }
                 else u = 6;
                 s = 1;
                 v = u;
                 
                 board = new int[s, u, v];
-                boardBlankCount = UnityEngine.Random.Range(0, 7);
-                boardWhiteCount = UnityEngine.Random.Range(2, (u*v) - boardBlankCount);
+                boardBlankCount = UnityEngine.Random.Range(0, (s*u*v) / 3);
+                //boardWhiteCount = UnityEngine.Random.Range(u*2, (s*u*v) - boardBlankCount - u);
+                boardWhiteCount = 3;
+                flipCdn = new int[boardWhiteCount, 3];
 
                 //최초엔 0으로 보드 초기화
                 for(int i=0; i<s; i++){
@@ -407,21 +464,237 @@ public class GameManager : MonoBehaviour
                     do{
                         x = UnityEngine.Random.Range(0, u);
                         y = UnityEngine.Random.Range(0, v);
+                        z = UnityEngine.Random.Range(0, s);
                     }while(board[0, x, y] == 5);
                     board[0, x, y] = 5;
                 }
 
-                //보드에 흰색 채우기
+                //보드에 플립할 말 정하기
+                //말 리스트 채우기
                 for(int i=0; i<boardWhiteCount; i++){
                     do{
                         x = UnityEngine.Random.Range(0, u);
                         y = UnityEngine.Random.Range(0, v);
-                    }while(board[0, x, y] == 5 || board[0,x,y] == 1);
-                    board[0, x, y] = 1;
+                    }while(board[0, x, y] == 5 || board[0,x,y] == 3);
+                    //좌표의 중복 제거를 위해 임시로 보드에 3을 입력
+                    board[0,x,y] = 3;
+                    flipCdn[i,0] = 0;
+                    flipCdn[i,1] = x;
+                    flipCdn[i,2] = y;
+                }
+
+                for(int i=0; i<boardWhiteCount; i++){
+                    board[flipCdn[i,0], flipCdn[i,1], flipCdn[i,2]] = 0;
+                }
+
+                //리스트에 지정한 데로 플립
+                for(int i=0; i<boardWhiteCount; i++){
+                    MasterBoardFlip(flipCdn[i,1], flipCdn[i,2], flipCdn[i,0]);
                 }
 
                 break;
         }
+    }
+
+    //랜덤 보드를 생성하기 위한 플립 함수
+    void MasterBoardFlip(int hu, int hv, int hs){
+        int tu, tv, ts; //임시로 담을 변수
+
+        board[hs,hu,hv] = BoardFlipHorse(board[hs,hu,hv]); //지정한 말 뒤집기
+
+        //지정한 말 주변을 뒤집기
+        switch (curKind) {
+                case 0:
+                case 1:
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        tu = hu + i;
+                        for (int j = -1; j <= 1; j++)
+                        {   
+                            tv = hv + j;
+                            if(i == j){
+                                if(i==0 || curKind == 1) continue;            
+                            }
+                            if (tu >= 0 && tu < u && tv >= 0 && tv < v && board[hs, tu, tv] != 5)
+                            {
+                                board[hs, tu, tv] = BoardFlipHorse(board[hs, tu, tv]);
+                            }
+
+                        }
+                    }
+                    break;
+
+                case 2:
+                    //adj 3면
+                    if (s == 6 && hv == v - 1) {
+                        ts = adjSide[hs, 3];
+                        tv = v - 1;
+                        for (int l = hu; l< hu+3; l++) {
+                            tu = u - l;
+                            if (tu >= 0 && tu < u && board[ts, tu, tv] != 5) {
+                                board[ts, tu, tv] = BoardFlipHorse(board[ts, tu, tv]);
+                            }
+                        }
+                    }
+
+                    //adj 0 면
+                    if (hu == 0)
+                    {
+                        ts = adjSide[hs, 0];
+                        tv = 0;
+                        for (int l = -1; l < 2; l++)
+                        {
+                            tu = hv + l;
+                            if (tu >= 0 && tu < u && board[ts, tu, tv] != 5) {
+                                board[ts, tu, tv] = BoardFlipHorse(board[ts, tu, tv]);
+                            }
+                            
+                        }
+                    }
+                    
+                    //s면
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            tu = hu + i;
+                            tv = hv + j;
+                            if (tu == hu && tv == hv) continue;
+                            if (tu >= 0 && tu < u && tv >= 0 && tv < v && board[hs, tu, tv] != 5)
+                            {
+                                board[hs, tu, tv] = BoardFlipHorse(board[hs, tu, tv]);
+                            }
+
+                        }
+                    }
+
+                    //adj1 면
+                    if (hv == 0) {
+                        ts = adjSide[hs, 1];
+                        tu = 0;
+                        for (int r = -1; r < 2; r++)
+                        {
+                            tv = hu + r;
+                            if (tv >= 0 && tv< v && board[ts, tu, tv] != 5) {    
+                                board[ts, tu, tv] = BoardFlipHorse(board[ts, tu, tv]);
+                            }
+                        }
+                    }
+
+                    //adj 2면
+                    if (s == 6 && hu == u - 1)
+                    {
+                        ts = adjSide[hs, 2];
+                        tu = u - 1;
+                        for (int l = hv; l < hv + 3; l++)
+                        {
+                            tv = v - l;
+                            if (tv >= 0 && tv < v && board[ts, tu, tv] != 5)
+                            {
+                                board[ts, tu, tv] = BoardFlipHorse(board[ts, tu, tv]);
+                            }
+                        }
+                    }
+                    break;
+                case 3:
+                    break;
+            }
+    }
+
+    //보드 생성에만 실행하는 플립 함수
+    int BoardFlipHorse(int curState){
+        if (curState == 1)
+            curState = 0;
+        
+        else
+            curState = 1;
+        
+        return curState;
+    }
+
+    //마스터 모드의 한 스테이지 클리어 시 호출
+    IEnumerator MasterClear(){
+        StartCoroutine(DeleteHorse());
+        Ingame_Lobby_Setting_OnOff(false);
+
+        //플레이어 데이터 업데이트
+        PlayerData.Instance.data.masterCurrentClear[curKind]++;
+        StartCoroutine(MasterFlipRise(5));
+        StartCoroutine(MasterScoreRise(5));
+
+        MasterSave();
+
+        //다음 스테이지 시작
+        yield return new WaitForSeconds(1);
+        StartCoroutine(MasterGame(true));
+    }
+
+    //마스터 모드 스테이지에서 실패했을 때 호출
+    void MasterFail(){
+        StartCoroutine(StageFail());
+        PlayerData.Instance.data.isMasterDoing[curKind] = false;
+        PlayerData.Instance.data.masterCurrentClear[curKind] = 0;
+        PlayerData.Instance.data.masterCurrentScore[curKind] = 0;
+        MasterSave();
+        masterTempBoard = null;
+    }
+
+    //마스터 모드에서 점수가 올라갈 때 호출
+    IEnumerator MasterScoreRise(int masterScore){
+        PlayerData.Instance.data.masterCurrentScore[curKind] += masterScore;
+        if(PlayerData.Instance.data.masterMaxScore[curKind] < PlayerData.Instance.data.masterCurrentScore[curKind]) 
+            PlayerData.Instance.data.masterMaxScore[curKind] = PlayerData.Instance.data.masterCurrentScore[curKind];
+        
+        //점수 올라가는 애니메이션
+        for(int i=1; i<=masterScore; i++){
+            uiManger.ingameMenu.masterScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    //마스터 모드의 플립이 오르는 애니메이션
+    IEnumerator MasterFlipRise(int masterFlip){
+        realMaxFlip += masterFlip;
+        for(int i=1; i<=masterFlip; i++){
+            uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - masterFlip + i);
+            yield return new WaitForSeconds(1.1f/masterFlip);
+        }
+    }
+
+    //현재 진행 중인 마스터 모드의 게임 상태를 백업
+    void MasterSave(){
+        //보드의 정보를 텍스트 파일로 저장
+        string path = "Assets/Resources/MasterModeStage/";
+        SaveStage(path, "MasterStage" + curKind, realMaxFlip);
+        
+        //마스터 모드의 정보를 Json 파일로 저장
+        PlayerData.Instance.SaveData();
+
+        //텍스트 파일이 제대로 저장되지 않았을 경우 변수에 저장
+        if(masterTempBoard == null)
+            masterTempBoard = new int[s,u,v];
+        BoardCopy(masterTempBoard, board);
+        masterTempFlip[curKind] = realMaxFlip;
+        //----------------------------------------------------------------------------------삭제 후보
+    }
+
+    //데스크탑 실행에만 사용(모바일 시에는 삭제)
+    void BoardCopy(int[,,] first, int[,,] second){
+        for(int i=0; i<s; i++){
+            for(int j=0; j<u; j++){
+                for(int k=0; k<v; k++){
+                    first[i,j,k] = second[i,j,k];
+                }
+            }
+        }
+    }
+    //----------------------------------------------------------------------------------삭제 후보
+
+    //백업된 마스터 모드의 게임 상태를 불러오기
+    void MasterLoad(){
+        TextAsset masterFile = Resources.Load("MasterModeStage/MasterStage" + curKind) as TextAsset;
+        FiletoBoard(masterFile.text);
+        realMaxFlip = minFlip;
     }
 
     #endregion
@@ -761,11 +1034,19 @@ public class GameManager : MonoBehaviour
             int lu, lv, ls; //가장 마지막에 실행된 애니메이션을 확인하는 변수
 
             isFlip = true;
-            flipCount++;
-            uiManger.ingameMenu.flipCount.text = "";
-            uiManger.ingameMenu.flipCount.text += flipCount;
-            uiManger.ingameMenu.maxFlipCount.text = "";
-            uiManger.ingameMenu.maxFlipCount.text += realMaxFlip - flipCount;
+
+            //마스터 모드
+            if(finalClear){
+                realMaxFlip--;
+                StartCoroutine(MasterScoreRise(1));
+                uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;           
+            }
+            else{
+                flipCount++;
+                // uiManger.ingameMenu.flipCount.text = "";
+                // uiManger.ingameMenu.flipCount.text += flipCount;
+                uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);
+            }
 
             Debug.Log($"s: {hs}, u: {hu}, v: {hv}");
 
@@ -775,7 +1056,7 @@ public class GameManager : MonoBehaviour
             ls = hs;
             yield return new WaitForSeconds(0.1f);
 
-            //뒤집은 말 주변의 말들도 뒤집기(스테이지 종류에 따라 로직 변경)
+            //지정한 말 주변의 말들도 뒤집기(스테이지 종류에 따라 로직 변경)
             switch (curKind) {
                 case 0:
                 case 1:
@@ -799,23 +1080,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
                     break;
-                // case 1:
-                //     for(int i=-1; i<=1; i++){
-                //         tu = hv + i;
-                //         for(int j=-1; j<=1; j++){
-                //             if(i == j) continue;
-                //             tv = hv + j;
-                //             if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
-                //             {
-                //                 board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
-                //                 lu = tu;
-                //                 lv = tv;
-                //                 yield return new WaitForSeconds(0.1f);
-                //             }
-                //         }
 
-                //     }
-                //     break;
                 case 2:
                     //adj 3면
                     if (s == 6 && hv == v - 1) {
@@ -919,10 +1184,16 @@ public class GameManager : MonoBehaviour
             {
                 isFlip = false;
                 Debug.Log("Clear!");
-                StartCoroutine(StageClear());
+                if(finalClear) StartCoroutine(MasterClear());
+                else StartCoroutine(StageClear());
             }
-            else if (IsFail()) StartCoroutine(StageFail());
+            else if (IsFail()){
+                if(finalClear) MasterFail();
+                else StartCoroutine(StageFail());
+            } 
             
+            if(finalClear) MasterSave();
+
             //가장 마지막에 실행한 애니메이션이 끝나야 다음 애니메이션 실행 가능
             StartCoroutine(CheckAnim(lu,lv,ls));
         }
@@ -1015,6 +1286,7 @@ public class GameManager : MonoBehaviour
     public bool IsFail()
     {
         if (flipCount >= realMaxFlip) return true;
+        else if(realMaxFlip == 0) return true;
         else return false;
     }
 
@@ -1046,14 +1318,18 @@ public class GameManager : MonoBehaviour
     public void GenerateStage() 
     {
         Debug.Log("Generate: " + stageName.text);
-        string path = "Assets/Stages/Stages" + curKind + "/" + "stage";
+        string path = "Assets/Stages/Stages" + curKind + "/";
+        SaveStage(path, "stage" + stageName.text, flipCount);
+    }
+
+    //텍스트 파일 저장
+    void SaveStage(string path, string fileName, int add){
+        StreamWriter sw = new StreamWriter(path + fileName + ".txt");;
         string temp;
-        StreamWriter sw;
-        sw = new StreamWriter(path + stageName.text + ".txt");
         if (curKind <= 1)
-            sw.WriteLine(u + "," + v + "," + flipCount);
+            sw.WriteLine(u + "," + v + "," + add);
         else
-            sw.WriteLine(s + "," + u + "," + v + "," + flipCount);
+            sw.WriteLine(s + "," + u + "," + v + "," + add);
         
         for (int i = 0; i < s; i++) {
             for (int j = 0; j < u; j++) {
@@ -1124,7 +1400,7 @@ public class GameManager : MonoBehaviour
 
 
         flipCount = 0;
-        uiManger.ingameMenu.flipCount.text = "" + flipCount;
+        //uiManger.ingameMenu.flipCount.text = "" + flipCount;
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
@@ -1180,7 +1456,11 @@ public class GameManager : MonoBehaviour
         uiManger.clearMenu.backBtn.interactable = on;
         uiManger.clearMenu.nextBtn.interactable = on;
         uiManger.ingameMenu.resetBtn.interactable = on;
-        uiManger.ingameMenu.lobbyBtn.interactable = on;
+        Ingame_Lobby_Setting_OnOff(on);
+    }
+
+    void Ingame_Lobby_Setting_OnOff(bool on){
+    uiManger.ingameMenu.lobbyBtn.interactable = on;
         uiManger.ingameMenu.settingBtn.interactable = on;
     }
 

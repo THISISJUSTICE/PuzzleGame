@@ -10,7 +10,9 @@ public class IngameSetting : MonoBehaviour
     //인게임 UI
     public bool isScroll;
     public Button resetBtn, settingBtn, lobbyBtn; //리셋 버튼, 세팅 버튼, 로비 화면 이동 버튼
-    public Text flipCount, maxFlipCount, stageTitle, allClearTitle; //뒤집은 횟수, 최대 횟수, 제목, 올클리어 제목
+    public Text maxFlipCount, stageTitle, masterScore; //최대 횟수, 제목, 마스터 모드 점수
+
+    public GameObject masterGroup; //마스터 모드 UI 그룹
     
     //오브젝트 회전 스크롤
     public GameObject scroll3Dobject;
@@ -31,21 +33,20 @@ public class IngameSetting : MonoBehaviour
     public void Init()
     {
         //인게임 UI
-        flipCount = transform.GetChild(0).GetComponent<Text>();
-        maxFlipCount = transform.GetChild(1).GetComponent<Text>();
-        stageTitle = transform.GetChild(2).GetComponent<Text>();
-        allClearTitle = transform.GetChild(3).GetComponent<Text>();
-        allClearTitle.gameObject.SetActive(false);
-        resetBtn = transform.GetChild(4).GetComponent<Button>();
-        settingBtn = transform.GetChild(5).GetComponent<Button>();
-        lobbyBtn = transform.GetChild(6).GetComponent<Button>();
+        maxFlipCount = transform.GetChild(0).GetComponent<Text>();
+        stageTitle = transform.GetChild(1).GetComponent<Text>();
+        resetBtn = transform.GetChild(2).GetComponent<Button>();
+        settingBtn = transform.GetChild(3).GetComponent<Button>();
+        lobbyBtn = transform.GetChild(4).GetComponent<Button>();
+        masterGroup = transform.GetChild(5).gameObject;
+        masterScore = masterGroup.transform.GetChild(1).GetComponent<Text>();
         
         //오브젝트 회전 스크롤
-        scroll3Dobject = transform.GetChild(7).gameObject;
+        scroll3Dobject = transform.GetChild(6).gameObject;
         vScroll = scroll3Dobject.transform.GetChild(1).GetComponent<Scrollbar>();
 
         //인게임 내 세팅 UI(카메라, 소리 세팅)
-        ingameSettingMenu = transform.GetChild(8).gameObject;
+        ingameSettingMenu = transform.GetChild(7).gameObject;
         cameraReset = ingameSettingMenu.transform.GetChild(0).GetChild(0).GetComponent<Button>();
         cameraUpBtn = ingameSettingMenu.transform.GetChild(0).GetChild(1).GetComponent<Button>();
         cameraDownBtn = ingameSettingMenu.transform.GetChild(0).GetChild(2).GetComponent<Button>();

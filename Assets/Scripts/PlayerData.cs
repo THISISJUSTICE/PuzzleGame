@@ -44,11 +44,12 @@ public class PlayerData : MonoBehaviour
         public List<int> stage2Score; //2스테이지 별 클리어 시 점수
         public List<int> stage3Score; //3스테이지 별 클리어 시 점수
 
-        // public int[] masterCurrentClear; //마스터 모드의 현재 클리어한 횟수
-        // public int[] masterMaxScore; //마스터 모드에서 지금까지 최대로 얻은 점수
-        // public int[] masterCurrentScore; //마스터 모드에서 현재 얻은 점수
-        // public int[] masterCurrentFlip; //마스터 모드에서 현재 남은 플립 횟수
-        //보드도 저장해야하는데...
+        public int[] masterCurrentClear; //마스터 모드의 현재 클리어한 횟수
+        public int[] masterMaxScore; //마스터 모드에서 지금까지 최대로 얻은 점수
+        public int[] masterCurrentScore; //마스터 모드에서 현재 얻은 점수
+
+        public bool[] isMasterDoing; //진행 중인 마스터 모드가 있는지 판단
+        //보드, 현재 남은 플립 횟수는 텍스트 파일에 저장
 
         public bool soundCk;
         public float soundVolume;
@@ -59,6 +60,11 @@ public class PlayerData : MonoBehaviour
         {
             stageTotalScore = new int[4];
             clearStage = new int[4];
+            masterCurrentClear = new int[4];
+            masterMaxScore = new int[4];
+            masterCurrentScore = new int[4];
+            isMasterDoing = new bool[4];
+
             stage0Flip = new List<int>();
             stage1Flip = new List<int>();
             stage2Flip = new List<int>();
@@ -118,6 +124,10 @@ public class PlayerData : MonoBehaviour
         {
             data.clearStage[i] = -1;
             data.stageTotalScore[i] = 0;
+            data.masterCurrentClear[i] = 0;
+            data.masterCurrentScore[i] = 0;
+            data.masterMaxScore[i] = 0;
+            data.isMasterDoing[i] = false;
         }
         data.userName = "Google ID";
         data.rank = 1; //최초엔 총 인원수 +1

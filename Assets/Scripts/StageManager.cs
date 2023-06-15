@@ -13,6 +13,8 @@ public class StageManager : MonoBehaviour
 
     public int kind; //스테이지 종류(0: Quadangle 1: Hexagon, 2: Cube, 3: Hive) (밖에서 입력)
     public StageData[] stageBtns; //생성한 스테이지 버튼
+
+    public StageData masterStageBtn; //마스터 모드 스테이지 버튼
     int totalStageCount; //총 스테이지의 수
 
     private void Awake()
@@ -35,12 +37,21 @@ public class StageManager : MonoBehaviour
     //스테이지 수를 바탕으로 스테이지 버튼 생성, 적절한 위치에 배치
     void CreateBtns() {
         RectTransform tempRect;
-        for (int i = 0; i < totalStageCount; i++)
-        {
-            stageBtns[i] = Instantiate(stageBtn, transform.position, transform.rotation).GetComponent<StageData>();
-            stageBtns[i].transform.parent = content.gameObject.transform;
-            stageBtns[i].Init(kind, i, gameManager);
-            tempRect = stageBtns[i].GetComponent<RectTransform>();
+        for (int i = 0; i <= totalStageCount; i++)
+        {   
+            if(i < totalStageCount){
+                stageBtns[i] = Instantiate(stageBtn, transform.position, transform.rotation).GetComponent<StageData>();
+                stageBtns[i].transform.parent = content.gameObject.transform;
+                stageBtns[i].Init(kind, i, gameManager);
+                tempRect = stageBtns[i].GetComponent<RectTransform>();
+            }
+            //마스터 모드 스테이지
+            else{
+                masterStageBtn = Instantiate(stageBtn, transform.position, transform.rotation).GetComponent<StageData>();
+                masterStageBtn.transform.parent = content.gameObject.transform;
+                masterStageBtn.Init(kind, 1000, gameManager);
+                tempRect = masterStageBtn.GetComponent<RectTransform>();
+            }
             tempRect.anchoredPosition = new Vector2(200 + (300 * (i%4)), -200 - (300 * (i / 4)));
             tempRect.localScale = new Vector3(1, 1, 1);
         }
@@ -66,6 +77,11 @@ public class StageManager : MonoBehaviour
             }
         }
 
+        //마스터 모드 버튼
+        if(PlayerData.Instance.data.clearStage[kind] == totalStageCount - 1){
+            masterStageBtn.InputData(false, false,0, PlayerData.Instance.data.masterMaxScore[kind]);
+        }
+
         //Event
     }
 
@@ -81,6 +97,11 @@ public class StageManager : MonoBehaviour
             if (stageBtns[curStage + 1].isLock) {
                 stageBtns[curStage + 1].IndicateOpen();
             }
+        }
+        //마스터 모드 잠금 해제
+        else {
+            if(masterStageBtn.isLock)
+                masterStageBtn.IndicateOpen();
         }
 
         //플레이어 데이터 최신화
