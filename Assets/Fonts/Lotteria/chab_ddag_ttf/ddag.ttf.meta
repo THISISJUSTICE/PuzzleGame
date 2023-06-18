@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 4ccdab00b88956241bf8c02062a6aff1
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - LOTTERIA DDAG
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 9a3a6c67dd2cf24448b119731073df84, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

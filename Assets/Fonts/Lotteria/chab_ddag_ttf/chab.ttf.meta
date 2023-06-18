@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 5f9faf393ddeb98429ff69f3b459c568
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - LOTTERIA CHAB
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 26663b53359ee6c4689872e8397a7399, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

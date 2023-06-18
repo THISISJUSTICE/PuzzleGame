@@ -10,13 +10,13 @@ public class IngameSetting : MonoBehaviour
     //인게임 UI
     public bool isScroll;
     public Button resetBtn, settingBtn, lobbyBtn; //리셋 버튼, 세팅 버튼, 로비 화면 이동 버튼
-    public Text maxFlipCount, stageTitle, masterScore; //최대 횟수, 제목, 마스터 모드 점수
+    public Text maxFlipCount, stageTitle, masterScore, masterMaxScore; //최대 횟수, 제목, 마스터 모드 점수, 마스터 모드 최고 점수
 
-    public GameObject masterGroup; //마스터 모드 UI 그룹
+    public GameObject masterGroup, crownIcon; //마스터 모드 UI 그룹, 최고 점수 옆의 왕관 아이콘
     
     //오브젝트 회전 스크롤
     public GameObject scroll3Dobject;
-    public Scrollbar vScroll; //세로 스크롤
+    public Scrollbar vScroll, hScroll; //세로 스크롤, 가로 스크롤
 
     //인게임 내 세팅 UI(카메라, 소리 세팅)
     public GameObject ingameSettingMenu; //인게임 세팅 메뉴
@@ -40,10 +40,13 @@ public class IngameSetting : MonoBehaviour
         lobbyBtn = transform.GetChild(4).GetComponent<Button>();
         masterGroup = transform.GetChild(5).gameObject;
         masterScore = masterGroup.transform.GetChild(1).GetComponent<Text>();
+        crownIcon = masterGroup.transform.GetChild(2).gameObject;
+        masterMaxScore = masterGroup.transform.GetChild(3).GetComponent<Text>();
         
         //오브젝트 회전 스크롤
         scroll3Dobject = transform.GetChild(6).gameObject;
         vScroll = scroll3Dobject.transform.GetChild(1).GetComponent<Scrollbar>();
+        hScroll = scroll3Dobject.transform.GetChild(0).GetComponent<Scrollbar>();
 
         //인게임 내 세팅 UI(카메라, 소리 세팅)
         ingameSettingMenu = transform.GetChild(7).gameObject;

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // - 세팅 화면(공유 버튼)
-// - 세팅 화면이 켜져있을 땐, 메인 화면 UI가 눌리지 않도록 하기
 
 public class UIManager : MonoBehaviour
 {
@@ -157,10 +156,12 @@ public class UIManager : MonoBehaviour
     AudioSource btnSound; //버튼 누르는 소리
     AudioSource clearSound; //클리어 시 발생하는 소리
     AudioSource clearStarSound; //클리어 시 별이 떨어지는 소리
+    
     AudioSource achieve100Sound; //만점 시 발생하는 소리
     AudioSource failSound; //실패 시 발생하는 소리
     AudioSource slideUISound; //슬라이드 UI가 값을 변경할 때 나는 소리
-
+    public AudioSource masterClearSound; //마스터 모드에서 클리어 시 발생하는 소리
+    public AudioSource scoreSound; //점수가 올라갈 때마다 발생하는 소리
     //다른 곳에
     public AudioSource objectRotateSound; // 오브젝트가 회전하면서 나는 소리
 
@@ -243,6 +244,7 @@ public class UIManager : MonoBehaviour
 
         lobbyMenu.lobbyMenu.SetActive(false);
         ingameMenu.ingameSettingMenu.SetActive(false);
+        ingameMenu.masterGroup.SetActive(false);
         ingameMenu.gameObject.SetActive(false);
         settingMenu.settingMenu.SetActive(false);
         clearMenu.clearMenu.SetActive(false);
@@ -261,6 +263,8 @@ public class UIManager : MonoBehaviour
         achieve100Sound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetChild(2).GetComponent<AudioSource>();
         failSound = failMenu.failMenu.GetComponent<AudioSource>();
         gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
+        masterClearSound = ingameMenu.masterGroup.GetComponent<AudioSource>();
+        scoreSound = ingameMenu.masterScore.GetComponent<AudioSource>();
 
         //bgm
         bgm_Player.bgmAudio = bgm_Player.GetComponent<AudioSource>();
@@ -354,6 +358,7 @@ public class UIManager : MonoBehaviour
 
         //오브젝트 회전
         ingameMenu.vScroll.onValueChanged.AddListener(gameManager.RotateVertical3Dobject);
+        ingameMenu.hScroll.onValueChanged.AddListener(gameManager.RotateHorizontal3Dobject);
 
         //인게임 세팅 메뉴
         ingameMenu.cameraReset.onClick.AddListener(gameManager.CameraReset);

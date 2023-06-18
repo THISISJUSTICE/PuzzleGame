@@ -12,13 +12,13 @@ using UnityEngine.UI;
 // - 클리어, 실패 UI에서 닫기 버튼 눌렀을 때, 로비와 재시작 사이의 오류 수정(로딩 UI 하나 더 만들어서 해결하기)
 
 
-// - 마스터 모드용 사운드 추가하기(클리어, 점수 올라갈 때)
-// - UI 적절히 추가
-// - 3차원 오브젝트 가로 회전 축도 만들기 (자식 하나 더 만들어서 축 생성)
+// - **UI 폰트 수정
+// - **UI 디자인 다시 꾸미기
+// - **메인 화면 스테이지 버튼 왼쪽엔 그림, 오른쪽엔 레벨과 점수 표시
+
+// - 세팅 화면이 켜져있을 땐, 메인 화면 UI가 눌리지 않도록 하기
 
 
-// - UI 폰트 수정
-// - UI 디자인 다시 꾸미기 + 메인 UI 스테이지 버튼에 점수, 레벨 표시
 // - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
 // - 퍼즐 모드 제작
 
@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            uiManger.ingameMenu.stageTitle.text = " MASTER";
+            uiManger.ingameMenu.stageTitle.text = "MASTER";
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(false);
             uiManger.ingameMenu.masterGroup.SetActive(true);
             uiManger.ingameMenu.masterScore.text = "0";
@@ -186,7 +186,6 @@ public class GameManager : MonoBehaviour
     //변수에 저장된 텍스트 파일을 읽어 보드 입력 (맵 파일을 드래그 앤 드롭으로 받음)
     void ReadStageFile(int stage, List<TextAsset> textFile)
     {
-
         uiManger.ingameMenu.stageTitle.text = "STAGE " + (stage + 1);
 
         FiletoBoard(textFile[stage].text);
@@ -414,6 +413,8 @@ public class GameManager : MonoBehaviour
         }
 
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
+        uiManger.ingameMenu.masterMaxScore.text = "" + PlayerData.Instance.data.masterMaxScore[curKind];
+        MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
         yield return new WaitForSeconds(0.1f);
         CreateHorse();
         DefineHorsePos();
@@ -421,6 +422,11 @@ public class GameManager : MonoBehaviour
 
         PlayerData.Instance.data.isMasterDoing[curKind] = true;
         MasterSave();
+    }
+
+    void MasterMaxCrownMove(float width){
+        RectTransform imageRect = uiManger.ingameMenu.crownIcon.GetComponent<RectTransform>();
+        imageRect.localPosition = new Vector2(600 - width, imageRect.localPosition.y);
     }
 
     //현재 클리어한 스테이지 수에 따른 난이도 설정
@@ -765,7 +771,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(DeleteHorse());
         Ingame_Lobby_Setting_OnOff(false);
 
-        //간단한 클리어 사운드 재생
+        uiManger.masterClearSound.Play();
 
         //플레이어 데이터 업데이트
         int[] mastercurLevel = DefineMasterLevel(PlayerData.Instance.data.masterCurrentClear[curKind]);
@@ -795,14 +801,22 @@ public class GameManager : MonoBehaviour
     //마스터 모드에서 점수가 올라갈 때 호출
     IEnumerator MasterScoreRise(int masterScore)
     {
+        bool isMaxAnim = false;
         PlayerData.Instance.data.masterCurrentScore[curKind] += masterScore;
-        if (PlayerData.Instance.data.masterMaxScore[curKind] < PlayerData.Instance.data.masterCurrentScore[curKind])
+        if (PlayerData.Instance.data.masterMaxScore[curKind] < PlayerData.Instance.data.masterCurrentScore[curKind]) {
             PlayerData.Instance.data.masterMaxScore[curKind] = PlayerData.Instance.data.masterCurrentScore[curKind];
+            isMaxAnim = true;
+        }
 
         //점수 올라가는 애니메이션
         for (int i = 1; i <= masterScore; i++)
         {
             uiManger.ingameMenu.masterScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
+            if(isMaxAnim){
+                uiManger.ingameMenu.masterMaxScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
+                MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
+            }
+            if(i > 1) uiManger.scoreSound.Play();
             yield return new WaitForSeconds(1.1f / masterScore);
         }
     }
@@ -1604,10 +1618,10 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PlaceHorse(createHorsePos));
     }
 
-    /*public void RotateHorizontal3Dobject(float value) 
+    public void RotateHorizontal3Dobject(float value) 
     {
-        rotateObject.rotation = Quaternion.Euler(360 * value, rotateObject.eulerAngles.y, rotateObject.eulerAngles.z);
-    }*/
+        rotateObject.transform.GetChild(0).rotation = Quaternion.Euler(540 * value, rotateObject.eulerAngles.y, rotateObject.eulerAngles.z);
+    }
 
     public void RotateVertical3Dobject(float value)
     {
