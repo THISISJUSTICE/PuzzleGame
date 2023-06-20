@@ -145,23 +145,6 @@ public class PlayerData : MonoBehaviour
     //저장한 데이터 업데이트(StageManager에서 호출)
     public void UpdateData(int kind, int curStage, int flip, int score, int totalScore)
     {
-        //스테이지 데이터로 옮기기
-        //최초 클리어 시
-        if (data.clearStage[kind] < curStage)
-        {
-            data.clearStage[kind]++;
-            stageFlips[kind].Add(flip);
-            stageScores[kind].Add(score);
-        }
-        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록하지 못할 시
-        else if (stageFlips[kind][curStage] <= flip) return;
-        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록할 시
-        else
-        {
-            stageFlips[kind][curStage] = flip;
-            stageScores[kind][curStage] = score;
-        }
-
         //사용 데이터를 저장용 데이터에 저장
         switch (kind)
         {
@@ -195,8 +178,8 @@ public class PlayerData : MonoBehaviour
 
     public int TotalScore() {
         int total = 0;
-        for (int i = 0; i < 4; i++)
-            total += data.stageTotalScore[i];
+        for (int i = 0; i < 4; i++) 
+            total += data.stageTotalScore[i] + data.masterMaxScore[i];
         return total;
     }
 

@@ -13,9 +13,10 @@ public class UIManager : MonoBehaviour
 
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
-        public Button exitBtn, settingButton; //나가기 버튼, 설정 버튼
-        public Button quadBtn, hexBtn, cubeBtn, hiveBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지, 벌집 스테이지
+        public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
+        public Button rectBtn, hexBtn, cubeBtn, hiveBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지, 벌집 스테이지
         public Text nickName, score, rank; //닉네임, 점수, 랭킹
+        public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
 
         public MainMenu(GameObject mainMenu) {
             this.mainMenu = mainMenu;
@@ -24,14 +25,24 @@ public class UIManager : MonoBehaviour
 
         void Init() {
             exitBtn = mainMenu.transform.GetChild(0).GetComponent<Button>();
-            settingButton = mainMenu.transform.GetChild(1).GetComponent<Button>();
-            nickName = mainMenu.transform.GetChild(2).GetChild(0).GetComponent<Text>();
-            score = mainMenu.transform.GetChild(2).GetChild(1).GetComponent<Text>();
-            rank = mainMenu.transform.GetChild(2).GetChild(2).GetComponent<Text>();
-            quadBtn = mainMenu.transform.GetChild(3).GetChild(0).GetComponent<Button>();
-            hexBtn = mainMenu.transform.GetChild(3).GetChild(1).GetComponent<Button>();
-            cubeBtn = mainMenu.transform.GetChild(3).GetChild(2).GetComponent<Button>();
-            hiveBtn = mainMenu.transform.GetChild(3).GetChild(3).GetComponent<Button>();
+            settingBtn = mainMenu.transform.GetChild(1).GetComponent<Button>();
+            tutorialBtn = mainMenu.transform.GetChild(2).GetComponent<Button>();
+            shareBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
+            nickName = mainMenu.transform.GetChild(4).GetChild(0).GetComponent<Text>();
+            score = mainMenu.transform.GetChild(4).GetChild(1).GetComponent<Text>();
+            rank = mainMenu.transform.GetChild(4).GetChild(2).GetComponent<Text>();
+            rectBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
+            hexBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
+            cubeBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
+            hiveBtn = mainMenu.transform.GetChild(5).GetChild(3).GetComponent<Button>();
+
+            stageScore = new Text[3];
+            stageLevel = new Text[3];
+
+            for(int i=0; i<3; i++){
+                stageScore[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(1).GetComponent<Text>();
+                stageLevel[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>();
+            }
         }
 
     }
@@ -76,13 +87,13 @@ public class UIManager : MonoBehaviour
         }
 
         void Init() {
-            exitBtn = clearMenu.transform.GetChild(0).GetComponent<Button>();
             title = clearMenu.transform.GetChild(1).GetComponent<Text>();
-            comment = clearMenu.transform.GetChild(2).GetChild(0).GetComponent<Text>();
-            scoreTxt = clearMenu.transform.GetChild(2).GetChild(1).GetComponent<Text>();              
-            backBtn = clearMenu.transform.GetChild(2).GetChild(2).GetComponent<Button>();
-            nextBtn = clearMenu.transform.GetChild(2).GetChild(3).GetComponent<Button>();
-            animStar = clearMenu.transform.GetChild(2).GetChild(4).GetComponent<Animator>(); 
+            comment = clearMenu.transform.GetChild(2).GetComponent<Text>();
+            scoreTxt = clearMenu.transform.GetChild(3).GetComponent<Text>();              
+            exitBtn = clearMenu.transform.GetChild(4).GetComponent<Button>();
+            backBtn = clearMenu.transform.GetChild(5).GetComponent<Button>();
+            nextBtn = clearMenu.transform.GetChild(6).GetComponent<Button>();
+            animStar = clearMenu.transform.GetChild(7).GetComponent<Animator>(); 
 
             scoreStar = new Image[3];
             for (int i = 0; i < scoreStar.Length; i++)
@@ -112,7 +123,7 @@ public class UIManager : MonoBehaviour
     public class SettingMenu
     {
         public GameObject settingMenu;
-        public Button exitBtn, shareBtn;
+        public Button exitBtn;
         public Toggle soundCk, bgmCK;
         public GameObject soundoffImg;
         public Scrollbar soundScroll, bgmScroll;
@@ -125,13 +136,12 @@ public class UIManager : MonoBehaviour
 
         void Init()
         {
-            exitBtn = settingMenu.transform.GetChild(0).GetComponent<Button>();
-            soundCk = settingMenu.transform.GetChild(1).GetComponent<Toggle>();
+            exitBtn = settingMenu.transform.GetChild(1).GetChild(0).GetComponent<Button>();
+            soundCk = settingMenu.transform.GetChild(1).GetChild(1).GetComponent<Toggle>();
             soundoffImg = soundCk.transform.GetChild(1).GetChild(0).gameObject;
-            soundScroll = settingMenu.transform.GetChild(2).GetComponent<Scrollbar>();
-            bgmCK = settingMenu.transform.GetChild(3).GetComponent<Toggle>();
-            bgmScroll = settingMenu.transform.GetChild(4).GetComponent<Scrollbar>();
-            shareBtn = settingMenu.transform.GetChild(5).GetComponent<Button>();          
+            soundScroll = settingMenu.transform.GetChild(1).GetChild(2).GetComponent<Scrollbar>();
+            bgmCK = settingMenu.transform.GetChild(1).GetChild(3).GetComponent<Toggle>();
+            bgmScroll = settingMenu.transform.GetChild(1).GetChild(4).GetComponent<Scrollbar>();          
         }
     }
     public SettingMenu settingMenu; //세팅 화면
@@ -250,6 +260,7 @@ public class UIManager : MonoBehaviour
         clearMenu.clearMenu.SetActive(false);
         failMenu.failMenu.SetActive(false);
         exitMenu.exitMenu.SetActive(false);
+        MainMenuText();
         loadingUI.gameObject.SetActive(false);
 
         BGMPlay(0);
@@ -259,8 +270,8 @@ public class UIManager : MonoBehaviour
     void AudioInit(){
         btnSound = GetComponent<AudioSource>();
         clearSound = clearMenu.clearMenu.GetComponent<AudioSource>();
-        clearStarSound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetComponent<AudioSource>();
-        achieve100Sound = clearMenu.clearMenu.transform.GetChild(2).GetChild(4).GetChild(2).GetComponent<AudioSource>();
+        clearStarSound = clearMenu.clearMenu.transform.GetChild(7).GetComponent<AudioSource>();
+        achieve100Sound = clearMenu.clearMenu.transform.GetChild(7).GetChild(2).GetComponent<AudioSource>();
         failSound = failMenu.failMenu.GetComponent<AudioSource>();
         gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
         masterClearSound = ingameMenu.masterGroup.GetComponent<AudioSource>();
@@ -276,9 +287,8 @@ public class UIManager : MonoBehaviour
     void SetMainMenu()
     {
         mainMenu.exitBtn.onClick.AddListener(DoExit);
-        mainMenu.settingButton.onClick.AddListener(DoSetting);
-        MainMenuText();
-        mainMenu.quadBtn.onClick.AddListener(() => DoStage(0)); //Quadangle
+        mainMenu.settingBtn.onClick.AddListener(DoSetting);
+        mainMenu.rectBtn.onClick.AddListener(() => DoStage(0)); //Rectangle
         mainMenu.hexBtn.onClick.AddListener(() => DoStage(1)); //Hexagon
         mainMenu.cubeBtn.onClick.AddListener(() => DoStage(2)); //Cube
         mainMenu.hiveBtn.onClick.AddListener(() => DoStage(3)); //Hive
@@ -289,7 +299,15 @@ public class UIManager : MonoBehaviour
         //플레이어 데이터에서 불러오기
         mainMenu.nickName.text = PlayerData.Instance.data.userName;
         mainMenu.score.text = "Score: " + PlayerData.Instance.TotalScore();
-        mainMenu.rank.text = "Rank : " + 1;
+        mainMenu.rank.text = "Rank : " + (PlayerData.Instance.data.rank + 1);
+
+        for(int i=0; i<3; i++){
+            mainMenu.stageScore[i].text = "" + (PlayerData.Instance.data.stageTotalScore[i] + PlayerData.Instance.data.masterMaxScore[i]);
+            if(PlayerData.Instance.data.masterMaxScore[i] > 0)
+                mainMenu.stageLevel[i].text = "LV. M";  
+            else
+                mainMenu.stageLevel[i].text = "LV. " + (PlayerData.Instance.data.clearStage[i] + 1);
+        }
     }
 
     //버튼
@@ -331,6 +349,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
         mainMenu.mainMenu.SetActive(true);
+        MainMenuText();
 
         BGMPlay(0);
         gameManager.RealDeleteHorse();
@@ -435,9 +454,11 @@ public class UIManager : MonoBehaviour
     //스테이지 클리어 후 로비 화면으로 이동
     IEnumerator DoClearExit() {
         DoStageBack();
-        //로딩 화면 켜기
+        loadingUI.SetActive(true);
+        OnlySoundMute(true);
         yield return new WaitForSeconds(1);
-        //로딩 화면 끄기
+        loadingUI.SetActive(false);
+        OnlySoundMute(false);
         clearMenu.clearMenu.SetActive(false);
         DoLobby();
         ClearInit();
@@ -539,9 +560,11 @@ public class UIManager : MonoBehaviour
 
     IEnumerator DoFailExit() {
         DoStageBack();
-        //로딩 화면 켜기
+        loadingUI.SetActive(true);
+        OnlySoundMute(true);
         yield return new WaitForSeconds(1);
-        //로딩 화면 끄기
+        loadingUI.SetActive(false);
+        OnlySoundMute(false);
         failMenu.failMenu.SetActive(false);
         DoLobby();
         btnSound.Play();
@@ -595,12 +618,7 @@ public class UIManager : MonoBehaviour
 
     //무한 재귀에 빠지지 않도록 Mute와 Volume 변경을 별도로 실행
     void DoSoundMute(bool on){
-        btnSound.mute = on;
-        clearSound.mute = on;
-        clearStarSound.mute = on;
-        achieve100Sound.mute = on;
-        failSound.mute = on;
-        gameManager.horseAudio.mute = on;
+        OnlySoundMute(on);
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundCk.isOn = on;
@@ -609,6 +627,15 @@ public class UIManager : MonoBehaviour
         ingameMenu.soundoffImg.SetActive(!on);
 
     }    
+
+    void OnlySoundMute(bool on){
+        btnSound.mute = on;
+        clearSound.mute = on;
+        clearStarSound.mute = on;
+        achieve100Sound.mute = on;
+        failSound.mute = on;
+        gameManager.horseAudio.mute = on;
+    }
 
     void DoSoundVolume(float value){
         btnSound.volume = value;

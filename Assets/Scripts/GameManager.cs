@@ -8,18 +8,14 @@ using UnityEngine.UI;
 //로비 스크롤 위치 맨 위로 초기화해두기(안 해도 지장은 없음)
 
 // - 두번째 입체는 완전히 보류(현재는 삼각형을 사용한 것을 생각중)
-// - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
-// - 클리어, 실패 UI에서 닫기 버튼 눌렀을 때, 로비와 재시작 사이의 오류 수정(로딩 UI 하나 더 만들어서 해결하기)
 
-
-// - **UI 폰트 수정
-// - **UI 디자인 다시 꾸미기
-// - **메인 화면 스테이지 버튼 왼쪽엔 그림, 오른쪽엔 레벨과 점수 표시
-
-// - 세팅 화면이 켜져있을 땐, 메인 화면 UI가 눌리지 않도록 하기
-
+// - UI 디자인 확인 받기
+// - 로딩 화면 꾸미기
+// - 메인 UI 스테이지 종류 3가지인지, 4가지인지
 
 // - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
+// - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
+
 // - 퍼즐 모드 제작
 
 
@@ -1443,6 +1439,8 @@ public class GameManager : MonoBehaviour
         //스테이지 표시
         uiManger.clearMenu.title.text = "STAGE " + (stage[curKind] + 1);
 
+        uiManger.clearMenu.comment.gameObject.SetActive(false);
+
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(DeleteHorse());
         uiManger.ingameMenu.gameObject.SetActive(false);
@@ -1452,7 +1450,6 @@ public class GameManager : MonoBehaviour
         //신기록 갱신 여부
         if (isRenew)
         {
-            uiManger.clearMenu.comment.gameObject.SetActive(true);
             //점수 계산될 때까지 대기
             int random;
             for (int i = 0; i < 25; i++)
@@ -1461,9 +1458,8 @@ public class GameManager : MonoBehaviour
                 uiManger.clearMenu.scoreTxt.text = "Score: " + random;
                 yield return new WaitForSeconds(0.01f);
             }
+            uiManger.clearMenu.comment.gameObject.SetActive(true);
         }
-        else
-            uiManger.clearMenu.comment.gameObject.SetActive(false);
 
         int stageScore = stageManager.StageScore(stage[curKind]);
 

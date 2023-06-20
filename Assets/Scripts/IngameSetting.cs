@@ -50,17 +50,17 @@ public class IngameSetting : MonoBehaviour
 
         //인게임 내 세팅 UI(카메라, 소리 세팅)
         ingameSettingMenu = transform.GetChild(7).gameObject;
-        cameraReset = ingameSettingMenu.transform.GetChild(0).GetChild(0).GetComponent<Button>();
-        cameraUpBtn = ingameSettingMenu.transform.GetChild(0).GetChild(1).GetComponent<Button>();
-        cameraDownBtn = ingameSettingMenu.transform.GetChild(0).GetChild(2).GetComponent<Button>();
-        cameraZoom = ingameSettingMenu.transform.GetChild(0).GetChild(3).GetComponent<Scrollbar>();
+        cameraReset = ingameSettingMenu.transform.GetChild(1).GetChild(0).GetComponent<Button>();
+        cameraUpBtn = ingameSettingMenu.transform.GetChild(1).GetChild(1).GetComponent<Button>();
+        cameraDownBtn = ingameSettingMenu.transform.GetChild(1).GetChild(2).GetComponent<Button>();
+        cameraZoom = ingameSettingMenu.transform.GetChild(1).GetChild(3).GetComponent<Scrollbar>();
         cameraZoom.value = 0.5f;
-        exitBtn = ingameSettingMenu.transform.GetChild(1).GetComponent<Button>();
-        soundCk = ingameSettingMenu.transform.GetChild(2).GetComponent<Toggle>();
+        exitBtn = ingameSettingMenu.transform.GetChild(2).GetComponent<Button>();
+        soundCk = ingameSettingMenu.transform.GetChild(3).GetComponent<Toggle>();
         soundoffImg = soundCk.transform.GetChild(1).GetChild(0).gameObject;
-        soundScroll = ingameSettingMenu.transform.GetChild(3).GetComponent<Scrollbar>();
-        bgmCK = ingameSettingMenu.transform.GetChild(4).GetComponent<Toggle>();
-        bgmScroll = ingameSettingMenu.transform.GetChild(5).GetComponent<Scrollbar>();
+        soundScroll = ingameSettingMenu.transform.GetChild(4).GetComponent<Scrollbar>();
+        bgmCK = ingameSettingMenu.transform.GetChild(5).GetComponent<Toggle>();
+        bgmScroll = ingameSettingMenu.transform.GetChild(6).GetComponent<Scrollbar>();
 
         albedoImg = new Image[17];
         albedoImg[0] = ingameSettingMenu.GetComponent<Image>();

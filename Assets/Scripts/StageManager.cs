@@ -63,7 +63,6 @@ public class StageManager : MonoBehaviour
             //클리어한 스테이지
             if (i <= PlayerData.Instance.data.clearStage[kind])
             {
-                Debug.Log($"ClearStage [i: {0}]");
                 stageBtns[i].InputData(true, false, PlayerData.Instance.stageFlips[kind][i], PlayerData.Instance.stageScores[kind][i]);
             }
             //클리어한 스테이지의 바로 다음 한 스테이지
@@ -81,6 +80,7 @@ public class StageManager : MonoBehaviour
         if(PlayerData.Instance.data.clearStage[kind] == totalStageCount - 1){
             masterStageBtn.InputData(false, false,0, PlayerData.Instance.data.masterMaxScore[kind]);
         }
+        else masterStageBtn.InputData();
 
         //Event
     }
@@ -88,7 +88,7 @@ public class StageManager : MonoBehaviour
     //스테이지 클리어 시 게임 매니저에서 호출
     public bool CurrentStageClear(int curStage, int minFlip, int clearFlip, int maxFlip) {
         bool isRenew;
-        Debug.Log($"curStage: {curStage}");
+
         //스테이지, 플립 관련 인수를 받아 해당하는 스테이지 버튼 정보 최신화(정보를 최신화할 필요가 있으면 true 반환)
         isRenew = stageBtns[curStage].StageClear(minFlip, clearFlip, maxFlip);
 
@@ -105,8 +105,25 @@ public class StageManager : MonoBehaviour
         }
 
         //플레이어 데이터 최신화
-        if(isRenew)
+        if(isRenew){
+
+            //최초 클리어 시
+        if (PlayerData.Instance.data.clearStage[kind] < curStage)
+        {
+            PlayerData.Instance.data.clearStage[kind]++;
+            PlayerData.Instance.stageFlips[kind].Add(clearFlip);
+            PlayerData.Instance.stageScores[kind].Add(stageBtns[curStage].score);
+        }
+        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록하지 못할 시
+        else if (PlayerData.Instance.stageFlips[kind][curStage] <= clearFlip) return isRenew;
+        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록할 시
+        else
+        {
+            PlayerData.Instance.stageFlips[kind][curStage] = clearFlip;
+            PlayerData.Instance.stageScores[kind][curStage] = stageBtns[curStage].score;
+        }
             PlayerData.Instance.UpdateData(kind, curStage, clearFlip, stageBtns[curStage].score, CalTotalScore());
+        }
         return isRenew;
     }
 
