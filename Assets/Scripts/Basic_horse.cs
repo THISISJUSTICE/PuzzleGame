@@ -6,7 +6,6 @@ public class Basic_horse : MonoBehaviour
 {
     public GameObject horseMesh;
     public int kind;
-
     
     GameManager gameManager;
     Animator anim;
@@ -38,7 +37,7 @@ public class Basic_horse : MonoBehaviour
     //흰색이 바닥에 닿으면 0, 검은색은 1번 클립 재생
     IEnumerator FlipSoundPlay(float time, int sound){
         yield return new WaitForSeconds(time);
-        gameManager.horseAudio.clip = gameManager.horseSounds[sound];
+        gameManager.horseAudio.clip = gameManager.flipSounds[sound];
         gameManager.horseAudio.Play();
     }
 

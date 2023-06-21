@@ -12,13 +12,15 @@ using UnityEngine.UI;
 // - 튜토리얼 만들기
 
 
-// - **효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
+// - 모바일 상 마스터 모드 오류 수정하기(마스터 맵 저장, 말 누르기가 잘 안 됨)
 // - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
 
 // - 퍼즐 모드 제작
 
 
 // 5. 구글 플레이 연동
+
+// - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기
 
 
 public class GameManager : MonoBehaviour
@@ -43,7 +45,7 @@ public class GameManager : MonoBehaviour
     public int curKind; //현재 진행하고 있는 스테이지의 종류(0: 사각형, 1: 육각형, 2: 큐브, 3: 벌집)
 
     public AudioSource horseAudio; //말 재생 소리
-    public List<AudioClip> horseSounds; //말의 면에 따라 다른 소리 적용
+    public AudioClip[] flipSounds; //말의 면에 따라 다른 소리 적용
 
     GameObject[] basic_horse; //말 오브젝트(종류 별로 나누기 위해 배열로 선언)
 
