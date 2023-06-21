@@ -38,11 +38,9 @@ public class PlayerData : MonoBehaviour
         public List<int> stage0Flip; //0스테이지 별 클리어 시 플립 횟수
         public List<int> stage1Flip; //1스테이지 별 클리어 시 플립 횟수
         public List<int> stage2Flip; //2스테이지 별 클리어 시 플립 횟수
-        public List<int> stage3Flip; //3스테이지 별 클리어 시 플립 횟수
         public List<int> stage0Score; //0스테이지 별 클리어 시 점수
         public List<int> stage1Score; //1스테이지 별 클리어 시 점수
         public List<int> stage2Score; //2스테이지 별 클리어 시 점수
-        public List<int> stage3Score; //3스테이지 별 클리어 시 점수
 
         public int[] masterCurrentClear; //마스터 모드의 현재 클리어한 횟수
         public int[] masterMaxScore; //마스터 모드에서 지금까지 최대로 얻은 점수
@@ -58,21 +56,19 @@ public class PlayerData : MonoBehaviour
 
         public Data()
         {
-            stageTotalScore = new int[4];
-            clearStage = new int[4];
-            masterCurrentClear = new int[4];
-            masterMaxScore = new int[4];
-            masterCurrentScore = new int[4];
-            isMasterDoing = new bool[4];
+            stageTotalScore = new int[3];
+            clearStage = new int[3];
+            masterCurrentClear = new int[3];
+            masterMaxScore = new int[3];
+            masterCurrentScore = new int[3];
+            isMasterDoing = new bool[3];
 
             stage0Flip = new List<int>();
             stage1Flip = new List<int>();
             stage2Flip = new List<int>();
-            stage3Flip = new List<int>();
             stage0Score = new List<int>();
             stage1Score = new List<int>();
             stage2Score = new List<int>();
-            stage3Score = new List<int>();
         }
     }
 
@@ -101,26 +97,24 @@ public class PlayerData : MonoBehaviour
 
     void Init()
     {
-        totalStageCount = new int[4];
-        stageFlips = new List<int>[4];
-        stageScores = new List<int>[4];
-        for (int i = 0; i < 4; i++)
+        totalStageCount = new int[3];
+        stageFlips = new List<int>[3];
+        stageScores = new List<int>[3];
+        for (int i = 0; i < 3; i++)
         {
-            //totalStageCount[i] = File_Count(i);
             stageFlips[i] = new List<int>();
             stageScores[i] = new List<int>();
         }
         totalStageCount[0] = gameManager.stage0Txt.Count();
         totalStageCount[1] = gameManager.stage1Txt.Count();
         totalStageCount[2] = gameManager.stage2Txt.Count();
-        totalStageCount[3] = gameManager.stage3Txt.Count();
 
         data = new Data();
     }
 
     void NewData()
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             data.clearStage[i] = -1;
             data.stageTotalScore[i] = 0;
@@ -160,10 +154,6 @@ public class PlayerData : MonoBehaviour
                 data.stage2Flip = stageFlips[2];
                 data.stage2Score = stageScores[2];
                 break;
-            case 3:
-                data.stage3Flip = stageFlips[3];
-                data.stage3Score = stageScores[3];
-                break;
         }
         data.stageTotalScore[kind] = totalScore;
 
@@ -178,7 +168,7 @@ public class PlayerData : MonoBehaviour
 
     public int TotalScore() {
         int total = 0;
-        for (int i = 0; i < 4; i++) 
+        for (int i = 0; i < 3; i++) 
             total += data.stageTotalScore[i] + data.masterMaxScore[i];
         return total;
     }
@@ -199,11 +189,9 @@ public class PlayerData : MonoBehaviour
         stageFlips[0] = data.stage0Flip;
         stageFlips[1] = data.stage1Flip;
         stageFlips[2] = data.stage2Flip;
-        stageFlips[3] = data.stage3Flip;
         stageScores[0] = data.stage0Score;
         stageScores[1] = data.stage1Score;
         stageScores[2] = data.stage2Score;
-        stageScores[3] = data.stage3Score;
     }
 
     //문자열로 된 JSON 데이터를 받아서 원하는 타입의 객체로 반환

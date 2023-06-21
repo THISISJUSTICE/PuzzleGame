@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
         public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
-        public Button rectBtn, hexBtn, cubeBtn, hiveBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지, 벌집 스테이지
+        public Button rectBtn, hexBtn, cubeBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지
         public Text nickName, score, rank; //닉네임, 점수, 랭킹
         public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
 
@@ -34,7 +34,6 @@ public class UIManager : MonoBehaviour
             rectBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
             hexBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
             cubeBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
-            hiveBtn = mainMenu.transform.GetChild(5).GetChild(3).GetComponent<Button>();
 
             stageScore = new Text[3];
             stageLevel = new Text[3];
@@ -59,14 +58,14 @@ public class UIManager : MonoBehaviour
         }
 
         void Init() {
-            stageBtns = new StageManager[4];
-            for (int i = 0; i < 4; i++)
+            stageBtns = new StageManager[3];
+            for (int i = 0; i < 3; i++)
             {
                 stageBtns[i] = lobbyMenu.transform.GetChild(i).GetComponent<StageManager>();
             }
-            homeBtn = lobbyMenu.transform.GetChild(4).GetChild(0).GetComponent<Button>();
-            settingBtn = lobbyMenu.transform.GetChild(4).GetChild(2).GetComponent<Button>();
-            backBtn = lobbyMenu.transform.GetChild(4).GetChild(3).GetComponent<Button>();
+            homeBtn = lobbyMenu.transform.GetChild(3).GetChild(0).GetComponent<Button>();
+            settingBtn = lobbyMenu.transform.GetChild(3).GetChild(2).GetComponent<Button>();
+            backBtn = lobbyMenu.transform.GetChild(3).GetChild(3).GetComponent<Button>();
         }
 
     }
@@ -236,7 +235,7 @@ public class UIManager : MonoBehaviour
     void LateTask() {
         AudioInit();
         //DoMute(true);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < lobbyMenu.stageBtns[i].stageBtns.Length; j++)
             {
@@ -291,7 +290,6 @@ public class UIManager : MonoBehaviour
         mainMenu.rectBtn.onClick.AddListener(() => DoStage(0)); //Rectangle
         mainMenu.hexBtn.onClick.AddListener(() => DoStage(1)); //Hexagon
         mainMenu.cubeBtn.onClick.AddListener(() => DoStage(2)); //Cube
-        mainMenu.hiveBtn.onClick.AddListener(() => DoStage(3)); //Hive
     }
 
     //메인 메뉴 UI 텍스트 설정

@@ -7,24 +7,15 @@ using UnityEngine.UI;
 
 //로비 스크롤 위치 맨 위로 초기화해두기(안 해도 지장은 없음)
 
-// - 두번째 입체는 완전히 보류(현재는 삼각형을 사용한 것을 생각중)
-
 // - UI 디자인 확인 받기
 // - 로딩 화면 꾸미기
-// - 메인 UI 스테이지 종류 3가지인지, 4가지인지
+// - 튜토리얼 만들기
 
-// - 효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
+
+// - **효과음 다시 선택하기(선택 후 적절히 소리 키우기), (말 효과음을 음표 사운드 중 2개를 랜덤으로 선택)?
 // - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
 
 // - 퍼즐 모드 제작
-
-
-// 4. 퍼즐 모드(스테이지 종류는 랜덤, 크기가 큰 보드가 판이고, 그보다는 조금 작은 보드가 주어지는데, 큰 보드에서 작은 보드의 모양을 완성하면 그 스테이지 클리어)
-// - (최초에 최대 횟수를 정해주고, 스테이지 클리어때 마다 추가적으로 플립 횟수 지급, 플립 횟수가 0이 되면 실패, 총 플립 횟수와 클리어 횟수로 최고 점수 기록)
-// - 보드 연산(전체 보드, 정답 보드가 있을 때, 정답 보드의 수 만큼 임시 보드를 생성하고, 임시 보드의 변수는 전체 보드의 좌표를 참조하도록 연산)
-
-// 5. 테트리스 모드(흰색, 검은색이 섞인 블록이 떨어지고 이를 배치, 배치한 말을 플립하여 한 줄이 같은 색이면 사라지는 테트리스
-// - (블록 1개 당 2번의 플립 가능, 플립을 두 번하면 블록이 떨어짐)
 
 
 // 5. 구글 플레이 연동
@@ -42,7 +33,6 @@ public class GameManager : MonoBehaviour
     public List<TextAsset> stage0Txt; //0스테이지 파일을 담는 변수
     public List<TextAsset> stage1Txt; //1스테이지 파일을 담는 변수
     public List<TextAsset> stage2Txt; //2스테이지 파일을 담는 변수
-    public List<TextAsset> stage3Txt; //3스테이지 파일을 담는 변수
 
     public Transform cubeSide3; //3차원 큐브의 3개의 면
     public Transform cubeSide6; //3차원 큐브의 6개의 면
@@ -95,21 +85,20 @@ public class GameManager : MonoBehaviour
     //초기화 함수
     void Init()
     {
-        basic_horse = new GameObject[4];
+        basic_horse = new GameObject[3];
         basic_horse[0] = Resources.Load("Prefabs/Prefab_Basic_horse") as GameObject;
         basic_horse[1] = Resources.Load("Prefabs/Prefab_Hexagon_horse") as GameObject;
         basic_horse[2] = Resources.Load("Prefabs/Prefab_Cube_horse") as GameObject;
-        //basic_horse[3] = Resources.Load("Prefabs/Prefab_Cube_horse") as GameObject;
         finalClear = false;
         isCreatorMode = false;
         flipCount = 0;
         masterTempBoard = null;
-        masterTempFlip = new int[4];
-        queHorse = new Queue<Basic_horse>[4];
-        for (int i = 0; i < 4; i++)
+        masterTempFlip = new int[3];
+        queHorse = new Queue<Basic_horse>[3];
+        for (int i = 0; i < 3; i++)
             queHorse[i] = new Queue<Basic_horse>();
 
-        stage = new int[4];
+        stage = new int[3];
         stdPos = new Vector3[2];
         stdRot = new Quaternion[2];
         for (int i = 0; i < 2; i++)
@@ -135,9 +124,6 @@ public class GameManager : MonoBehaviour
             case 2:
                 textFile = stage2Txt;
                 break;
-            case 3:
-                textFile = stage3Txt;
-                break;
         }
 
         if (textFile.Count <= curstage)
@@ -161,8 +147,6 @@ public class GameManager : MonoBehaviour
             StartCoroutine(PlaceHorse(createHorsePos));
             uiManger.ingameMenu.masterGroup.SetActive(false);
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(true);
-            // uiManger.ingameMenu.flipCount.gameObject.SetActive(true);
-            // uiManger.ingameMenu.flipCount.text = "" + flipCount;
             uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);
         }
         else
@@ -224,7 +208,6 @@ public class GameManager : MonoBehaviour
                         break;
                     //3차원
                     case 2:
-                    case 3:
                         s = int.Parse(line.Split(',')[start++]);
                         break;
                 }
@@ -744,8 +727,6 @@ public class GameManager : MonoBehaviour
                     }
                 }
                 break;
-            case 3:
-                break;
         }
     }
 
@@ -885,9 +866,6 @@ public class GameManager : MonoBehaviour
                 break;
             case 2:
                 HorsePos2();
-                break;
-            case 3:
-                HorsePos3();
                 break;
         }
 
@@ -1104,12 +1082,6 @@ public class GameManager : MonoBehaviour
             cubeSide6.GetChild(6).localScale = new Vector3((u - 2) + 1.5f, (u - 2) + 1.5f, (u - 2) + 1.5f);
             cubeSide6.GetChild(6).gameObject.SetActive(false);
         }
-    }
-
-    //kind 3
-    void HorsePos3()
-    {
-
     }
 
     //보드에 있는 정보를 바탕으로 적절한 위치에 말 배치
@@ -1364,8 +1336,6 @@ public class GameManager : MonoBehaviour
                             }
                         }
                     }
-                    break;
-                case 3:
                     break;
             }
 

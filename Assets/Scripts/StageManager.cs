@@ -11,7 +11,7 @@ public class StageManager : MonoBehaviour
     public GameObject stageBtn; //버튼 프리팹에 전달할 변수(gameManager, playerData)
     public RectTransform content; //스크롤 하위 오브젝트
 
-    public int kind; //스테이지 종류(0: Quadangle 1: Hexagon, 2: Cube, 3: Hive) (밖에서 입력)
+    public int kind; //스테이지 종류(0: Quadangle 1: Hexagon, 2: Cube) (밖에서 입력)
     public StageData[] stageBtns; //생성한 스테이지 버튼
 
     public StageData masterStageBtn; //마스터 모드 스테이지 버튼
