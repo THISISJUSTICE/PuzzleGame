@@ -7,20 +7,14 @@ using UnityEngine.UI;
 
 //로비 스크롤 위치 맨 위로 초기화해두기(안 해도 지장은 없음)
 
-// - UI 디자인 확인 받기
-// - 로딩 화면 꾸미기
-// - 게임 이름 (Reversio Flip, Reversio Puzzle, Tile Flip)
+// - 게임 이름 (Reversio Flip)
 // - 게임 로고
+// - 로딩 화면 꾸미기(게임 로고 완성 후)(간단히 로고만 띄우기 or 로딩 애니메이션)
+// - 공유 버튼의 링크 바꾸기(게임 완성 후)
 
 
-// - 공유 버튼
-// - 튜토리얼 만들기
+// - **구글 플레이 연동
 // - 구글 플레이 연동 후 랭킹 계산
-
-// - ??브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
-
-
-// 5. 구글 플레이 연동
 
 // - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기
 
@@ -416,7 +410,7 @@ public class GameManager : MonoBehaviour
             case 0:
                 // 칸 수 지정
                 ds = 1;
-                if (curClear >= 56) du = 8;
+                if (curClear >= 56) du = UnityEngine.Random.Range(7, 9);
                 else
                 {
                     du = 4 + LevelCalculator(5, curClear);
@@ -444,7 +438,7 @@ public class GameManager : MonoBehaviour
             case 1:
                 // 칸 수 지정
                 ds = 1;
-                if (curClear >= 80) du = 6;
+                if (curClear >= 80) du = UnityEngine.Random.Range(8, 10);
                 else
                 {
                     du = 4 + LevelCalculator(6, curClear);

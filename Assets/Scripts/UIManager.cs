@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
         public Button rectBtn, hexBtn, cubeBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지
         public Text nickName, score, rank; //닉네임, 점수, 랭킹
         public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
+        public GameObject tutorialMenu; //튜토리얼 메뉴
+        public Button[] tutorial; //튜토리얼 메뉴 1, 메뉴 2
 
         public MainMenu(GameObject mainMenu) {
             this.mainMenu = mainMenu;
@@ -32,14 +34,19 @@ public class UIManager : MonoBehaviour
             rectBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
             hexBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
             cubeBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
+            tutorialMenu = mainMenu.transform.GetChild(6).gameObject;
 
             stageScore = new Text[3];
             stageLevel = new Text[3];
+            tutorial = new Button[2];
 
             for(int i=0; i<3; i++){
                 stageScore[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(1).GetComponent<Text>();
                 stageLevel[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>();
             }
+
+            for(int i=0; i<2; i++)
+                tutorial[i] = tutorialMenu.transform.GetChild(i).GetComponent<Button>();
         }
 
     }
@@ -179,7 +186,7 @@ public class UIManager : MonoBehaviour
 
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
-	private const string body = "https://play.google.com/store/apps/details?id=com.CEREALLAB.FruitsLoop&showAllReviews=true";
+	private const string body = "https://play.google.com/store/apps/details?id=com.CEREALLAB.FruitsLoop&showAllReviews=true"; //변경 필요
     
     #endregion
 
@@ -253,6 +260,8 @@ public class UIManager : MonoBehaviour
         if(PlayerData.Instance.data.bgmCk) DoBGM_Mute(true);
         else DoBGM_Volume(PlayerData.Instance.data.bgmVolume);
 
+        mainMenu.tutorialMenu.SetActive(false);
+        for(int i =0; i<2; i++) mainMenu.tutorial[i].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
         ingameMenu.ingameSettingMenu.SetActive(false);
         ingameMenu.masterGroup.SetActive(false);
@@ -293,6 +302,11 @@ public class UIManager : MonoBehaviour
         mainMenu.hexBtn.onClick.AddListener(() => DoStage(1)); //Hexagon
         mainMenu.cubeBtn.onClick.AddListener(() => DoStage(2)); //Cube
         mainMenu.shareBtn.onClick.AddListener(DoShare);
+        
+        //튜토리얼
+        mainMenu.tutorialBtn.onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorialMenu.gameObject, mainMenu.tutorial[0].gameObject, true));
+        mainMenu.tutorial[0].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[0].gameObject, mainMenu.tutorial[1].gameObject));
+        mainMenu.tutorial[1].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[1].gameObject));
     }
 
     //메인 메뉴 UI 텍스트 설정
@@ -350,6 +364,29 @@ public class UIManager : MonoBehaviour
 		}
 #endif
         btnSound.Play();
+    }
+
+    void DoTutorial(){
+        
+        
+        btnSound.Play();
+    }
+
+    //튜토리얼 메뉴의 다음 페이지로 이동
+    void DoTutorialMenu(GameObject self, GameObject next = null, bool menu = false){
+        if(menu){
+            self.SetActive(true);
+            btnSound.Play();
+        }
+        else
+            self.SetActive(false);
+
+        if(next == null){
+            mainMenu.tutorialMenu.SetActive(false);
+            return;
+        }
+          
+        next.SetActive(true);
     }
 
     #endregion
@@ -422,6 +459,7 @@ public class UIManager : MonoBehaviour
     void DoLobby() {
         ingameMenu.gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(true);
+        lobbyMenu.backBtn.gameObject.SetActive(true);
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(true);
         btnSound.Play();
     }
@@ -434,7 +472,7 @@ public class UIManager : MonoBehaviour
     void SetClearMenu() {
         clearMenu.backBtn.onClick.AddListener(DoClearBack);
         clearMenu.nextBtn.onClick.AddListener(DoClearNext);
-        clearMenu.exitBtn.onClick.AddListener(() => StartCoroutine(DoClearExit()));
+        clearMenu.exitBtn.onClick.AddListener(DoClearExit);
 
         //소리 세팅
         clearMenu.backBtn.onClick.AddListener(() => btnSound.Play());
@@ -470,15 +508,10 @@ public class UIManager : MonoBehaviour
     }
 
     //스테이지 클리어 후 로비 화면으로 이동
-    IEnumerator DoClearExit() {
-        DoStageBack();
-        loadingUI.SetActive(true);
-        OnlySoundMute(true);
-        yield return new WaitForSeconds(1);
-        loadingUI.SetActive(false);
-        OnlySoundMute(false);
+    void DoClearExit() {
         clearMenu.clearMenu.SetActive(false);
         DoLobby();
+        lobbyMenu.backBtn.gameObject.SetActive(false);
         ClearInit();
         btnSound.Play();
     }
@@ -568,7 +601,7 @@ public class UIManager : MonoBehaviour
     #region FailMenu
 
     void SetFailMenu() {
-        failMenu.exitBtn.onClick.AddListener(() => StartCoroutine(DoFailExit()));
+        failMenu.exitBtn.onClick.AddListener(DoFailExit);
         failMenu.backBtn.onClick.AddListener(DoFailBack);
 
         //소리 세팅
@@ -576,15 +609,10 @@ public class UIManager : MonoBehaviour
         failMenu.backBtn.onClick.AddListener(() => btnSound.Play());
     }
 
-    IEnumerator DoFailExit() {
-        DoStageBack();
-        loadingUI.SetActive(true);
-        OnlySoundMute(true);
-        yield return new WaitForSeconds(1);
-        loadingUI.SetActive(false);
-        OnlySoundMute(false);
+    void DoFailExit() {
         failMenu.failMenu.SetActive(false);
         DoLobby();
+        lobbyMenu.backBtn.gameObject.SetActive(false);
         btnSound.Play();
     }
 
@@ -636,7 +664,12 @@ public class UIManager : MonoBehaviour
 
     //무한 재귀에 빠지지 않도록 Mute와 Volume 변경을 별도로 실행
     void DoSoundMute(bool on){
-        OnlySoundMute(on);
+        btnSound.mute = on;
+        clearSound.mute = on;
+        clearStarSound.mute = on;
+        achieve100Sound.mute = on;
+        failSound.mute = on;
+        gameManager.horseAudio.mute = on;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundCk.isOn = on;
@@ -644,15 +677,6 @@ public class UIManager : MonoBehaviour
         settingMenu.soundoffImg.SetActive(!on);
         ingameMenu.soundoffImg.SetActive(!on);
 
-    }    
-
-    void OnlySoundMute(bool on){
-        btnSound.mute = on;
-        clearSound.mute = on;
-        clearStarSound.mute = on;
-        achieve100Sound.mute = on;
-        failSound.mute = on;
-        gameManager.horseAudio.mute = on;
     }
 
     void DoSoundVolume(float value){
