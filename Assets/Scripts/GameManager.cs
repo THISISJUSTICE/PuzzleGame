@@ -9,12 +9,13 @@ using UnityEngine.UI;
 
 // - UI 디자인 확인 받기
 // - 로딩 화면 꾸미기
+// - 게임 이름 (Reversio Flip, Reversio Puzzle, Tile Flip)
+// - 게임 로고
+
+
+// - 공유 버튼
 // - 튜토리얼 만들기
-
-
-// - **모바일 상 마스터 모드 오류 수정하기(마스터 맵 저장, 말 누르기가 잘 안 됨)
-// - 말 넣는 큐의 용량 제한하기
-
+// - 구글 플레이 연동 후 랭킹 계산
 
 // - ??브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
 
@@ -415,7 +416,7 @@ public class GameManager : MonoBehaviour
             case 0:
                 // 칸 수 지정
                 ds = 1;
-                if (curClear >= 56) du = 6;
+                if (curClear >= 56) du = 8;
                 else
                 {
                     du = 4 + LevelCalculator(5, curClear);
@@ -823,16 +824,12 @@ public class GameManager : MonoBehaviour
         FiletoBoard(masterStream.ReadToEnd());
         masterFile.Close();
         masterStream.Close();
-        // if(file == null)
-        //     FiletoBoard(masterFile.text);
-        // else 
-        //     FiletoBoard(file);
         realMaxFlip = minFlip;
     }
 
     #endregion
 
-    #region PlaceHorse
+    #region PlaceHorse 
 
     //보드의 칸에 따라 말의 좌표 및 카메라 위치, 각도를 결정
     void DefineHorsePos()
@@ -853,13 +850,11 @@ public class GameManager : MonoBehaviour
         //카메라로 볼 수 없는 면이 생기면 오브젝트를 회전할 수 있는 스크롤 생성
         if (curKind == 2 && s == 6)
         {
-            Debug.Log("스크롤 생성");
             uiManger.ingameMenu.isScroll = true;
             uiManger.ingameMenu.scroll3Dobject.SetActive(true);
         }
         else
         {
-            Debug.Log("스크롤 없음");
             uiManger.ingameMenu.isScroll = false;
             uiManger.ingameMenu.scroll3Dobject.SetActive(false);
         }
@@ -876,7 +871,7 @@ public class GameManager : MonoBehaviour
                 x = -2;
                 break;
             case 5:
-                x = -4;
+                x = -3;
                 break;
             case 6:
                 x = -3;
@@ -938,7 +933,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 4:
                 x = -1.5f;
-                z = -2.2f;
+                z = -2.5f;
                 y = 1;
                 break;
             case 5:
@@ -949,22 +944,22 @@ public class GameManager : MonoBehaviour
             case 6:
                 x = -3;
                 z = -4;
-                y = -4;
+                y = -5;
                 break;
             case 7:
                 x = -3;
                 z = -4.6f;
-                y = -6;
+                y = -8;
                 break;
             case 8:
                 x = -3.5f;
                 z = -5.35f;
-                y = -9;
+                y = -11;
                 break;
             case 9:
                 x = -2.5f;
                 z = -6;
-                y = -11;
+                y = -13;
                 break;
             default:
                 x = 0;
@@ -1050,7 +1045,7 @@ public class GameManager : MonoBehaviour
                     stdPos[1] = new Vector3(1.5f, 1.5f, 0);
                     break;
                 case 4:
-                    stdPos[0] = new Vector3(-1, -2, -0.4f);
+                    stdPos[0] = new Vector3(-1.5f, -3, -0.4f);
                     stdPos[1] = new Vector3(2.1f, 2.1f, 0);
                     break;
             }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// - 세팅 화면(공유 버튼)
-
 public class UIManager : MonoBehaviour
 {
     #region Variable Declaration
@@ -162,22 +160,26 @@ public class UIManager : MonoBehaviour
     public ExitMenu exitMenu; //나가기 창 (yes or no)
 
     GameObject loadingUI;
+    
+    //Sound    
     AudioSource btnSound; //버튼 누르는 소리
     AudioSource clearSound; //클리어 시 발생하는 소리
     AudioSource clearStarSound; //클리어 시 별이 떨어지는 소리
     
     AudioSource achieve100Sound; //만점 시 발생하는 소리
     AudioSource failSound; //실패 시 발생하는 소리
-    AudioSource slideUISound; //슬라이드 UI가 값을 변경할 때 나는 소리
     public AudioSource masterClearSound; //마스터 모드에서 클리어 시 발생하는 소리
     public AudioSource scoreSound; //점수가 올라갈 때마다 발생하는 소리
     //다른 곳에
-    public AudioSource objectRotateSound; // 오브젝트가 회전하면서 나는 소리
 
     bool isSaveCoolDown = false; //저장 대기 시간
 
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
+
+    //공유 버튼: 설명, 링크
+    private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
+	private const string body = "https://play.google.com/store/apps/details?id=com.CEREALLAB.FruitsLoop&showAllReviews=true";
     
     #endregion
 
@@ -290,6 +292,7 @@ public class UIManager : MonoBehaviour
         mainMenu.rectBtn.onClick.AddListener(() => DoStage(0)); //Rectangle
         mainMenu.hexBtn.onClick.AddListener(() => DoStage(1)); //Hexagon
         mainMenu.cubeBtn.onClick.AddListener(() => DoStage(2)); //Cube
+        mainMenu.shareBtn.onClick.AddListener(DoShare);
     }
 
     //메인 메뉴 UI 텍스트 설정
@@ -329,6 +332,23 @@ public class UIManager : MonoBehaviour
         ingameMenu.stageTitle.gameObject.SetActive(true);
         //ingameMenu.flipCount.gameObject.SetActive(true);
         ingameMenu.maxFlipCount.gameObject.SetActive(true);
+        btnSound.Play();
+    }
+
+    void DoShare(){
+#if UNITY_ANDROID && !UNITY_EDITOR
+		using (AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent")) 
+		using (AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent")) {
+			intentObject.Call<AndroidJavaObject>("setAction", intentObject.GetStatic<string>("ACTION_SEND"));
+			intentObject.Call<AndroidJavaObject>("setType", "text/plain");
+			intentObject.Call<AndroidJavaObject>("putExtra", intentObject.GetStatic<string>("EXTRA_SUBJECT"), subject);
+			intentObject.Call<AndroidJavaObject>("putExtra", intentObject.GetStatic<string>("EXTRA_TEXT"), body);
+			using (AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+			using (AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity")) 
+			using (AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share Via"))
+			currentActivity.Call("startActivity", jChooser);
+		}
+#endif
         btnSound.Play();
     }
 
