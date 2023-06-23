@@ -12,10 +12,11 @@ using UnityEngine.UI;
 // - 튜토리얼 만들기
 
 
-// - 모바일 상 마스터 모드 오류 수정하기(마스터 맵 저장, 말 누르기가 잘 안 됨)
-// - 브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
+// - **모바일 상 마스터 모드 오류 수정하기(마스터 맵 저장, 말 누르기가 잘 안 됨)
+// - 말 넣는 큐의 용량 제한하기
 
-// - 퍼즐 모드 제작
+
+// - ??브금 이상한거 수정하기, 홈 화면이 아니면 인게임 브금이 끊기지 않도록 재생 함수 난발하지 않기
 
 
 // 5. 구글 플레이 연동
@@ -52,7 +53,6 @@ public class GameManager : MonoBehaviour
     //kind 0, 1
     int[,,] board; //0: 검은색, 1: 흰색, 5: 없음
     int[,,] initBoard; //파일을 불러왔을 초기 상태의 보드
-    int[,,] masterTempBoard; //게임이 종료되지 않은 상태의 보드를 저장할 보드
     int s, u, v; //보드 칸(s: 면, u: 세로, v: 가로)
     int[,] adjSide; //3차원 보드의 한 면당 인접한 면을 표시
 
@@ -94,7 +94,6 @@ public class GameManager : MonoBehaviour
         finalClear = false;
         isCreatorMode = false;
         flipCount = 0;
-        masterTempBoard = null;
         masterTempFlip = new int[3];
         queHorse = new Queue<Basic_horse>[3];
         for (int i = 0; i < 3; i++)
@@ -180,14 +179,16 @@ public class GameManager : MonoBehaviour
     //텍스트 파일의 정보를 보드에 입력
     void FiletoBoard(String txtFile)
     {
+        Debug.Log(txtFile);
         StringReader strRea = new StringReader(txtFile);
         bool first = true;
         int uIndex = 0, sIndex = 0;
+        string line;
 
         // *스테이지 종류에 따라 적절히 수정하기*
         while (strRea != null)
         {
-            string line = strRea.ReadLine();
+            line = strRea.ReadLine();
 
             //텍스트 파일을 다 읽었는지 확인
             if (line == null)
@@ -376,12 +377,6 @@ public class GameManager : MonoBehaviour
         //이전에 진행한 스테이지를 불러올 때
         else if (PlayerData.Instance.data.isMasterDoing[curKind] && !next)
         {
-            // if(masterTempBoard == null)
-            //     MasterLoad();
-            // else{
-            //     BoardCopy(board, masterTempBoard);
-            //     realMaxFlip = masterTempFlip[curKind];
-            // }
             MasterLoad();
             uiManger.ingameMenu.masterScore.text = "" + PlayerData.Instance.data.masterCurrentScore[curKind];
         }
@@ -774,7 +769,6 @@ public class GameManager : MonoBehaviour
         PlayerData.Instance.data.masterCurrentClear[curKind] = 0;
         PlayerData.Instance.data.masterCurrentScore[curKind] = 0;
         MasterSave();
-        masterTempBoard = null;
     }
 
     //마스터 모드에서 점수가 올라갈 때 호출
@@ -814,40 +808,25 @@ public class GameManager : MonoBehaviour
     //현재 진행 중인 마스터 모드의 게임 상태를 백업
     void MasterSave() {
         //보드의 정보를 텍스트 파일로 저장
-        string path = "Assets/Resources/MasterModeStage/";
-        SaveStage(path, "MasterStage" + curKind, realMaxFlip);
+        //string path = "Assets/Resources/MasterModeStage/";
+        SaveStage(Application.persistentDataPath, "/MasterStage" + curKind, realMaxFlip);
 
         //마스터 모드의 정보를 Json 파일로 저장
         PlayerData.Instance.SaveData();
-
-        //텍스트 파일이 제대로 저장되지 않았을 경우 변수에 저장
-        // masterTempBoard = new int[s,u,v];
-        // BoardCopy(masterTempBoard, board);
-        // masterTempFlip[curKind] = realMaxFlip;
-        //----------------------------------------------------------------------------------삭제 후보
     }
-
-    //데스크탑 실행에만 사용(모바일 시에는 삭제)
-    void BoardCopy(int[,,] first, int[,,] second)
-    {
-        for (int i = 0; i < s; i++)
-        {
-            for (int j = 0; j < u; j++)
-            {
-                for (int k = 0; k < v; k++)
-                {
-                    first[i, j, k] = second[i, j, k];
-                }
-            }
-        }
-    }
-    //----------------------------------------------------------------------------------삭제 후보
 
     //백업된 마스터 모드의 게임 상태를 불러오기
     void MasterLoad()
     {
-        TextAsset masterFile = Resources.Load("MasterModeStage/MasterStage" + curKind) as TextAsset;
-        FiletoBoard(masterFile.text);
+        FileStream masterFile = new FileStream(string.Format("{0}/{1}.txt", Application.persistentDataPath, ("MasterStage" + curKind)), FileMode.Open);
+        StreamReader masterStream = new StreamReader(masterFile);
+        FiletoBoard(masterStream.ReadToEnd());
+        masterFile.Close();
+        masterStream.Close();
+        // if(file == null)
+        //     FiletoBoard(masterFile.text);
+        // else 
+        //     FiletoBoard(file);
         realMaxFlip = minFlip;
     }
 
