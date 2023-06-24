@@ -7,8 +7,7 @@ public class UIManager : MonoBehaviour
 {
     #region Variable Declaration
     public GameManager gameManager;
-    //public PlayerData playerData;
-
+    
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
         public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
