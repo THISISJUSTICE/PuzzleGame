@@ -31,7 +31,7 @@ public class PlayerData : MonoBehaviour
         public string userName; //플레이어 닉네임
         public int rank; //랭킹(실시간으로 랭킹 변동)
         public int[] stageTotalScore; //총 점수
-        public string lastDate; //총 점수를 얻은 날짜(랭킹 계산용)
+        public string lastDate; //총 점수를 얻은 날짜(랭킹 계산용) //삭제 후보 -------------------------------------------------------------------------
 
         public int[] clearStage; //각 스테이지 별 현재까지 클리어 한 스테이지
         //저장용 데이터
@@ -45,7 +45,6 @@ public class PlayerData : MonoBehaviour
         public int[] masterCurrentClear; //마스터 모드의 현재 클리어한 횟수
         public int[] masterMaxScore; //마스터 모드에서 지금까지 최대로 얻은 점수
         public int[] masterCurrentScore; //마스터 모드에서 현재 얻은 점수
-
         public bool[] isMasterDoing; //진행 중인 마스터 모드가 있는지 판단
         //보드, 현재 남은 플립 횟수는 텍스트 파일에 저장
 
@@ -92,7 +91,6 @@ public class PlayerData : MonoBehaviour
 
         Init();
         LoadData();
-        //rank 계산
     }
 
     void Init()
@@ -125,7 +123,7 @@ public class PlayerData : MonoBehaviour
         }
         data.userName = "Google ID";
         data.rank = 1; //최초엔 총 인원수 +1
-        data.lastDate = DateTime.Now.ToString("F");
+        data.lastDate = DateTime.Now.ToString("F"); //삭제 후보 -------------------------------------------------------------------------
 
         data.soundCk = false;
         data.soundVolume = 1.0f;
@@ -133,7 +131,6 @@ public class PlayerData : MonoBehaviour
         data.bgmVolume = 1.0f;
 
         SaveData();
-        Debug.Log("NewData");
     }
 
     //저장한 데이터 업데이트(StageManager에서 호출)
@@ -160,9 +157,7 @@ public class PlayerData : MonoBehaviour
         //totalscore 계산
         gameManager.uiManger.mainMenu.score.text = "Score: " + TotalScore();
 
-        //rank 계산
-        //gameManager.uiManger.mainMenu.rank.text = "Rank: " + data.rank;
-        data.lastDate = DateTime.Now.ToString("F");
+        data.lastDate = DateTime.Now.ToString("F"); //삭제 후보 -------------------------------------------------------------------------
         SaveData();
     }
 
@@ -181,7 +176,6 @@ public class PlayerData : MonoBehaviour
         }
         catch
         {
-            Debug.Log("로드 실패");
             NewData();
             return;
         }

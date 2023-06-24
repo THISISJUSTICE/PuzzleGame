@@ -168,16 +168,16 @@ public class UIManager : MonoBehaviour
 
     GameObject loadingUI;
     
-    //Sound    
-    AudioSource btnSound; //버튼 누르는 소리
-    AudioSource clearSound; //클리어 시 발생하는 소리
-    AudioSource clearStarSound; //클리어 시 별이 떨어지는 소리
-    
-    AudioSource achieve100Sound; //만점 시 발생하는 소리
-    AudioSource failSound; //실패 시 발생하는 소리
-    public AudioSource masterClearSound; //마스터 모드에서 클리어 시 발생하는 소리
-    public AudioSource scoreSound; //점수가 올라갈 때마다 발생하는 소리
-    //다른 곳에
+    public struct Sounds{
+        public AudioSource btnSound; //버튼 누르는 소리
+        public AudioSource clearSound; //클리어 시 발생하는 소리
+        public AudioSource clearStarSound; //클리어 시 별이 떨어지는 소리
+        public AudioSource achieve100Sound; //만점 시 발생하는 소리
+        public AudioSource failSound; //실패 시 발생하는 소리
+        public AudioSource masterClearSound; //마스터 모드에서 클리어 시 발생하는 소리
+        public AudioSource scoreSound; //점수가 올라갈 때마다 발생하는 소리
+    }
+    public Sounds sounds; //효과음
 
     bool isSaveCoolDown = false; //저장 대기 시간
 
@@ -243,7 +243,6 @@ public class UIManager : MonoBehaviour
     //나중에 진행할 작업
     void LateTask() {
         AudioInit();
-        //DoMute(true);
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < lobbyMenu.stageBtns[i].stageBtns.Length; j++)
@@ -260,6 +259,7 @@ public class UIManager : MonoBehaviour
         if(PlayerData.Instance.data.bgmCk) DoBGM_Mute(true);
         else DoBGM_Volume(PlayerData.Instance.data.bgmVolume);
 
+        //세팅이 끝난 UI 비활성화
         mainMenu.tutorialMenu.SetActive(false);
         for(int i =0; i<2; i++) mainMenu.tutorial[i].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
@@ -278,14 +278,14 @@ public class UIManager : MonoBehaviour
 
     //오디오 설정 초기화
     void AudioInit(){
-        btnSound = GetComponent<AudioSource>();
-        clearSound = clearMenu.clearMenu.GetComponent<AudioSource>();
-        clearStarSound = clearMenu.clearMenu.transform.GetChild(7).GetComponent<AudioSource>();
-        achieve100Sound = clearMenu.clearMenu.transform.GetChild(7).GetChild(2).GetComponent<AudioSource>();
-        failSound = failMenu.failMenu.GetComponent<AudioSource>();
+        sounds.btnSound = GetComponent<AudioSource>();
+        sounds.clearSound = clearMenu.clearMenu.GetComponent<AudioSource>();
+        sounds.clearStarSound = clearMenu.clearMenu.transform.GetChild(7).GetComponent<AudioSource>();
+        sounds.achieve100Sound = clearMenu.clearMenu.transform.GetChild(7).GetChild(2).GetComponent<AudioSource>();
+        sounds.failSound = failMenu.failMenu.GetComponent<AudioSource>();
         gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
-        masterClearSound = ingameMenu.masterGroup.GetComponent<AudioSource>();
-        scoreSound = ingameMenu.masterScore.GetComponent<AudioSource>();
+        sounds.masterClearSound = ingameMenu.masterGroup.GetComponent<AudioSource>();
+        sounds.scoreSound = ingameMenu.masterScore.GetComponent<AudioSource>();
 
         //bgm
         bgm_Player.bgmAudio = bgm_Player.GetComponent<AudioSource>();
@@ -311,10 +311,9 @@ public class UIManager : MonoBehaviour
 
     //메인 메뉴 UI 텍스트 설정
     void MainMenuText() {
-        //플레이어 데이터에서 불러오기
         mainMenu.nickName.text = PlayerData.Instance.data.userName;
         mainMenu.score.text = "Score: " + PlayerData.Instance.TotalScore();
-        mainMenu.rank.text = "Rank : " + (PlayerData.Instance.data.rank + 1);
+        mainMenu.rank.text = "Rank : " + (PlayerData.Instance.data.rank);
 
         for(int i=0; i<3; i++){
             mainMenu.stageScore[i].text = "" + (PlayerData.Instance.data.stageTotalScore[i] + PlayerData.Instance.data.masterMaxScore[i]);
@@ -325,16 +324,15 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //버튼
     void DoExit()
     {
         exitMenu.exitMenu.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     void DoSetting() {
         settingMenu.settingMenu.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //스테이지 버튼 4 종류(누를 시 게임 시작)
@@ -344,9 +342,8 @@ public class UIManager : MonoBehaviour
         ingameMenu.gameObject.SetActive(true);
 
         ingameMenu.stageTitle.gameObject.SetActive(true);
-        //ingameMenu.flipCount.gameObject.SetActive(true);
         ingameMenu.maxFlipCount.gameObject.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     void DoShare(){
@@ -363,20 +360,14 @@ public class UIManager : MonoBehaviour
 			currentActivity.Call("startActivity", jChooser);
 		}
 #endif
-        btnSound.Play();
-    }
-
-    void DoTutorial(){
-        
-        
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //튜토리얼 메뉴의 다음 페이지로 이동
     void DoTutorialMenu(GameObject self, GameObject next = null, bool menu = false){
         if(menu){
             self.SetActive(true);
-            btnSound.Play();
+            sounds.btnSound.Play();
         }
         else
             self.SetActive(false);
@@ -408,7 +399,7 @@ public class UIManager : MonoBehaviour
 
         BGMPlay(0);
         gameManager.RealDeleteHorse();
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //뒤로 가기 버튼(로비에서 게임 화면으로 다시 넘어감)
@@ -417,7 +408,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.lobbyMenu.SetActive(false);
         lobbyMenu.stageBtns[kind].gameObject.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     #endregion
@@ -442,12 +433,12 @@ public class UIManager : MonoBehaviour
         ingameMenu.exitBtn.onClick.AddListener(() => ingameMenu.ingameSettingMenu.SetActive(false));
 
         //버튼 소리 세팅
-        ingameMenu.settingBtn.onClick.AddListener(() => btnSound.Play());
-        ingameMenu.resetBtn.onClick.AddListener(() => btnSound.Play());
-        ingameMenu.cameraReset.onClick.AddListener(() => btnSound.Play());
-        ingameMenu.cameraUpBtn.onClick.AddListener(() => btnSound.Play());
-        ingameMenu.cameraDownBtn.onClick.AddListener(() => btnSound.Play());
-        ingameMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+        ingameMenu.settingBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        ingameMenu.resetBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        ingameMenu.cameraReset.onClick.AddListener(() => sounds.btnSound.Play());
+        ingameMenu.cameraUpBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        ingameMenu.cameraDownBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        ingameMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
 
         //소리 온오프, 볼륨
         ingameMenu.soundCk.onValueChanged.AddListener(SoundMute);
@@ -461,7 +452,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.lobbyMenu.SetActive(true);
         lobbyMenu.backBtn.gameObject.SetActive(true);
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
 
@@ -475,9 +466,9 @@ public class UIManager : MonoBehaviour
         clearMenu.exitBtn.onClick.AddListener(DoClearExit);
 
         //소리 세팅
-        clearMenu.backBtn.onClick.AddListener(() => btnSound.Play());
-        clearMenu.nextBtn.onClick.AddListener(() => btnSound.Play());
-        clearMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+        clearMenu.backBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        clearMenu.nextBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        clearMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
     }
 
     //스테이지 클리어 후 방금 진행한 스테이지를 바로 또 진행
@@ -485,7 +476,7 @@ public class UIManager : MonoBehaviour
         DoStageBack();
         clearMenu.clearMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //방금 진행한 스테이지를 다시 시작
@@ -493,7 +484,7 @@ public class UIManager : MonoBehaviour
         int kind = gameManager.curKind; //현재 스테이지 종류를 담는 변수
         gameManager.GameStart(gameManager.stage[kind], kind);
         ClearInit();
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //스테이지 클리어 후 다음 스테이지로 진행
@@ -504,7 +495,7 @@ public class UIManager : MonoBehaviour
         clearMenu.clearMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
         ClearInit();
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //스테이지 클리어 후 로비 화면으로 이동
@@ -513,7 +504,7 @@ public class UIManager : MonoBehaviour
         DoLobby();
         lobbyMenu.backBtn.gameObject.SetActive(false);
         ClearInit();
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     //클리어 UI 초기화
@@ -581,18 +572,16 @@ public class UIManager : MonoBehaviour
             clearMenu.scoreStar[i].gameObject.SetActive(true);
     }
 
-    public float timing;
-    public float startiming;
     IEnumerator StarSoundPlay(int score, float[] starFill){
         for(int i=0; i<3; i++){
             if(starFill[i] > 0) {
                 yield return new WaitForSeconds(0.275f);
-                clearStarSound.Play();
+                sounds.clearStarSound.Play();
             }
         }
         if(score == 100) {
             yield return new WaitForSeconds(0.3f);
-            achieve100Sound.Play();
+            sounds.achieve100Sound.Play();
         }
     }
 
@@ -605,22 +594,22 @@ public class UIManager : MonoBehaviour
         failMenu.backBtn.onClick.AddListener(DoFailBack);
 
         //소리 세팅
-        failMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
-        failMenu.backBtn.onClick.AddListener(() => btnSound.Play());
+        failMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        failMenu.backBtn.onClick.AddListener(() => sounds.btnSound.Play());
     }
 
     void DoFailExit() {
         failMenu.failMenu.SetActive(false);
         DoLobby();
         lobbyMenu.backBtn.gameObject.SetActive(false);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     void DoFailBack() {
         DoStageBack();
         failMenu.failMenu.SetActive(false);
         ingameMenu.gameObject.SetActive(true);
-        btnSound.Play();
+        sounds.btnSound.Play();
     }
 
     #endregion
@@ -629,7 +618,7 @@ public class UIManager : MonoBehaviour
     void SetSettingMenu()
     {
         settingMenu.exitBtn.onClick.AddListener(() => settingMenu.settingMenu.SetActive(false));
-        settingMenu.exitBtn.onClick.AddListener(() => btnSound.Play());
+        settingMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
         
         //소리 온오프, 볼륨
         settingMenu.soundCk.onValueChanged.AddListener(SoundMute);
@@ -638,18 +627,17 @@ public class UIManager : MonoBehaviour
         //배경음 온오프, 볼륨
         settingMenu.bgmCK.onValueChanged.AddListener(BGM_Mute);
         settingMenu.bgmScroll.onValueChanged.AddListener(BGM_Volume);
-
-        //공유 버튼
-        //settingMenu.shareBtn.onClick.AddListener();
     }
 
     //on이 true면 mute
     void SoundMute(bool on){
         DoSoundMute(on);
-        if(on){
-            DoSoundVolume(0);
+        if(on)
+            DoSoundVolume(0); 
+        else {
+            DoSoundVolume(0.1f);
+            sounds.btnSound.Play();
         }
-        else DoSoundVolume(0.1f);
         StopCoroutine(SettingChangeCheck());
         StartCoroutine(SettingChangeCheck());
     }
@@ -664,11 +652,11 @@ public class UIManager : MonoBehaviour
 
     //무한 재귀에 빠지지 않도록 Mute와 Volume 변경을 별도로 실행
     void DoSoundMute(bool on){
-        btnSound.mute = on;
-        clearSound.mute = on;
-        clearStarSound.mute = on;
-        achieve100Sound.mute = on;
-        failSound.mute = on;
+        sounds.btnSound.mute = on;
+        sounds.clearSound.mute = on;
+        sounds.clearStarSound.mute = on;
+        sounds.achieve100Sound.mute = on;
+        sounds.failSound.mute = on;
         gameManager.horseAudio.mute = on;
 
         //다른 세팅화면에서 눌렀어도 동기화
@@ -676,15 +664,14 @@ public class UIManager : MonoBehaviour
         ingameMenu.soundCk.isOn = on;
         settingMenu.soundoffImg.SetActive(!on);
         ingameMenu.soundoffImg.SetActive(!on);
-
     }
 
     void DoSoundVolume(float value){
-        btnSound.volume = value;
-        clearSound.volume = value;
-        clearStarSound.volume = value;
-        achieve100Sound.volume = value;
-        failSound.volume = value;
+        sounds.btnSound.volume = value;
+        sounds.clearSound.volume = value;
+        sounds.clearStarSound.volume = value;
+        sounds.achieve100Sound.volume = value;
+        sounds.failSound.volume = value;
         gameManager.horseAudio.volume = value;
 
         //다른 세팅화면에서 눌렀어도 동기화
@@ -694,6 +681,7 @@ public class UIManager : MonoBehaviour
 
     void BGM_Mute(bool on){
         DoBGM_Mute(on);
+        sounds.btnSound.Play();
         if(on){
             DoBGM_Volume(0);
         }
@@ -734,15 +722,11 @@ public class UIManager : MonoBehaviour
 
     public void BGMPlay(int type){
         bgm_Player.bgmAudio.clip = bgm_Player.bgms[type];
-        if(type == 0){
-            bgm_Player.bgmAudio.Play();
-        }
+        if(type == 0)
+            bgm_Player.bgmAudio.Play();      
         else{
             bgm_Player.bgmAudio.time = pauseTime;
             bgm_Player.bgmAudio.Play();
-
-            //if(bgm_Player.bgmAudio.isPlaying){}
-            //bgm_Player.bgmAudio.UnPause();
         }
     }
 
@@ -751,7 +735,6 @@ public class UIManager : MonoBehaviour
         bgm_Player.bgmAudio.Pause();
     }
     
-
     #endregion
 
     #region ExitMenu
@@ -759,8 +742,8 @@ public class UIManager : MonoBehaviour
         exitMenu.noBtn.onClick.AddListener(() => exitMenu.exitMenu.SetActive(false));
         exitMenu.yesBtn.onClick.AddListener(() => Application.Quit());
 
-        exitMenu.noBtn.onClick.AddListener(() => btnSound.Play());
-        exitMenu.yesBtn.onClick.AddListener(() => btnSound.Play());
+        exitMenu.noBtn.onClick.AddListener(() => sounds.btnSound.Play());
+        exitMenu.yesBtn.onClick.AddListener(() => sounds.btnSound.Play());
     }
 
     #endregion

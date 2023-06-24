@@ -71,9 +71,7 @@ public class StageManager : MonoBehaviour
             }
             //그외 나머지
             else
-            {
                 stageBtns[i].InputData();
-            }
         }
 
         //마스터 모드 버튼
@@ -81,8 +79,6 @@ public class StageManager : MonoBehaviour
             masterStageBtn.InputData(false, false,0, PlayerData.Instance.data.masterMaxScore[kind]);
         }
         else masterStageBtn.InputData();
-
-        //Event
     }
 
     //스테이지 클리어 시 게임 매니저에서 호출
@@ -108,20 +104,20 @@ public class StageManager : MonoBehaviour
         if(isRenew){
 
             //최초 클리어 시
-        if (PlayerData.Instance.data.clearStage[kind] < curStage)
-        {
-            PlayerData.Instance.data.clearStage[kind]++;
-            PlayerData.Instance.stageFlips[kind].Add(clearFlip);
-            PlayerData.Instance.stageScores[kind].Add(stageBtns[curStage].score);
-        }
-        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록하지 못할 시
-        else if (PlayerData.Instance.stageFlips[kind][curStage] <= clearFlip) return isRenew;
-        //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록할 시
-        else
-        {
-            PlayerData.Instance.stageFlips[kind][curStage] = clearFlip;
-            PlayerData.Instance.stageScores[kind][curStage] = stageBtns[curStage].score;
-        }
+            if (PlayerData.Instance.data.clearStage[kind] < curStage)
+            {
+                PlayerData.Instance.data.clearStage[kind]++;
+                PlayerData.Instance.stageFlips[kind].Add(clearFlip);
+                PlayerData.Instance.stageScores[kind].Add(stageBtns[curStage].score);
+            }
+            //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록하지 못할 시
+            else if (PlayerData.Instance.stageFlips[kind][curStage] <= clearFlip) return isRenew;
+            //이미 클리어한 스테이지를 클리어 했을 경우 + 기존보다 높은 점수를 기록할 시
+            else
+            {
+                PlayerData.Instance.stageFlips[kind][curStage] = clearFlip;
+                PlayerData.Instance.stageScores[kind][curStage] = stageBtns[curStage].score;
+            }
             PlayerData.Instance.UpdateData(kind, curStage, clearFlip, stageBtns[curStage].score, CalTotalScore());
         }
         return isRenew;

@@ -62,6 +62,7 @@ public class IngameSetting : MonoBehaviour
         bgmCK = ingameSettingMenu.transform.GetChild(5).GetComponent<Toggle>();
         bgmScroll = ingameSettingMenu.transform.GetChild(6).GetComponent<Scrollbar>();
 
+        //투명도 설정용
         albedoImg = new Image[17];
         albedoImg[0] = ingameSettingMenu.GetComponent<Image>();
         albedoImg[1] = cameraReset.image;
@@ -80,7 +81,6 @@ public class IngameSetting : MonoBehaviour
         albedoImg[14] = bgmCK.transform.GetChild(1).GetComponent<Image>();
         albedoImg[15] = bgmScroll.GetComponent<Image>();
         albedoImg[16] = bgmScroll.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-
 
         isActing = false;
     }

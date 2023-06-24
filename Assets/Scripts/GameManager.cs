@@ -5,70 +5,70 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-//·Îºñ ½ºÅ©·Ñ À§Ä¡ ¸Ç À§·Î ÃÊ±âÈ­ÇØµÎ±â(¾È ÇØµµ ÁöÀåÀº ¾øÀ½)
+//ë¡œë¹„ ìŠ¤í¬ë¡¤ ìœ„ì¹˜ ë§¨ ìœ„ë¡œ ì´ˆê¸°í™”í•´ë‘ê¸°(ì•ˆ í•´ë„ ì§€ì¥ì€ ì—†ìŒ)
 
-// - °ÔÀÓ ÀÌ¸§ (Reversio Flip)
-// - °ÔÀÓ ·Î°í
-// - ·Îµù È­¸é ²Ù¹Ì±â(°ÔÀÓ ·Î°í ¿Ï¼º ÈÄ)(°£´ÜÈ÷ ·Î°í¸¸ ¶ç¿ì±â or ·Îµù ¾Ö´Ï¸ŞÀÌ¼Ç)
-// - °øÀ¯ ¹öÆ°ÀÇ ¸µÅ© ¹Ù²Ù±â(°ÔÀÓ ¿Ï¼º ÈÄ)
+// - ê²Œì„ ì´ë¦„ (Reversi Flip)
+// - ê²Œì„ ë¡œê³ 
+// - ë¡œë”© í™”ë©´ ê¾¸ë¯¸ê¸°(ê²Œì„ ë¡œê³  ì™„ì„± í›„)(ê°„ë‹¨íˆ ë¡œê³ ë§Œ ë„ìš°ê¸° or ë¡œë”© ì• ë‹ˆë©”ì´ì…˜)
+// - ê³µìœ  ë²„íŠ¼ì˜ ë§í¬ ë°”ê¾¸ê¸°(ê²Œì„ ì™„ì„± í›„)
 
 
-// - **±¸±Û ÇÃ·¹ÀÌ ¿¬µ¿
-// - ±¸±Û ÇÃ·¹ÀÌ ¿¬µ¿ ÈÄ ·©Å· °è»ê
+// - **êµ¬ê¸€ í”Œë ˆì´ ì—°ë™
+// - êµ¬ê¸€ í”Œë ˆì´ ì—°ë™ í›„ ë­í‚¹ ê³„ì‚°
+// - ë­í¬, í˜„ì¬ ì‹œê°ì€ í•„ìš” ì—†ì„ ìˆ˜ ìˆìŒ
 
-// - Ãâ½ÃÇÏ´Â ¹öÀü¿¡´Â ÁÖ¼®, Debug, Generate ¸ğµå, ¾È ¾²´Â project ÆÄÀÏ ´Ù Áö¿ì±â
+// - ì¶œì‹œí•˜ëŠ” ë²„ì „ì—ëŠ” ì£¼ì„, Debug, Generate ëª¨ë“œ, ì•ˆ ì“°ëŠ” project íŒŒì¼ ë‹¤ ì§€ìš°ê¸°
 
 
 public class GameManager : MonoBehaviour
 {
     #region Variable Declaration
 
-    public Camera mainCamera; //¸ŞÀÎ Ä«¸Ş¶ó
+    public Camera mainCamera; //ë©”ì¸ ì¹´ë©”ë¼
     public UIManager uiManger;
 
-    public InputField stageName; //»ı¼ºÇÒ ½ºÅ×ÀÌÁö ÀÌ¸§À» °áÁ¤ÇÏ´Â UI
-    public Toggle creatorMode; //Ã¼Å©µÇ¸é ½ºÅ×ÀÌÁö »ı¼º ¸ğµå·Î º¯°æÇÏ´Â UI
-    public List<TextAsset> stage0Txt; //0½ºÅ×ÀÌÁö ÆÄÀÏÀ» ´ã´Â º¯¼ö
-    public List<TextAsset> stage1Txt; //1½ºÅ×ÀÌÁö ÆÄÀÏÀ» ´ã´Â º¯¼ö
-    public List<TextAsset> stage2Txt; //2½ºÅ×ÀÌÁö ÆÄÀÏÀ» ´ã´Â º¯¼ö
+    public InputField stageName; //ìƒì„±í•  ìŠ¤í…Œì´ì§€ ì´ë¦„ì„ ê²°ì •í•˜ëŠ” UI
+    public Toggle creatorMode; //ì²´í¬ë˜ë©´ ìŠ¤í…Œì´ì§€ ìƒì„± ëª¨ë“œë¡œ ë³€ê²½í•˜ëŠ” UI
+    public List<TextAsset> stage0Txt; //0ìŠ¤í…Œì´ì§€ íŒŒì¼ì„ ë‹´ëŠ” ë³€ìˆ˜
+    public List<TextAsset> stage1Txt; //1ìŠ¤í…Œì´ì§€ íŒŒì¼ì„ ë‹´ëŠ” ë³€ìˆ˜
+    public List<TextAsset> stage2Txt; //2ìŠ¤í…Œì´ì§€ íŒŒì¼ì„ ë‹´ëŠ” ë³€ìˆ˜
 
-    public Transform cubeSide3; //3Â÷¿ø Å¥ºêÀÇ 3°³ÀÇ ¸é
-    public Transform cubeSide6; //3Â÷¿ø Å¥ºêÀÇ 6°³ÀÇ ¸é
-    public Transform rotateObject; //È¸ÀüÀÌ µé¾î°¡´Â 3Â÷¿ø ¿ÀºêÁ§Æ®
+    public Transform cubeSide3; //3ì°¨ì› íë¸Œì˜ 3ê°œì˜ ë©´
+    public Transform cubeSide6; //3ì°¨ì› íë¸Œì˜ 6ê°œì˜ ë©´
+    public Transform rotateObject; //íšŒì „ì´ ë“¤ì–´ê°€ëŠ” 3ì°¨ì› ì˜¤ë¸Œì íŠ¸
 
-    public int[] stage; //°¢ ¸ğµåÀÇ ÇöÀç ½ºÅ×ÀÌÁö
-    public float createHorseTime; //¸»À» ´Ù ¼ÒÈ¯ÇÒ ¶§±îÁö °É¸®´Â ½Ã°£
-    public int curKind; //ÇöÀç ÁøÇàÇÏ°í ÀÖ´Â ½ºÅ×ÀÌÁöÀÇ Á¾·ù(0: »ç°¢Çü, 1: À°°¢Çü, 2: Å¥ºê, 3: ¹úÁı)
+    public int[] stage; //ê° ëª¨ë“œì˜ í˜„ì¬ ìŠ¤í…Œì´ì§€
+    public float createHorseTime; //ë§ì„ ë‹¤ ì†Œí™˜í•  ë•Œê¹Œì§€ ê±¸ë¦¬ëŠ” ì‹œê°„
+    public int curKind; //í˜„ì¬ ì§„í–‰í•˜ê³  ìˆëŠ” ìŠ¤í…Œì´ì§€ì˜ ì¢…ë¥˜(0: ì‚¬ê°í˜•, 1: ìœ¡ê°í˜•, 2: íë¸Œ, 3: ë²Œì§‘)
 
-    public AudioSource horseAudio; //¸» Àç»ı ¼Ò¸®
-    public AudioClip[] flipSounds; //¸»ÀÇ ¸é¿¡ µû¶ó ´Ù¸¥ ¼Ò¸® Àû¿ë
+    public AudioSource horseAudio; //ë§ ì¬ìƒ ì†Œë¦¬
+    public AudioClip[] flipSounds; //ë§ì˜ ë©´ì— ë”°ë¼ ë‹¤ë¥¸ ì†Œë¦¬ ì ìš©
 
-    GameObject[] basic_horse; //¸» ¿ÀºêÁ§Æ®(Á¾·ù º°·Î ³ª´©±â À§ÇØ ¹è¿­·Î ¼±¾ğ)
+    GameObject[] basic_horse; //ë§ ì˜¤ë¸Œì íŠ¸(ì¢…ë¥˜ ë³„ë¡œ ë‚˜ëˆ„ê¸° ìœ„í•´ ë°°ì—´ë¡œ ì„ ì–¸)
 
-    //kind 0, 1
-    int[,,] board; //0: °ËÀº»ö, 1: Èò»ö, 5: ¾øÀ½
-    int[,,] initBoard; //ÆÄÀÏÀ» ºÒ·¯¿ÔÀ» ÃÊ±â »óÅÂÀÇ º¸µå
-    int s, u, v; //º¸µå Ä­(s: ¸é, u: ¼¼·Î, v: °¡·Î)
-    int[,] adjSide; //3Â÷¿ø º¸µåÀÇ ÇÑ ¸é´ç ÀÎÁ¢ÇÑ ¸éÀ» Ç¥½Ã
+    int[,,] board; //0: ê²€ì€ìƒ‰, 1: í°ìƒ‰, 5: ì—†ìŒ
+    int[,,] initBoard; //íŒŒì¼ì„ ë¶ˆëŸ¬ì™”ì„ ì´ˆê¸° ìƒíƒœì˜ ë³´ë“œ
+    int s, u, v; //ë³´ë“œ ì¹¸(s: ë©´, u: ì„¸ë¡œ, v: ê°€ë¡œ)
+    int[,] adjSide; //3ì°¨ì› ë³´ë“œì˜ í•œ ë©´ë‹¹ ì¸ì ‘í•œ ë©´ì„ í‘œì‹œ
 
-    Vector3 createHorsePos; //¸»À» ¹èÄ¡ÇÒ ±âÁØ À§Ä¡
-    Basic_horse[,,] instantHorse; //¼ÒÈ¯ÇÑ 2Â÷¿ø ¸»
+    Vector3 createHorsePos; //ë§ì„ ë°°ì¹˜í•  ê¸°ì¤€ ìœ„ì¹˜
+    Basic_horse[,,] instantHorse; //ì†Œí™˜í•œ 2ì°¨ì› ë§
 
-    bool isFlip; //ÇöÀç ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ½ÇÇà ÁßÀÎÁö È®ÀÎÇÏ´Â º¯¼ö
-    bool finalClear; //ÃÖÁ¾ Å¬¸®¾î¸¦ È®ÀÎÇÏ´Â º¯¼ö
-    public bool isCreatorMode; //½ºÅ×ÀÌÁö »ı¼º ¸ğµåÀÎÁö È®ÀÎ
+    bool isFlip; //í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ì´ ì‹¤í–‰ ì¤‘ì¸ì§€ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
+    bool finalClear; //ìµœì¢… í´ë¦¬ì–´ë¥¼ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
+    public bool isCreatorMode; //ìŠ¤í…Œì´ì§€ ìƒì„± ëª¨ë“œì¸ì§€ í™•ì¸
 
-    Queue<Basic_horse>[] queHorse; //Áö¿î ¸»À» ÀçÈ°¿ëÇÏ±â À§ÇÑ º¯¼ö
-    int flipCount; //¸»À» µÚÁıÀº È½¼ö
-    int maxFlip; //¸» µÚÁı±â ÃÖ´ë È½¼ö(Á¡¼ö¿ë)
-    int realMaxFlip; //½ÇÁ¦·Î ÇÑ ½ºÅ×ÀÌÁö¿¡¼­ ÃÖ´ë·Î µÚÁıÀ» ¼ö ÀÖ´Â È½¼ö
-    int minFlip; //½ºÅ×ÀÌÁö¸¦ Å¬¸®¾îÇÏ±â À§ÇÑ ÃÖ¼Ò µÚÁı±â È½¼ö
-    int[] masterTempFlip; //¸¶½ºÅÍ ¸ğµåÀÇ ³²Àº ÇÃ¸³ ¼ö¸¦ ÀÓ½Ã·Î ´ãÀ» º¯¼ö
+    Queue<Basic_horse>[] queHorse; //ì§€ìš´ ë§ì„ ì¬í™œìš©í•˜ê¸° ìœ„í•œ í
+    int flipCount; //ë§ì„ ë’¤ì§‘ì€ íšŸìˆ˜
+    int maxFlip; //ë§ ë’¤ì§‘ê¸° ìµœëŒ€ íšŸìˆ˜(ì ìˆ˜ìš©)
+    int realMaxFlip; //ì‹¤ì œë¡œ í•œ ìŠ¤í…Œì´ì§€ì—ì„œ ìµœëŒ€ë¡œ ë’¤ì§‘ì„ ìˆ˜ ìˆëŠ” íšŸìˆ˜
+    int minFlip; //ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´í•˜ê¸° ìœ„í•œ ìµœì†Œ ë’¤ì§‘ê¸° íšŸìˆ˜
+    int[] masterTempFlip; //ë§ˆìŠ¤í„° ëª¨ë“œì˜ ë‚¨ì€ í”Œë¦½ ìˆ˜ë¥¼ ì„ì‹œë¡œ ë‹´ì„ ë³€ìˆ˜
 
-    Vector3[] stdPos; //À§Ä¡¸¦ Á¤ÇÑ È¸Àü ¿ÀºêÁ§Æ®¿Í ¸é ¿ÀºêÁ§Æ®ÀÇ ÃÊ±ê°ªÀ» ÀúÀå
-    Quaternion[] stdRot; //°¢µµ¸¦ Á¤ÇÑ È¸Àü ¿ÀºêÁ§Æ®¿Í ¸é ¿ÀºêÁ§Æ®ÀÇ ÃÊ±ê°ªÀ» ÀúÀå
+    Vector3[] stdPos; //ìœ„ì¹˜ë¥¼ ì •í•œ íšŒì „ ì˜¤ë¸Œì íŠ¸ì™€ ë©´ ì˜¤ë¸Œì íŠ¸ì˜ ì´ˆê¹ƒê°’ì„ ì €ì¥
+    Quaternion[] stdRot; //ê°ë„ë¥¼ ì •í•œ íšŒì „ ì˜¤ë¸Œì íŠ¸ì™€ ë©´ ì˜¤ë¸Œì íŠ¸ì˜ ì´ˆê¹ƒê°’ì„ ì €ì¥
 
-    //¼³Á¤À¸·Î Á¶Á¤ÇÏÁö ¾ÊÀ» °æ¿ìÀÇ Ä«¸Ş¶ó ¿ø·¡ °ª
+    //ì„¤ì •ìœ¼ë¡œ ì¡°ì •í•˜ì§€ ì•Šì„ ê²½ìš°ì˜ ì¹´ë©”ë¼ ì›ë˜ ê°’
     float cameraInitX;
     float cameraInitZoom;
 
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         Init();
     }
 
-    //ÃÊ±âÈ­ ÇÔ¼ö
+    //ì´ˆê¸°í™” í•¨ìˆ˜
     void Init()
     {
         basic_horse = new GameObject[3];
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //½ÃÀÛÇÒ ½ºÅ×ÀÌÁö, ½ºÅ×ÀÌÁö Á¾·ù¸¦ ÀÔ·Â¹Ş¾Æ ½ºÅ×ÀÌÁö ½ÇÇà
+    //ì‹œì‘í•  ìŠ¤í…Œì´ì§€, ìŠ¤í…Œì´ì§€ ì¢…ë¥˜ë¥¼ ì…ë ¥ë°›ì•„ ìŠ¤í…Œì´ì§€ ì‹¤í–‰
     public void GameStart(int curstage, int kind)
     {
         List<TextAsset> textFile = stage0Txt;
@@ -122,17 +122,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        if (textFile.Count <= curstage)
-        {
-            finalClear = true;
-        }
+        if (textFile.Count <= curstage) finalClear = true; 
         else finalClear = false;
 
         curKind = kind;
         stage[kind] = curstage;
         flipCount = 0;
 
-        //°ÔÀÓ ½ÃÀÛ Á÷Àü¿¡´Â UI ¹öÆ°À» ºñÈ°¼ºÈ­
+        //ê²Œì„ ì‹œì‘ ì§ì „ì—ëŠ” UI ë²„íŠ¼ì„ ë¹„í™œì„±í™”
         UI_Btn_OnOff(false);
 
         if (!finalClear)
@@ -145,13 +142,13 @@ public class GameManager : MonoBehaviour
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(true);
             uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);
         }
+        //ë§ˆìŠ¤í„° ëª¨ë“œ
         else
         {
             uiManger.ingameMenu.stageTitle.text = "MASTER";
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(false);
             uiManger.ingameMenu.masterGroup.SetActive(true);
             uiManger.ingameMenu.masterScore.text = "0";
-            // uiManger.ingameMenu.flipCount.gameObject.SetActive(false);
             StartCoroutine(MasterGame());
         }
         uiManger.BGMPlay(1);
@@ -159,52 +156,47 @@ public class GameManager : MonoBehaviour
 
     #region Horse_Create_and_Delete
 
-    //º¯¼ö¿¡ ÀúÀåµÈ ÅØ½ºÆ® ÆÄÀÏÀ» ÀĞ¾î º¸µå ÀÔ·Â (¸Ê ÆÄÀÏÀ» µå·¡±× ¾Ø µå·ÓÀ¸·Î ¹ŞÀ½)
+    //ë³€ìˆ˜ì— ì €ì¥ëœ í…ìŠ¤íŠ¸ íŒŒì¼ì„ ì½ì–´ ë³´ë“œ ì…ë ¥ (ë§µ íŒŒì¼ì„ ë“œë˜ê·¸ ì•¤ ë“œë¡­ìœ¼ë¡œ ë°›ìŒ)
     void ReadStageFile(int stage, List<TextAsset> textFile)
     {
         uiManger.ingameMenu.stageTitle.text = "STAGE " + (stage + 1);
 
         FiletoBoard(textFile[stage].text);
         
-        //º¸µåÀÇ ¸» ¼ö * 2 + ÃÖ¼Ò ÇÃ¸³
         maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
         realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
     }
 
-    //ÅØ½ºÆ® ÆÄÀÏÀÇ Á¤º¸¸¦ º¸µå¿¡ ÀÔ·Â
+    //í…ìŠ¤íŠ¸ íŒŒì¼ì˜ ì •ë³´ë¥¼ ë³´ë“œì— ì…ë ¥
     void FiletoBoard(String txtFile)
     {
-        Debug.Log(txtFile);
         StringReader strRea = new StringReader(txtFile);
         bool first = true;
         int uIndex = 0, sIndex = 0;
         string line;
 
-        // *½ºÅ×ÀÌÁö Á¾·ù¿¡ µû¶ó ÀûÀıÈ÷ ¼öÁ¤ÇÏ±â*
         while (strRea != null)
         {
             line = strRea.ReadLine();
 
-            //ÅØ½ºÆ® ÆÄÀÏÀ» ´Ù ÀĞ¾ú´ÂÁö È®ÀÎ
-            if (line == null)
-            {
+            //í…ìŠ¤íŠ¸ íŒŒì¼ì„ ë‹¤ ì½ì—ˆëŠ”ì§€ í™•ì¸
+            if (line == null)   
                 break;
-            }
 
-            //Ã¹ ¹øÂ° ÁÙÀÎÁö È®ÀÎ
+            //ì²« ë²ˆì§¸ ì¤„ì¸ì§€ í™•ì¸
             if (first)
             {
-                //Ã¹ ¹øÂ° ÁÙ¿¡´Â Çà, ¿­ÀÇ ¼ö¸¦ ÀÔ·Â
+                //ì²« ë²ˆì§¸ ì¤„ì—ëŠ” ë©´, í–‰, ì—´, ìµœì†Œ í”Œë¦½ì„ ì…ë ¥
                 int start = 0;
                 first = false;
                 switch (curKind)
                 {
-                    //2Â÷¿ø
+                    //2ì°¨ì›
                     case 0:
                     case 1:
                         s = 1;
                         break;
-                    //3Â÷¿ø
+                    //3ì°¨ì›
                     case 2:
                         s = int.Parse(line.Split(',')[start++]);
                         break;
@@ -236,7 +228,7 @@ public class GameManager : MonoBehaviour
         Define_AdjacentSide();
     }
 
-    //3Â÷¿ø¿¡ ÇÑ ¸é¿¡ ÀÎÁ¢ÇÑ ¸éÀÌ ¹«¾ùÀÎÁö Á¤ÀÇ
+    //3ì°¨ì›ì— í•œ ë©´ì— ì¸ì ‘í•œ ë©´ì´ ë¬´ì—‡ì¸ì§€ ì •ì˜
     void Define_AdjacentSide()
     {
         if (curKind == 2)
@@ -246,28 +238,28 @@ public class GameManager : MonoBehaviour
             else
                 adjSide = new int[6, 4];
 
-            //¸é 0ÀÇ ÀÎÁ¢ÇÑ ¸é
+            //ë©´ 0ì˜ ì¸ì ‘í•œ ë©´
             adjSide[0, 0] = 2;
             adjSide[0, 1] = 1;
-            //¸é 1ÀÇ ÀÎÁ¢ÇÑ ¸é
+            //ë©´ 1ì˜ ì¸ì ‘í•œ ë©´
             adjSide[1, 0] = 0;
             adjSide[1, 1] = 2;
-            //¸é 2ÀÇ ÀÎÁ¢ÇÑ ¸é
+            //ë©´ 2ì˜ ì¸ì ‘í•œ ë©´
             adjSide[2, 0] = 1;
             adjSide[2, 1] = 0;
 
             if (s == 6)
             {
-                //¸é 3ÀÇ ÀÎÁ¢ÇÑ ¸é
+                //ë©´ 3ì˜ ì¸ì ‘í•œ ë©´
                 adjSide[3, 0] = 5;
                 adjSide[3, 1] = 4;
-                //¸é 4ÀÇ ÀÎÁ¢ÇÑ ¸é
+                //ë©´ 4ì˜ ì¸ì ‘í•œ ë©´
                 adjSide[4, 0] = 3;
                 adjSide[4, 1] = 5;
-                //¸é 5ÀÇ ÀÎÁ¢ÇÑ ¸é
+                //ë©´ 5ì˜ ì¸ì ‘í•œ ë©´
                 adjSide[5, 0] = 4;
                 adjSide[5, 1] = 3;
-                //ÀÎÁ¢ÇÑ 2¸é¸¸ Á¤ÇÏ¸é ³ª¸ÓÁö´Â ¹İº¹¹®À¸·Î °è»ê
+                //ì¸ì ‘í•œ 2ë©´ë§Œ ì •í•˜ë©´ ë‚˜ë¨¸ì§€ëŠ” ë°˜ë³µë¬¸ìœ¼ë¡œ ê³„ì‚°
                 for (int i = 0; i < 6; i++)
                 {
                     for (int j = 0; j < 2; j++)
@@ -279,7 +271,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //º¸µå¿¡ ÀÖ´Â Á¤º¸¸¦ ¹ÙÅÁÀ¸·Î ¸» ¼ÒÈ¯
+    //ë³´ë“œì— ìˆëŠ” ì •ë³´ë¥¼ ë°”íƒ•ìœ¼ë¡œ ë§ ìƒì„±
     void CreateHorse()
     {
         instantHorse = new Basic_horse[s, u, v];
@@ -300,7 +292,7 @@ public class GameManager : MonoBehaviour
 
                         if (s > 1)
                         {
-                            //¸éÀÇ ¼ö¿¡ µû¶ó ÇØ´çÇÏ´Â ¸éÀÇ ÀÚ½ÄÀ¸·Î º¯È¯
+                            //ë©´ì˜ ìˆ˜ì— ë”°ë¼ í•´ë‹¹í•˜ëŠ” ë©´ì˜ ìì‹ìœ¼ë¡œ ë³€í™˜
                             if (s == 3)
                             {
                                 instantHorse[i, j, k].transform.parent = cubeSide3.GetChild(i);
@@ -319,18 +311,9 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-
-        //»ı¼ºÀÌ ¿Ï·áµÉ µ¿¾È ·Îµù È­¸é
     }
 
-    //½ºÅ×ÀÌÁö°¡ ³¡³ª°í, ±âÁ¸ ¸»µéÀ» ¸Ê¿¡¼­ Á¦°Å
-    IEnumerator DeleteHorse()
-    {
-        yield return new WaitForSeconds(0.7f);
-        RealDeleteHorse();
-    }
-
-    //¸»À» Å¥¿¡ ³Ö´Â ¹æ½ÄÀ¸·Î ½ºÅ×ÀÌÁö¿¡¼­ Á¦°Å
+    //ìŠ¤í…Œì´ì§€ê°€ ëë‚˜ê³  ê¸°ì¡´ ë§ë“¤ì„ íì— ë„£ëŠ” ë°©ì‹ìœ¼ë¡œ ìŠ¤í…Œì´ì§€ì—ì„œ ì œê±°
     public void RealDeleteHorse()
     {
         for (int i = 0; i < s; i++)
@@ -361,21 +344,21 @@ public class GameManager : MonoBehaviour
 
     #region MasterMode
 
-    //¸ğµç ½ºÅ×ÀÌÁö¸¦ Å¬¸®¾îÇßÀ» ¶§, ÇÃ·¹ÀÌÇÒ ¼ö ÀÖ´Â ¸ğµå
+    //ëª¨ë“  ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´í–ˆì„ ë•Œ, í”Œë ˆì´í•  ìˆ˜ ìˆëŠ” ëª¨ë“œ
     IEnumerator MasterGame(bool next = false)
     {
-        //ÀÌÀü ½ºÅ×ÀÌÁö¸¦ Å¬¸®¾îÇÏ°í ´ÙÀ½ ½ºÅ×ÀÌÁö¸¦ ÁøÇàÇÏ·Á´Â »óÈ²ÀÏ ¶§
+        //ì´ì „ ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´í•˜ê³  ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¥¼ ì§„í–‰í•˜ë ¤ëŠ” ìƒí™©ì¼ ë•Œ
         if (next)
         {
             CreateMasterBoard(PlayerData.Instance.data.masterCurrentClear[curKind]);
         }
-        //ÀÌÀü¿¡ ÁøÇàÇÑ ½ºÅ×ÀÌÁö¸¦ ºÒ·¯¿Ã ¶§
+        //ì´ì „ì— ì§„í–‰í•œ ìŠ¤í…Œì´ì§€ë¥¼ ë¶ˆëŸ¬ì˜¬ ë•Œ
         else if (PlayerData.Instance.data.isMasterDoing[curKind] && !next)
         {
             MasterLoad();
             uiManger.ingameMenu.masterScore.text = "" + PlayerData.Instance.data.masterCurrentScore[curKind];
         }
-        //Ã³À½ºÎÅÍ ½ÃÀÛ
+        //ì²˜ìŒë¶€í„° ì‹œì‘
         else
         {
             realMaxFlip = 0;
@@ -395,20 +378,21 @@ public class GameManager : MonoBehaviour
         MasterSave();
     }
 
+    //ë§ˆìŠ¤í„° ëª¨ë“œì˜ ì ìˆ˜ ì˜†ì— ìˆëŠ” ì™•ê´€ì˜ position ë°°ì¹˜
     void MasterMaxCrownMove(float width){
         RectTransform imageRect = uiManger.ingameMenu.crownIcon.GetComponent<RectTransform>();
         imageRect.localPosition = new Vector2(600 - width, imageRect.localPosition.y);
     }
 
-    //ÇöÀç Å¬¸®¾îÇÑ ½ºÅ×ÀÌÁö ¼ö¿¡ µû¸¥ ³­ÀÌµµ ¼³Á¤
+    //í˜„ì¬ í´ë¦¬ì–´í•œ ìŠ¤í…Œì´ì§€ ìˆ˜ì— ë”°ë¥¸ ë‚œì´ë„ ì„¤ì •
     int[] DefineMasterLevel(int curClear)
     {
-        int ds = 1, du = 4, dMin = 1, dMax = 2; //º¸µåÀÇ s,u,v, ÃÖ¼Ò ÇÃ¸³¼ö, ÃÖ´ë ÇÃ¸³ ¼ö 
-        int[] defineArr = new int[4]; //Ãâ·ÂÇÒ ¹è¿­
+        int ds = 1, du = 4, dMin = 1, dMax = 2; //ë³´ë“œì˜ s,u,v, ìµœì†Œ í”Œë¦½ìˆ˜, ìµœëŒ€ í”Œë¦½ ìˆ˜ 
+        int[] defineArr = new int[4]; //ì¶œë ¥í•  ë°°ì—´
         switch (curKind)
         {
             case 0:
-                // Ä­ ¼ö ÁöÁ¤
+                // ì¹¸ ìˆ˜ ì§€ì •
                 ds = 1;
                 if (curClear >= 56) du = UnityEngine.Random.Range(7, 9);
                 else
@@ -416,7 +400,7 @@ public class GameManager : MonoBehaviour
                     du = 4 + LevelCalculator(5, curClear);
                 }
 
-                //ÇÃ¸³ ¼ö ¹üÀ§ ÁöÁ¤
+                //í”Œë¦½ ìˆ˜ ë²”ìœ„ ì§€ì •
                 if (curClear >= 30)
                 {
                     dMin = du * 2;
@@ -436,7 +420,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 1:
-                // Ä­ ¼ö ÁöÁ¤
+                // ì¹¸ ìˆ˜ ì§€ì •
                 ds = 1;
                 if (curClear >= 80) du = UnityEngine.Random.Range(8, 10);
                 else
@@ -444,7 +428,7 @@ public class GameManager : MonoBehaviour
                     du = 4 + LevelCalculator(6, curClear);
                 }
 
-                //ÇÃ¸³ ¼ö ¹üÀ§ ÁöÁ¤
+                //í”Œë¦½ ìˆ˜ ë²”ìœ„ ì§€ì •
                 if(curClear >= 50){
                     dMin = du*2;
                     dMax = (ds*du*du) - du;
@@ -461,7 +445,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 2:
-                // Ä­ ¼ö ÁöÁ¤
+                // ì¹¸ ìˆ˜ ì§€ì •
                 if (curClear >= 80)
                 {
                     int random = UnityEngine.Random.Range(0, 2);
@@ -491,7 +475,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                //ÇÃ¸³ ¼ö ¹üÀ§ ÁöÁ¤
+                //í”Œë¦½ ìˆ˜ ë²”ìœ„ ì§€ì •
                 if(curClear >= 50){
                     dMin = du*2;
                     dMax = (ds*du*du) - du;
@@ -516,7 +500,7 @@ public class GameManager : MonoBehaviour
         return defineArr;
     }
 
-    //½ºÅ×ÀÌÁö ³­ÀÌµµ¸¦ ¼³Á¤
+    //ìŠ¤í…Œì´ì§€ ë‚œì´ë„ë¥¼ ì„¤ì •
     int LevelCalculator(int levelCount, int curClear)
     {
         int level = curClear / 4;
@@ -531,10 +515,10 @@ public class GameManager : MonoBehaviour
         return level;
     }
 
-    //¸¶½ºÅÍ ¸ğµåÀÇ ·£´ı º¸µå¸¦ »ı¼º
+    //ë§ˆìŠ¤í„° ëª¨ë“œì˜ ëœë¤ ë³´ë“œë¥¼ ìƒì„±
     void CreateMasterBoard(int curClear)
     {
-        int boardWhiteCount, boardBlankCount; //·£´ı º¸µåÀÇ Èò»ö, °ø¹éÀÇ °³¼ö
+        int boardWhiteCount, boardBlankCount; //ëœë¤ ë³´ë“œì˜ í°ìƒ‰, ê³µë°±ì˜ ê°œìˆ˜
         int x=1, y=1, z=1;
         int[,] flipCdn;
         int[] levelDesign = DefineMasterLevel(curClear);
@@ -551,10 +535,9 @@ public class GameManager : MonoBehaviour
             levelDesign[3] += boardBlankCount;
         }
         boardWhiteCount = UnityEngine.Random.Range(levelDesign[2], levelDesign[3] - boardBlankCount);
-        Debug.Log("boardWhiteCount: " + boardWhiteCount);
         flipCdn = new int[boardWhiteCount, 3];
 
-        //ÃÖÃÊ¿£ 0À¸·Î º¸µå ÃÊ±âÈ­
+        //ìµœì´ˆì—” 0ìœ¼ë¡œ ë³´ë“œ ì´ˆê¸°í™”
         for (int i = 0; i < s; i++)
         {
             for (int j = 0; j < u; j++)
@@ -566,7 +549,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //º¸µå¿¡ ºí·©Å© Ã¤¿ì±â
+        //ë³´ë“œì— ë¸”ë­í¬ ì±„ìš°ê¸°
         for (int i = 0; i < boardBlankCount; i++)
         {
             do
@@ -578,8 +561,8 @@ public class GameManager : MonoBehaviour
             board[z, x, y] = 5;
         }
 
-        //º¸µå¿¡ ÇÃ¸³ÇÒ ¸» Á¤ÇÏ±â
-        //¸» ¸®½ºÆ® Ã¤¿ì±â
+        //ë³´ë“œì— í”Œë¦½í•  ë§ ì •í•˜ê¸°
+        //ë§ ë¦¬ìŠ¤íŠ¸ ì±„ìš°ê¸°
         for (int i = 0; i < boardWhiteCount; i++)
         {
             do
@@ -588,7 +571,7 @@ public class GameManager : MonoBehaviour
                 y = UnityEngine.Random.Range(0, v);
                 z = UnityEngine.Random.Range(0, s);
             } while (board[z, x, y] == 5 || board[z, x, y] == 3);
-            //ÁÂÇ¥ÀÇ Áßº¹ Á¦°Å¸¦ À§ÇØ ÀÓ½Ã·Î º¸µå¿¡ 3À» ÀÔ·Â
+            //ì¢Œí‘œì˜ ì¤‘ë³µ ì œê±°ë¥¼ ìœ„í•´ ì„ì‹œë¡œ ë³´ë“œì— 3ì„ ì…ë ¥
             board[z, x, y] = 3;
             flipCdn[i, 0] = z;
             flipCdn[i, 1] = x;
@@ -599,25 +582,24 @@ public class GameManager : MonoBehaviour
             board[flipCdn[i, 0], flipCdn[i, 1], flipCdn[i, 2]] = 0;
         
 
-        //¸®½ºÆ®¿¡ ÁöÁ¤ÇÑ µ¥·Î ÇÃ¸³
+        //ë¦¬ìŠ¤íŠ¸ì— ì§€ì •í•œ ë°ë¡œ í”Œë¦½
         for (int i = 0; i < boardWhiteCount; i++)
             MasterBoardFlip(flipCdn[i, 1], flipCdn[i, 2], flipCdn[i, 0]);
         
         if(CheckClear()){
-            Debug.Log($"flipCdn: [{z}, {x}, {y}]");
             MasterBoardFlip(x, y, z);
         }
         
     }
 
-    //·£´ı º¸µå¸¦ »ı¼ºÇÏ±â À§ÇÑ ÇÃ¸³ ÇÔ¼ö
+    //ëœë¤ ë³´ë“œë¥¼ ìƒì„±í•˜ê¸° ìœ„í•œ í”Œë¦½ í•¨ìˆ˜
     void MasterBoardFlip(int hu, int hv, int hs)
     {
-        int tu, tv, ts; //ÀÓ½Ã·Î ´ãÀ» º¯¼ö
+        int tu, tv, ts; //ì„ì‹œë¡œ ë‹´ì„ ë³€ìˆ˜
 
-        board[hs, hu, hv] = BoardFlipHorse(board[hs, hu, hv]); //ÁöÁ¤ÇÑ ¸» µÚÁı±â
+        board[hs, hu, hv] = BoardFlipHorse(board[hs, hu, hv]); //ì§€ì •í•œ ë§ ë’¤ì§‘ê¸°
 
-        //ÁöÁ¤ÇÑ ¸» ÁÖº¯À» µÚÁı±â
+        //ì§€ì •í•œ ë§ ì£¼ë³€ì„ ë’¤ì§‘ê¸°
         switch (curKind)
         {
             case 0:
@@ -642,7 +624,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 2:
-                //adj 3¸é
+                //adj 3ë©´
                 if (s == 6 && hv == v - 1)
                 {
                     ts = adjSide[hs, 3];
@@ -657,7 +639,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                //adj 0 ¸é
+                //adj 0 ë©´
                 if (hu == 0)
                 {
                     ts = adjSide[hs, 0];
@@ -673,7 +655,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                //s¸é
+                //së©´
                 for (int i = -1; i <= 1; i++)
                 {
                     for (int j = -1; j <= 1; j++)
@@ -689,7 +671,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                //adj1 ¸é
+                //adj1 ë©´
                 if (hv == 0)
                 {
                     ts = adjSide[hs, 1];
@@ -704,7 +686,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                //adj 2¸é
+                //adj 2ë©´
                 if (s == 6 && hu == u - 1)
                 {
                     ts = adjSide[hs, 2];
@@ -722,7 +704,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //º¸µå »ı¼º¿¡¸¸ ½ÇÇàÇÏ´Â ÇÃ¸³ ÇÔ¼ö
+    //ë³´ë“œ ìƒì„±ì—ë§Œ ì‹¤í–‰í•˜ëŠ” í”Œë¦½ í•¨ìˆ˜
     int BoardFlipHorse(int curState)
     {
         if (curState == 1)
@@ -734,15 +716,16 @@ public class GameManager : MonoBehaviour
         return curState;
     }
 
-    //¸¶½ºÅÍ ¸ğµåÀÇ ÇÑ ½ºÅ×ÀÌÁö Å¬¸®¾î ½Ã È£Ãâ
+    //ë§ˆìŠ¤í„° ëª¨ë“œì˜ í•œ ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ ì‹œ í˜¸ì¶œ
     IEnumerator MasterClear()
     {
-        StartCoroutine(DeleteHorse());
+        yield return new WaitForSeconds(0.5f);
+        RealDeleteHorse();
         Ingame_Lobby_Setting_OnOff(false);
 
-        uiManger.masterClearSound.Play();
+        uiManger.sounds.masterClearSound.Play();
 
-        //ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
+        //í”Œë ˆì´ì–´ ë°ì´í„° ì—…ë°ì´íŠ¸
         int[] mastercurLevel = DefineMasterLevel(PlayerData.Instance.data.masterCurrentClear[curKind]);
         PlayerData.Instance.data.masterCurrentClear[curKind]++;
         int[] masterNextLevel = DefineMasterLevel(PlayerData.Instance.data.masterCurrentClear[curKind]);
@@ -751,12 +734,12 @@ public class GameManager : MonoBehaviour
 
         MasterSave();
 
-        //´ÙÀ½ ½ºÅ×ÀÌÁö ½ÃÀÛ
-        yield return new WaitForSeconds(1);
+        //ë‹¤ìŒ ìŠ¤í…Œì´ì§€ ì‹œì‘
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine(MasterGame(true));
     }
 
-    //¸¶½ºÅÍ ¸ğµå ½ºÅ×ÀÌÁö¿¡¼­ ½ÇÆĞÇßÀ» ¶§ È£Ãâ
+    //ë§ˆìŠ¤í„° ëª¨ë“œ ìŠ¤í…Œì´ì§€ì—ì„œ ì‹¤íŒ¨í–ˆì„ ë•Œ í˜¸ì¶œ
     void MasterFail()
     {
         StartCoroutine(StageFail());
@@ -766,7 +749,7 @@ public class GameManager : MonoBehaviour
         MasterSave();
     }
 
-    //¸¶½ºÅÍ ¸ğµå¿¡¼­ Á¡¼ö°¡ ¿Ã¶ó°¥ ¶§ È£Ãâ
+    //ë§ˆìŠ¤í„° ëª¨ë“œì—ì„œ ì ìˆ˜ê°€ ì˜¬ë¼ê°ˆ ë•Œ í˜¸ì¶œ
     IEnumerator MasterScoreRise(int masterScore)
     {
         bool isMaxAnim = false;
@@ -776,7 +759,7 @@ public class GameManager : MonoBehaviour
             isMaxAnim = true;
         }
 
-        //Á¡¼ö ¿Ã¶ó°¡´Â ¾Ö´Ï¸ŞÀÌ¼Ç
+        //ì ìˆ˜ ì˜¬ë¼ê°€ëŠ” ì• ë‹ˆë©”ì´ì…˜
         for (int i = 1; i <= masterScore; i++)
         {
             uiManger.ingameMenu.masterScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
@@ -784,12 +767,12 @@ public class GameManager : MonoBehaviour
                 uiManger.ingameMenu.masterMaxScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
                 MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
             }
-            if(i > 1) uiManger.scoreSound.Play();
+            if(i > 1) uiManger.sounds.scoreSound.Play();
             yield return new WaitForSeconds(1.1f / masterScore);
         }
     }
 
-    //¸¶½ºÅÍ ¸ğµåÀÇ ÇÃ¸³ÀÌ ¿À¸£´Â ¾Ö´Ï¸ŞÀÌ¼Ç
+    //ë§ˆìŠ¤í„° ëª¨ë“œì˜ í”Œë¦½ì´ ì˜¤ë¥´ëŠ” ì• ë‹ˆë©”ì´ì…˜
     IEnumerator MasterFlipRise(int masterFlip)
     {
         realMaxFlip += masterFlip;
@@ -800,17 +783,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //ÇöÀç ÁøÇà ÁßÀÎ ¸¶½ºÅÍ ¸ğµåÀÇ °ÔÀÓ »óÅÂ¸¦ ¹é¾÷
+    //í˜„ì¬ ì§„í–‰ ì¤‘ì¸ ë§ˆìŠ¤í„° ëª¨ë“œì˜ ê²Œì„ ìƒíƒœë¥¼ ë°±ì—…
     void MasterSave() {
-        //º¸µåÀÇ Á¤º¸¸¦ ÅØ½ºÆ® ÆÄÀÏ·Î ÀúÀå
-        //string path = "Assets/Resources/MasterModeStage/";
+        //ë³´ë“œì˜ ì •ë³´ë¥¼ í…ìŠ¤íŠ¸ íŒŒì¼ë¡œ ì €ì¥
         SaveStage(Application.persistentDataPath, "/MasterStage" + curKind, realMaxFlip);
 
-        //¸¶½ºÅÍ ¸ğµåÀÇ Á¤º¸¸¦ Json ÆÄÀÏ·Î ÀúÀå
+        //ë§ˆìŠ¤í„° ëª¨ë“œì˜ ì •ë³´ë¥¼ Json íŒŒì¼ë¡œ ì €ì¥
         PlayerData.Instance.SaveData();
     }
 
-    //¹é¾÷µÈ ¸¶½ºÅÍ ¸ğµåÀÇ °ÔÀÓ »óÅÂ¸¦ ºÒ·¯¿À±â
+    //ë°±ì—…ëœ ë§ˆìŠ¤í„° ëª¨ë“œì˜ ê²Œì„ ìƒíƒœë¥¼ ë¶ˆëŸ¬ì˜¤ê¸°
     void MasterLoad()
     {
         FileStream masterFile = new FileStream(string.Format("{0}/{1}.txt", Application.persistentDataPath, ("MasterStage" + curKind)), FileMode.Open);
@@ -825,7 +807,7 @@ public class GameManager : MonoBehaviour
 
     #region PlaceHorse 
 
-    //º¸µåÀÇ Ä­¿¡ µû¶ó ¸»ÀÇ ÁÂÇ¥ ¹× Ä«¸Ş¶ó À§Ä¡, °¢µµ¸¦ °áÁ¤
+    //ë³´ë“œì˜ ì¹¸ì— ë”°ë¼ ë§ì˜ ì¢Œí‘œ ë° ì¹´ë©”ë¼ ìœ„ì¹˜, ê°ë„ë¥¼ ê²°ì •
     void DefineHorsePos()
     {
         switch (curKind)
@@ -841,7 +823,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        //Ä«¸Ş¶ó·Î º¼ ¼ö ¾ø´Â ¸éÀÌ »ı±â¸é ¿ÀºêÁ§Æ®¸¦ È¸ÀüÇÒ ¼ö ÀÖ´Â ½ºÅ©·Ñ »ı¼º
+        //ì¹´ë©”ë¼ë¡œ ë³¼ ìˆ˜ ì—†ëŠ” ë©´ì´ ìƒê¸°ë©´ ì˜¤ë¸Œì íŠ¸ë¥¼ íšŒì „í•  ìˆ˜ ìˆëŠ” ìŠ¤í¬ë¡¤ ìƒì„±
         if (curKind == 2 && s == 6)
         {
             uiManger.ingameMenu.isScroll = true;
@@ -865,16 +847,12 @@ public class GameManager : MonoBehaviour
                 x = -2;
                 break;
             case 5:
-                x = -3;
-                break;
             case 6:
+            case 8:
                 x = -3;
                 break;
             case 7:
                 x = -3.5f;
-                break;
-            case 8:
-                x = -3;
                 break;
             default:
                 x = 0;
@@ -964,7 +942,6 @@ public class GameManager : MonoBehaviour
         cameraInitX = (u - 3) * (-0.5f) + 4.5f;
         mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
         mainCamera.transform.rotation = Quaternion.Euler((u - 3) * 5 + 60, -90, 0);
-        //z = (v - 3) * (-0.5f) - 1;
         cameraInitZoom = 60;
         mainCamera.fieldOfView = cameraInitZoom;
         createHorsePos = new Vector3(x, y, z);
@@ -973,18 +950,18 @@ public class GameManager : MonoBehaviour
     //kind 2
     void HorsePos2()
     {
-        //È¸ÀüÀÌ ÇÊ¿äÇÑ ¿ÀºêÁ§Æ®´Â È¸Àü ¿ÀºêÁ§Æ®ÀÇ À§Ä¡, °¢µµ, ¸é ¿ÀºêÁ§Æ®ÀÇ À§Ä¡, °¢µµ±îÁö °è»ê
-        //¸éÀÌ 3°³ ÀÏ¶§
+        //íšŒì „ì´ í•„ìš”í•œ ì˜¤ë¸Œì íŠ¸ëŠ” íšŒì „ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜, ê°ë„, ë©´ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜, ê°ë„ê¹Œì§€ ê³„ì‚°
+        //ë©´ì´ 3ê°œ ì¼ë•Œ
         if (s == 3)
         {
             cubeSide3.gameObject.SetActive(true);
 
-            //¸éÀ» Æ÷ÇÔÇÑ ¿ÀºêÁ§Æ®ÀÇ À§Ä¡¿Í Ä«¸Ş¶ó À§Ä¡ Á¶Á¤
+            //ë©´ì„ í¬í•¨í•œ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜ì™€ ì¹´ë©”ë¼ ìœ„ì¹˜ ì¡°ì •
             cubeSide3.rotation = Quaternion.Euler(-22.5f, 40, 22.5f);
             cameraInitX = 4.5f;
             mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
 
-            //ÇÑ ¸éÀÇ Ä­ ¼ö: (2x2 ~ 6x6), u=v
+            //í•œ ë©´ì˜ ì¹¸ ìˆ˜: (2x2 ~ 6x6), u=v
             switch (u)
             {
                 case 2:
@@ -1011,12 +988,12 @@ public class GameManager : MonoBehaviour
             mainCamera.fieldOfView = cameraInitZoom;
         }
 
-        //¸éÀÌ 6°³ÀÏ ¶§
+        //ë©´ì´ 6ê°œì¼ ë•Œ
         else if (s == 6)
         {
             cubeSide6.gameObject.SetActive(true);
 
-            //Ä«¸Ş¶ó À§Ä¡, °¢µµ, ÁÜ Á¶Á¤
+            //ì¹´ë©”ë¼ ìœ„ì¹˜, ê°ë„, ì¤Œ ì¡°ì •
             cameraInitX = 4.5f;
             mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
             mainCamera.transform.rotation = Quaternion.Euler(60, -90, 0);
@@ -1026,7 +1003,7 @@ public class GameManager : MonoBehaviour
             stdRot[0] = Quaternion.Euler(0, 0, 0);
             stdRot[1] = Quaternion.Euler(0, 45, 0);
 
-            //ÇÑ ¸éÀÇ Ä­ ¼ö: (2x2 ~ 4x4) u=v
+            //í•œ ë©´ì˜ ì¹¸ ìˆ˜: (2x2 ~ 4x4) u=v
             switch (u)
             {
                 case 2:
@@ -1047,14 +1024,14 @@ public class GameManager : MonoBehaviour
             cubeSide6.GetChild(3).localPosition = new Vector3((u - 2) * (-1) - 1.5f, (u - 2) * (-1) - 1.5f, (u - 2) * (-1) - 1);
             cubeSide6.GetChild(4).localPosition = new Vector3((u - 2) * (-1) - 1, (u - 2) * (-1) - 1.5f, (u - 2) * (-1) - 1.5f);
             cubeSide6.GetChild(5).localPosition = new Vector3((u - 2) * (-1) - 1, (u - 2) * (-1) - 2, (u - 2) * (-1) - 1);
-            //¸éµéÀÇ Áß½ÉÀ» Ã¤¿öÁÙ Å¥ºê ¿ÀºêÁ§Æ®
+            //ë©´ë“¤ì˜ ì¤‘ì‹¬ì„ ì±„ì›Œì¤„ íë¸Œ ì˜¤ë¸Œì íŠ¸
             cubeSide6.GetChild(6).localPosition = new Vector3((u - 2) * (-0.5f) - 0.5f, (u - 2) * (-0.5f) - 1, (u - 2) * (-0.5f) - 0.5f);
             cubeSide6.GetChild(6).localScale = new Vector3((u - 2) + 1.5f, (u - 2) + 1.5f, (u - 2) + 1.5f);
             cubeSide6.GetChild(6).gameObject.SetActive(false);
         }
     }
 
-    //º¸µå¿¡ ÀÖ´Â Á¤º¸¸¦ ¹ÙÅÁÀ¸·Î ÀûÀıÇÑ À§Ä¡¿¡ ¸» ¹èÄ¡
+    //ë³´ë“œì— ìˆëŠ” ì •ë³´ë¥¼ ë°”íƒ•ìœ¼ë¡œ ì ì ˆí•œ ìœ„ì¹˜ì— ë§ ë°°ì¹˜
     IEnumerator PlaceHorse(Vector3 createPosition)
     {
         Vector3 pos, initPos = createPosition;
@@ -1099,7 +1076,7 @@ public class GameManager : MonoBehaviour
                         instantHorse[i, j, k].transform.localPosition = pos;
                         instantHorse[i, j, k].gameObject.SetActive(true);
                         instantHorse[i, j, k].PlaySummon(board[i, j, k]);
-                        yield return new WaitForSeconds(createHorseTime / (s * u * v)); //¸»ÀÇ ¼ö°¡ ¸¹Àº ¸¸Å­ ½Ã°£ ÁÙÀÌ±â
+                        yield return new WaitForSeconds(createHorseTime / (s * u * v)); //ë§ì˜ ìˆ˜ê°€ ë§ì€ ë§Œí¼ ì‹œê°„ ì¤„ì´ê¸°
                     }
                     pos.z += addz;
                 }
@@ -1117,7 +1094,7 @@ public class GameManager : MonoBehaviour
             cubeSide6.GetChild(6).gameObject.SetActive(true);
         }
 
-        //¹èÄ¡ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³ª°íºÎÅÍ ÇÃ¸³ ½ÇÇà °¡´É
+        //ë°°ì¹˜ ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚˜ê³ ë¶€í„° í”Œë¦½ ì‹¤í–‰ ê°€ëŠ¥
         int a = 1, b = 1, c = 1;
         while (instantHorse[s - c, u - a, v - b] == null)
         {
@@ -1130,11 +1107,11 @@ public class GameManager : MonoBehaviour
         }
         StartCoroutine(CheckAnim(u - a, v - b, s - c));
 
-        //¸» ¹èÄ¡°¡ ³¡³ª¸é UI ¹öÆ° È°¼ºÈ­
+        //ë§ ë°°ì¹˜ê°€ ëë‚˜ë©´ UI ë²„íŠ¼ í™œì„±í™”
         UI_Btn_OnOff(true);
     }
 
-    //½ºÅ©·Ñ, 3Â÷¿ø ¹°Ã¼ °¢µµ ÃÊ±âÈ­
+    //ìŠ¤í¬ë¡¤, 3ì°¨ì› ë¬¼ì²´ ê°ë„ ì´ˆê¸°í™”
     void Set3DRotate(Transform tempObj)
     {
         uiManger.ingameMenu.vScroll.value = 0;
@@ -1146,20 +1123,20 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    //¸» ÇÏ³ª¸¦ µÚÁıÀ¸¸é ÁÖº¯¿¡ ÀÖ´Â ¸»µéµµ ÇÔ²² µÚÁıÈ÷°Ô ÇÏ´Â ÇÔ¼ö
+    //ë§ í•˜ë‚˜ë¥¼ ë’¤ì§‘ìœ¼ë©´ ì£¼ë³€ì— ìˆëŠ” ë§ë“¤ë„ í•¨ê»˜ ë’¤ì§‘íˆê²Œ í•˜ëŠ” í•¨ìˆ˜
     public IEnumerator Flip_in_Board(int hu, int hv, int hs)
     {
-        //ÇöÀç ÇÃ¸³ÀÌ ½ÇÇà ÁßÀÌ ¾Æ´Ï°í, ÀÎ°ÔÀÓ UI°¡ ÄÑÁ®ÀÖ°í, ÀÎ°ÔÀÓ ¼¼ÆÃ UI°¡ ²¸Á® ÀÖÀ» ¶§ ½ÇÇà
-        //»ı¼º ¸ğµå°¡ ¾Æ´Ñ »óÅÂ¿¡¼­ Å¬¸®¾îÇÏ°Å³ª Å¬¸®¾î ½ÇÆĞ¸¦ ÇÏÁö ¾ÊÀ» ¶§ ½ÇÇà        
+        //í˜„ì¬ í”Œë¦½ì´ ì‹¤í–‰ ì¤‘ì´ ì•„ë‹ˆê³ , ì¸ê²Œì„ UIê°€ ì¼œì ¸ìˆê³ , ì¸ê²Œì„ ì„¸íŒ… UIê°€ ê»´ì ¸ ìˆì„ ë•Œ ì‹¤í–‰
+        //ìƒì„± ëª¨ë“œê°€ ì•„ë‹Œ ìƒíƒœì—ì„œ í´ë¦¬ì–´í•˜ê±°ë‚˜ í´ë¦¬ì–´ ì‹¤íŒ¨ë¥¼ í•˜ì§€ ì•Šì„ ë•Œ ì‹¤í–‰        
         if (!isFlip && !uiManger.ingameMenu.ingameSettingMenu.activeSelf && uiManger.ingameMenu.gameObject.activeSelf
         && !(CheckClear() && !isCreatorMode) && !IsFail())
         {
-            int tu, tv, ts; //ÀÓ½Ã·Î ´ãÀ» º¯¼ö
-            int lu, lv, ls; //°¡Àå ¸¶Áö¸·¿¡ ½ÇÇàµÈ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» È®ÀÎÇÏ´Â º¯¼ö
+            int tu, tv, ts; //ì„ì‹œë¡œ ë‹´ì„ ë³€ìˆ˜
+            int lu, lv, ls; //ê°€ì¥ ë§ˆì§€ë§‰ì— ì‹¤í–‰ëœ ì• ë‹ˆë©”ì´ì…˜ì„ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
 
             isFlip = true;
 
-            //¸¶½ºÅÍ ¸ğµå
+            //ë§ˆìŠ¤í„° ëª¨ë“œ
             if (finalClear)
             {
                 realMaxFlip--;
@@ -1169,20 +1146,18 @@ public class GameManager : MonoBehaviour
             else
             {
                 flipCount++;
-                // uiManger.ingameMenu.flipCount.text = "";
-                // uiManger.ingameMenu.flipCount.text += flipCount;
                 uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);
             }
 
             Debug.Log($"s: {hs}, u: {hu}, v: {hv}");
 
-            board[hs, hu, hv] = instantHorse[hs, hu, hv].FlipHorse(board[hs, hu, hv]); //ÁöÁ¤ÇÑ ¸»À» µÚÁı±â      
+            board[hs, hu, hv] = instantHorse[hs, hu, hv].FlipHorse(board[hs, hu, hv]); //ì§€ì •í•œ ë§ì„ ë’¤ì§‘ê¸°      
             lu = hu;
             lv = hv;
             ls = hs;
             yield return new WaitForSeconds(0.1f);
 
-            //ÁöÁ¤ÇÑ ¸» ÁÖº¯ÀÇ ¸»µéµµ µÚÁı±â(½ºÅ×ÀÌÁö Á¾·ù¿¡ µû¶ó ·ÎÁ÷ º¯°æ)
+            //ì§€ì •í•œ ë§ ì£¼ë³€ì˜ ë§ë“¤ë„ ë’¤ì§‘ê¸°(ìŠ¤í…Œì´ì§€ ì¢…ë¥˜ì— ë”°ë¼ ë¡œì§ ë³€ê²½)
             switch (curKind)
             {
                 case 0:
@@ -1210,7 +1185,7 @@ public class GameManager : MonoBehaviour
                     break;
 
                 case 2:
-                    //adj 3¸é
+                    //adj 3ë©´
                     if (s == 6 && hv == v - 1)
                     {
                         ts = adjSide[hs, 3];
@@ -1229,7 +1204,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
 
-                    //adj 0 ¸é
+                    //adj 0 ë©´
                     if (hu == 0)
                     {
                         ts = adjSide[hs, 0];
@@ -1249,7 +1224,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
 
-                    //s¸é
+                    //së©´
                     for (int i = -1; i <= 1; i++)
                     {
                         for (int j = -1; j <= 1; j++)
@@ -1269,7 +1244,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
 
-                    //adj1 ¸é
+                    //adj1 ë©´
                     if (hv == 0)
                     {
                         ts = adjSide[hs, 1];
@@ -1288,7 +1263,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
 
-                    //adj 2¸é
+                    //adj 2ë©´
                     if (s == 6 && hu == u - 1)
                     {
                         ts = adjSide[hs, 2];
@@ -1309,13 +1284,10 @@ public class GameManager : MonoBehaviour
                     break;
             }
 
-            if (isCreatorMode) Debug.Log("»ı¼º ¸ğµå");
-
-            //Å¬¸®¾î Ã¼Å©
+            //í´ë¦¬ì–´ ì²´í¬
             if (CheckClear() && !isCreatorMode)
             {
                 isFlip = false;
-                Debug.Log("Clear!");
                 if (finalClear) StartCoroutine(MasterClear());
                 else StartCoroutine(StageClear());
             }
@@ -1327,12 +1299,12 @@ public class GameManager : MonoBehaviour
 
             if (finalClear) MasterSave();
 
-            //°¡Àå ¸¶Áö¸·¿¡ ½ÇÇàÇÑ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³ª¾ß ´ÙÀ½ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà °¡´É
+            //ê°€ì¥ ë§ˆì§€ë§‰ì— ì‹¤í–‰í•œ ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚˜ì•¼ ë‹¤ìŒ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰ ê°€ëŠ¥
             StartCoroutine(CheckAnim(lu, lv, ls));
         }
     }
 
-    //¸¶Áö¸·À¸·Î µÚÁıÀº ¸»ÀÇ µÚÁı±â ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³µ´ÂÁö È®ÀÎ
+    //ë§ˆì§€ë§‰ìœ¼ë¡œ ë’¤ì§‘ì€ ë§ì˜ ë’¤ì§‘ê¸° ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚¬ëŠ”ì§€ í™•ì¸
     IEnumerator CheckAnim(int hu, int hv, int hs)
     {
         while (!instantHorse[hs, hu, hv].AnimPlayCheck())
@@ -1344,7 +1316,7 @@ public class GameManager : MonoBehaviour
 
     #region Clear
 
-    //¸ğµç º¸µåÀÇ Ä­ÀÌ 0ÀÎÁö È®ÀÎÇÏ¿© Å¬¸®¾î Çß´ÂÁö Ã¼Å©
+    //ëª¨ë“  ë³´ë“œì˜ ì¹¸ì´ 0ì¸ì§€ í™•ì¸í•˜ì—¬ í´ë¦¬ì–´ í–ˆëŠ”ì§€ ì²´í¬
     public bool CheckClear()
     {
         int i, j, k;
@@ -1365,32 +1337,32 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    //ÇöÀç ½ºÅ×ÀÌÁö¸¦ Å¬¸®¾î ÇßÀ» ¶§ ½ÇÇà
+    //í˜„ì¬ ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´ í–ˆì„ ë•Œ ì‹¤í–‰
     IEnumerator StageClear()
     {
         StageManager stageManager = uiManger.lobbyMenu.stageBtns[curKind];
 
-        //¸¸¾à ·Îºñ ¸Ş´º°¡ ½ÇÇàÀÌ ¾ÈµÇ¸é setactive È°¼ºÈ­ ÈÄ ÇÔ¼ö ½ÇÇà, ºñÈ°¼ºÈ­ ÁøÇà
+        //ë§Œì•½ ë¡œë¹„ ë©”ë‰´ê°€ ì‹¤í–‰ì´ ì•ˆë˜ë©´ setactive í™œì„±í™” í›„ í•¨ìˆ˜ ì‹¤í–‰, ë¹„í™œì„±í™” ì§„í–‰
         bool isRenew = stageManager.CurrentStageClear(stage[curKind], minFlip, flipCount, maxFlip);
 
-        //BMG ÀÏ½Ã Á¤Áö
+        //BMG ì¼ì‹œ ì •ì§€
         uiManger.BGMPause();
 
-        //½ºÅ×ÀÌÁö Ç¥½Ã
+        //ìŠ¤í…Œì´ì§€ í‘œì‹œ
         uiManger.clearMenu.title.text = "STAGE " + (stage[curKind] + 1);
 
         uiManger.clearMenu.comment.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(DeleteHorse());
+        RealDeleteHorse();
         uiManger.ingameMenu.gameObject.SetActive(false);
         uiManger.clearMenu.clearMenu.SetActive(true);
         ClearUI_Btn_OnOff(false);
 
-        //½Å±â·Ï °»½Å ¿©ºÎ
+        //ì‹ ê¸°ë¡ ê°±ì‹  ì—¬ë¶€
         if (isRenew)
         {
-            //Á¡¼ö °è»êµÉ ¶§±îÁö ´ë±â
+            //ì ìˆ˜ ê³„ì‚°ë  ë•Œê¹Œì§€ ëŒ€ê¸°
             int random;
             for (int i = 0; i < 25; i++)
             {
@@ -1403,10 +1375,10 @@ public class GameManager : MonoBehaviour
 
         int stageScore = stageManager.StageScore(stage[curKind]);
 
-        //º° Ç¥½Ã
+        //ë³„ í‘œì‹œ
         uiManger.ClearStar(stageManager.stageBtns[stage[curKind]].score, isRenew);
 
-        //Á¡¼ö Ç¥½Ã
+        //ì ìˆ˜ í‘œì‹œ
         uiManger.clearMenu.scoreTxt.text = "Score: " + stageScore;
 
         yield return new WaitForSeconds(1f);
@@ -1417,7 +1389,7 @@ public class GameManager : MonoBehaviour
 
     #region Fail
 
-    //½ºÅ×ÀÌÁö¿¡ ½ÇÆĞÇß´ÂÁö È®ÀÎ
+    //ìŠ¤í…Œì´ì§€ì— ì‹¤íŒ¨í–ˆëŠ”ì§€ í™•ì¸
     public bool IsFail()
     {
         if (flipCount >= realMaxFlip) return true;
@@ -1425,14 +1397,14 @@ public class GameManager : MonoBehaviour
         else return false;
     }
 
-    //½ºÅ×ÀÌÁö¿¡ ½ÇÆĞÇßÀ» ¶§ ½ÇÇà
+    //ìŠ¤í…Œì´ì§€ì— ì‹¤íŒ¨í–ˆì„ ë•Œ ì‹¤í–‰
     IEnumerator StageFail()
     {
-        //BMG ÀÏ½Ã Á¤Áö
+        //BMG ì¼ì‹œ ì •ì§€
         uiManger.BGMPause();
 
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(DeleteHorse());
+        RealDeleteHorse();
         uiManger.ingameMenu.gameObject.SetActive(false);
         uiManger.failMenu.failMenu.SetActive(true);
         uiManger.failMenu.textAnim.Play("Fail");
@@ -1449,15 +1421,8 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region UI_Actions
-    //ÇöÀç º¸µå Á¤º¸¸¦ ¹ÙÅÁÀ¸·Î ½ºÅ×ÀÌÁö ÅØ½ºÆ® ÆÄÀÏ »ı¼º
-    public void GenerateStage()
-    {
-        Debug.Log("Generate: " + stageName.text);
-        string path = "Assets/Stages/Stages" + curKind + "/";
-        SaveStage(path, "stage" + stageName.text, flipCount);
-    }
 
-    //ÅØ½ºÆ® ÆÄÀÏ ÀúÀå
+    //í…ìŠ¤íŠ¸ íŒŒì¼ ì €ì¥
     void SaveStage(string path, string fileName, int add)
     {
         StreamWriter sw = new StreamWriter(path + fileName + ".txt"); ;
@@ -1487,10 +1452,18 @@ public class GameManager : MonoBehaviour
         sw.Close();
     }
 
+    // ì¶œì‹œ ë²„ì „ì—” ì‚­ì œ ----------------------------------------------------------------------------------------
+    //í˜„ì¬ ë³´ë“œ ì •ë³´ë¥¼ ë°”íƒ•ìœ¼ë¡œ ìŠ¤í…Œì´ì§€ í…ìŠ¤íŠ¸ íŒŒì¼ ìƒì„±
+    public void GenerateStage()
+    {
+        Debug.Log("Generate: " + stageName.text);
+        string path = "Assets/Stages/Stages" + curKind + "/";
+        SaveStage(path, "stage" + stageName.text, flipCount);
+    }
+
     public void SetCreatorMode()
     {
         isCreatorMode = creatorMode.isOn;
-        Debug.Log("Creator Mode: " + isCreatorMode);
     }
 
     bool isRandom = false;
@@ -1526,8 +1499,9 @@ public class GameManager : MonoBehaviour
         }
         isRandom = false;
     }
-
-    //¹öÆ°À» ´­·¶À» ¶§, ÃÊ±â »óÅÂ¿Í °°°Ô º¸µå ¸®¼Â
+    //-------------------------------------------------------------------------------------------------------------
+    
+    //ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ, ì´ˆê¸° ìƒíƒœì™€ ê°™ê²Œ ë³´ë“œ ë¦¬ì…‹
     public void ResetBoard()
     {
         for (int i = 0; i < s; i++)
@@ -1545,9 +1519,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-
         flipCount = 0;
-        //uiManger.ingameMenu.flipCount.text = "" + flipCount;
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
@@ -1562,12 +1534,11 @@ public class GameManager : MonoBehaviour
     public void RotateVertical3Dobject(float value)
     {
         rotateObject.rotation = Quaternion.Euler(rotateObject.eulerAngles.x, rotateObject.eulerAngles.y, 540 * value);
-        //uiManger.objectRotateSound.Play();
     }
 
     public void CameraReset()
     {
-        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(0)); //ÀÎ°ÔÀÓ ¼¼ÆÃ ¸Ş´º Åõ¸íµµ
+        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(0)); //ì¸ê²Œì„ ì„¸íŒ… ë©”ë‰´ íˆ¬ëª…ë„
         mainCamera.transform.position = new Vector3(cameraInitX, mainCamera.transform.position.y, mainCamera.transform.position.z);
         mainCamera.fieldOfView = cameraInitZoom;
         uiManger.ingameMenu.cameraZoom.value = (cameraInitZoom - 55) / 70 + 0.5f;
@@ -1576,7 +1547,7 @@ public class GameManager : MonoBehaviour
     public void CameraVerticalSetting(bool isUp)
     {
         float pos = 0.5f;
-        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(1)); //ÀÎ°ÔÀÓ ¼¼ÆÃ ¸Ş´º Åõ¸íµµ
+        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(1)); //ì¸ê²Œì„ ì„¸íŒ… ë©”ë‰´ íˆ¬ëª…ë„
         if (isUp)
         {
             if (mainCamera.transform.position.x < 10)
@@ -1591,18 +1562,18 @@ public class GameManager : MonoBehaviour
 
         if (mainCamera.transform.position.x < 10 && mainCamera.transform.position.x > 0)
             mainCamera.transform.position = new Vector3(mainCamera.transform.position.x + pos, mainCamera.transform.position.y, mainCamera.transform.position.z);
-        //Ä«¸Ş¶ó xÃà ¹üÀ§ 0~10(Ä­´ç 0.5)
+        //ì¹´ë©”ë¼ xì¶• ë²”ìœ„ 0~10(ì¹¸ë‹¹ 0.5)
     }
 
     public void CameraZoomSetting(float value)
     {
         float setVal = value - 0.5f;
-        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(2)); //ÀÎ°ÔÀÓ ¼¼ÆÃ ¸Ş´º Åõ¸íµµ
+        StartCoroutine(uiManger.ingameMenu.IngameSettingAlbedo(2)); //ì¸ê²Œì„ ì„¸íŒ… ë©”ë‰´ íˆ¬ëª…ë„
         mainCamera.fieldOfView = setVal * 70 + 55;
-        //Ä«¸Ş¶ó ÁÜ ¹üÀ§ 20~90
+        //ì¹´ë©”ë¼ ì¤Œ ë²”ìœ„ 20~90
     }
 
-    //°ÔÀÓ UI ¹öÆ° È°¼ºÈ­ ºñÈ°¼ºÈ­ ¼³Á¤
+    //ê²Œì„ UI ë²„íŠ¼ í™œì„±í™” ë¹„í™œì„±í™” ì„¤ì •
     void UI_Btn_OnOff(bool on)
     {
         uiManger.clearMenu.exitBtn.interactable = on;
