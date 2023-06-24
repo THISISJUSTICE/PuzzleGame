@@ -29,10 +29,7 @@ public class PlayerData : MonoBehaviour
     public class Data
     {
         public string userName; //플레이어 닉네임
-        public int rank; //랭킹(실시간으로 랭킹 변동)
         public int[] stageTotalScore; //총 점수
-        public string lastDate; //총 점수를 얻은 날짜(랭킹 계산용) //삭제 후보 -------------------------------------------------------------------------
-
         public int[] clearStage; //각 스테이지 별 현재까지 클리어 한 스테이지
         //저장용 데이터
         public List<int> stage0Flip; //0스테이지 별 클리어 시 플립 횟수
@@ -121,9 +118,7 @@ public class PlayerData : MonoBehaviour
             data.masterMaxScore[i] = 0;
             data.isMasterDoing[i] = false;
         }
-        data.userName = "Google ID";
-        data.rank = 1; //최초엔 총 인원수 +1
-        data.lastDate = DateTime.Now.ToString("F"); //삭제 후보 -------------------------------------------------------------------------
+        data.userName = "Player";
 
         data.soundCk = false;
         data.soundVolume = 1.0f;
@@ -156,8 +151,6 @@ public class PlayerData : MonoBehaviour
 
         //totalscore 계산
         gameManager.uiManger.mainMenu.score.text = "Score: " + TotalScore();
-
-        data.lastDate = DateTime.Now.ToString("F"); //삭제 후보 -------------------------------------------------------------------------
         SaveData();
     }
 

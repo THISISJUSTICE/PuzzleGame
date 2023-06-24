@@ -7,12 +7,12 @@ public class UIManager : MonoBehaviour
 {
     #region Variable Declaration
     public GameManager gameManager;
-    
+
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
         public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
         public Button rectBtn, hexBtn, cubeBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지
-        public Text nickName, score, rank; //닉네임, 점수, 랭킹
+        public Text nickName, score; //닉네임, 점수, 랭킹
         public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
         public GameObject tutorialMenu; //튜토리얼 메뉴
         public Button[] tutorial; //튜토리얼 메뉴 1, 메뉴 2
@@ -29,7 +29,6 @@ public class UIManager : MonoBehaviour
             shareBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
             nickName = mainMenu.transform.GetChild(4).GetChild(0).GetComponent<Text>();
             score = mainMenu.transform.GetChild(4).GetChild(1).GetComponent<Text>();
-            rank = mainMenu.transform.GetChild(4).GetChild(2).GetComponent<Text>();
             rectBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
             hexBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
             cubeBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
@@ -312,7 +311,6 @@ public class UIManager : MonoBehaviour
     void MainMenuText() {
         mainMenu.nickName.text = PlayerData.Instance.data.userName;
         mainMenu.score.text = "Score: " + PlayerData.Instance.TotalScore();
-        mainMenu.rank.text = "Rank : " + (PlayerData.Instance.data.rank);
 
         for(int i=0; i<3; i++){
             mainMenu.stageScore[i].text = "" + (PlayerData.Instance.data.stageTotalScore[i] + PlayerData.Instance.data.masterMaxScore[i]);

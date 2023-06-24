@@ -30,6 +30,7 @@ public class StageManager : MonoBehaviour
         int scrollHeight = 0;
         if (totalStageCount / 4 > 5) scrollHeight = (totalStageCount / 4) - 5;
         content.sizeDelta = new Vector2(1424, 1900 + (300 * scrollHeight));
+        content.position = new Vector3(0, -3000, 0);
         CreateBtns();
         InputData_to_Btns();
     }
