@@ -201,7 +201,6 @@ public class UIManager : MonoBehaviour
             PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
             PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
             PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
-            Debug.Log($"SaveCycle [sound: {PlayerData.Instance.data.soundVolume}, ck: {PlayerData.Instance.data.soundCk}]");
             PlayerData.Instance.SaveData();
             yield return new WaitForSeconds(4);
             isSaveCoolDown = true;
@@ -393,7 +392,7 @@ public class UIManager : MonoBehaviour
         lobbyMenu.lobbyMenu.SetActive(false);
         mainMenu.mainMenu.SetActive(true);
         MainMenuText();
-
+        BGMPause();
         BGMPlay(0);
         gameManager.RealDeleteHorse();
         sounds.btnSound.Play();
@@ -678,7 +677,6 @@ public class UIManager : MonoBehaviour
 
     void BGM_Mute(bool on){
         DoBGM_Mute(on);
-        sounds.btnSound.Play();
         if(on){
             DoBGM_Volume(0);
         }
@@ -723,12 +721,14 @@ public class UIManager : MonoBehaviour
             bgm_Player.bgmAudio.Play();      
         else{
             bgm_Player.bgmAudio.time = pauseTime;
+            Debug.Log($"Play time: {pauseTime}");
             bgm_Player.bgmAudio.Play();
         }
     }
 
     public void BGMPause(){
         pauseTime = bgm_Player.bgmAudio.time;
+        Debug.Log($"Pause time: {pauseTime}");
         bgm_Player.bgmAudio.Pause();
     }
     

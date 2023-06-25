@@ -11,8 +11,7 @@ using UnityEngine.UI;
 // - 공유 버튼의 링크 바꾸기(게임 완성 후)
 
 // - **구글 플레이 연동
-// - 구글 플레이 연동 후 랭킹 계산
-// - 랭크, 현재 시각은 필요 없을 수 있음
+// - 구글 플레이 연동 후 랭킹 계산(랭킹 버튼, 로그인 버튼 필요할 수 있음)
 
 // - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기
 
@@ -840,16 +839,22 @@ public class GameManager : MonoBehaviour
         switch (u)
         {
             case 3:
-            case 4:
                 x = -2;
                 break;
-            case 5:
-            case 6:
-            case 8:
-                x = -3;
-                break;
-            case 7:
+            case 4:
                 x = -3.5f;
+                break;
+            case 5:
+                x = -3.5f;
+                break;
+            case 6:
+                x = -4;
+                break;   
+            case 7:
+                x = -4.2f;
+                break;
+            case 8:
+                x = -3.8f;
                 break;
             default:
                 x = 0;
@@ -872,13 +877,13 @@ public class GameManager : MonoBehaviour
                 y = -1;
                 break;
             case 6:
-                y = -2;
+                y = -3;
                 break;
             case 7:
-                y = -5;
+                y = -5.5f;
                 break;
             case 8:
-                y = -6;
+                y = -7;
                 break;
             default:
                 y = 0;
@@ -955,29 +960,44 @@ public class GameManager : MonoBehaviour
 
             //면을 포함한 오브젝트의 위치와 카메라 위치 조정
             cubeSide3.rotation = Quaternion.Euler(-22.5f, 40, 22.5f);
-            cameraInitX = 4.5f;
-            mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
 
             //한 면의 칸 수: (2x2 ~ 6x6), u=v
             switch (u)
             {
                 case 2:
-                case 3:
                 default:
                     cubeSide3.position = new Vector3(0, 0, 0);
-                    mainCamera.transform.rotation = Quaternion.Euler(60, -90, 0);
-                    cameraInitZoom = 60;
+                    cameraInitX = 3;
+                    mainCamera.transform.position = new Vector3(cameraInitX, 7, 0);
+                    mainCamera.transform.rotation = Quaternion.Euler(70, -90, 0);
+                    cameraInitZoom = 65;
                     break;
-
+                case 3:
+                    cubeSide3.position = new Vector3(0, 0, 0);
+                    cameraInitX = 4;
+                    mainCamera.transform.position = new Vector3(cameraInitX, 9, 0);
+                    mainCamera.transform.rotation = Quaternion.Euler(65, -90, 0);
+                    cameraInitZoom = 65;
+                    break;
                 case 4:
+                    cubeSide3.position = new Vector3(0, 0, 0);
+                    cameraInitX = 4.5f;
+                    mainCamera.transform.position = new Vector3(cameraInitX, 9, 0);
+                    mainCamera.transform.rotation = Quaternion.Euler(64, -90, 0);
+                    cameraInitZoom = 70;
+                    break;
                 case 5:
                     cubeSide3.position = new Vector3(0, 0, 0);
+                    cameraInitX = 4.5f;
+                    mainCamera.transform.position = new Vector3(cameraInitX, 10, 0);
                     mainCamera.transform.rotation = Quaternion.Euler(64, -90, 0);
                     cameraInitZoom = 70;
                     break;
 
                 case 6:
                     cubeSide3.position = new Vector3(-1, -1.5f, 0);
+                    cameraInitX = 4;
+                    mainCamera.transform.position = new Vector3(cameraInitX, 9, 0);
                     mainCamera.transform.rotation = Quaternion.Euler(64, -90, 0);
                     cameraInitZoom = 75;
                     break;
@@ -1004,16 +1024,16 @@ public class GameManager : MonoBehaviour
             switch (u)
             {
                 case 2:
-                    stdPos[0] = new Vector3(1, 1.5f, -0.4f);
+                    stdPos[0] = new Vector3(0.5f, 2.5f, -0.2f);
                     stdPos[1] = new Vector3(0.7f, 1, 0);
                     break;
                 case 3:
                 default:
-                    stdPos[0] = new Vector3(0, 0, -0.4f);
+                    stdPos[0] = new Vector3(-1, -0.2f, -0.5f);
                     stdPos[1] = new Vector3(1.5f, 1.5f, 0);
                     break;
                 case 4:
-                    stdPos[0] = new Vector3(-1.5f, -3, -0.4f);
+                    stdPos[0] = new Vector3(-2f, -3, -0.4f);
                     stdPos[1] = new Vector3(2.1f, 2.1f, 0);
                     break;
             }
@@ -1024,7 +1044,6 @@ public class GameManager : MonoBehaviour
             //면들의 중심을 채워줄 큐브 오브젝트
             cubeSide6.GetChild(6).localPosition = new Vector3((u - 2) * (-0.5f) - 0.5f, (u - 2) * (-0.5f) - 1, (u - 2) * (-0.5f) - 0.5f);
             cubeSide6.GetChild(6).localScale = new Vector3((u - 2) + 1.5f, (u - 2) + 1.5f, (u - 2) + 1.5f);
-            cubeSide6.GetChild(6).gameObject.SetActive(false);
         }
     }
 
@@ -1054,10 +1073,7 @@ public class GameManager : MonoBehaviour
                 addz = 1;
                 initz = 0;
                 if (s == 6)
-                {
-                    Set3DRotate(cubeSide6);
-                    cubeSide6.GetChild(6).gameObject.SetActive(false);
-                }
+                    Set3DRotate(cubeSide6); 
                 break;
         }
 
@@ -1084,12 +1100,6 @@ public class GameManager : MonoBehaviour
         }
 
         isFlip = true;
-
-        if (curKind == 2 && s == 6)
-        {
-            yield return new WaitForSeconds(0.1f);
-            cubeSide6.GetChild(6).gameObject.SetActive(true);
-        }
 
         //배치 애니메이션이 끝나고부터 플립 실행 가능
         int a = 1, b = 1, c = 1;
