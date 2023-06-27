@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
-        public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
+        public Button exitBtn, settingBtn, tutorialBtn, rankBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 랭킹 버튼, 공유 버튼
         public Button rectBtn, hexBtn, cubeBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지
         public Text nickName, score; //닉네임, 점수, 랭킹
         public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
@@ -26,21 +26,22 @@ public class UIManager : MonoBehaviour
             exitBtn = mainMenu.transform.GetChild(0).GetComponent<Button>();
             settingBtn = mainMenu.transform.GetChild(1).GetComponent<Button>();
             tutorialBtn = mainMenu.transform.GetChild(2).GetComponent<Button>();
-            shareBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
-            nickName = mainMenu.transform.GetChild(4).GetChild(0).GetComponent<Text>();
-            score = mainMenu.transform.GetChild(4).GetChild(1).GetComponent<Text>();
-            rectBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
-            hexBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
-            cubeBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
-            tutorialMenu = mainMenu.transform.GetChild(6).gameObject;
+            rankBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
+            shareBtn = mainMenu.transform.GetChild(4).GetComponent<Button>();
+            nickName = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Text>();
+            score = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Text>();
+            rectBtn = mainMenu.transform.GetChild(6).GetChild(0).GetComponent<Button>();
+            hexBtn = mainMenu.transform.GetChild(6).GetChild(1).GetComponent<Button>();
+            cubeBtn = mainMenu.transform.GetChild(6).GetChild(2).GetComponent<Button>();
+            tutorialMenu = mainMenu.transform.GetChild(7).gameObject;
 
             stageScore = new Text[3];
             stageLevel = new Text[3];
             tutorial = new Button[2];
 
             for(int i=0; i<3; i++){
-                stageScore[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(1).GetComponent<Text>();
-                stageLevel[i] = mainMenu.transform.GetChild(5).GetChild(i).GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>();
+                stageScore[i] = mainMenu.transform.GetChild(6).GetChild(i).GetChild(2).GetChild(1).GetComponent<Text>();
+                stageLevel[i] = mainMenu.transform.GetChild(6).GetChild(i).GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>();
             }
 
             for(int i=0; i<2; i++)
@@ -721,14 +722,12 @@ public class UIManager : MonoBehaviour
             bgm_Player.bgmAudio.Play();      
         else{
             bgm_Player.bgmAudio.time = pauseTime;
-            Debug.Log($"Play time: {pauseTime}");
             bgm_Player.bgmAudio.Play();
         }
     }
 
     public void BGMPause(){
         pauseTime = bgm_Player.bgmAudio.time;
-        Debug.Log($"Pause time: {pauseTime}");
         bgm_Player.bgmAudio.Pause();
     }
     
