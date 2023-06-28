@@ -28,7 +28,6 @@ public class PlayerData : MonoBehaviour
 
     public class Data
     {
-        public string userName; //플레이어 닉네임
         public int[] stageTotalScore; //총 점수
         public int[] clearStage; //각 스테이지 별 현재까지 클리어 한 스테이지
         //저장용 데이터
@@ -118,7 +117,6 @@ public class PlayerData : MonoBehaviour
             data.masterMaxScore[i] = 0;
             data.isMasterDoing[i] = false;
         }
-        data.userName = "Player";
 
         data.soundCk = false;
         data.soundVolume = 1.0f;

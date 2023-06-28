@@ -11,9 +11,10 @@ public class UIManager : MonoBehaviour
 
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
-        public Button exitBtn, settingBtn, tutorialBtn, rankBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 랭킹 버튼, 공유 버튼
+        public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
         public Button rectBtn, hexBtn, cubeBtn; //사각 스테이지, 육각 스테이지, 3차원 큐브 스테이지
-        public Text nickName, score; //닉네임, 점수, 랭킹
+        public Text score; //점수
+        public Button loginBtn, logoutBtn, rankBtn; //구글 로그인, 로그아웃, 랭킹 버튼
         public Text[] stageScore, stageLevel; //각 스테이지 별 점수, 클리어 수
         public GameObject tutorialMenu; //튜토리얼 메뉴
         public Button[] tutorial; //튜토리얼 메뉴 1, 메뉴 2
@@ -27,10 +28,14 @@ public class UIManager : MonoBehaviour
             exitBtn = mainMenu.transform.GetChild(0).GetComponent<Button>();
             settingBtn = mainMenu.transform.GetChild(1).GetComponent<Button>();
             tutorialBtn = mainMenu.transform.GetChild(2).GetComponent<Button>();
-            rankBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
-            shareBtn = mainMenu.transform.GetChild(4).GetComponent<Button>();
-            nickName = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Text>();
-            score = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Text>();
+            shareBtn = mainMenu.transform.GetChild(3).GetComponent<Button>();
+            score = mainMenu.transform.GetChild(4).GetChild(1).GetComponent<Text>();
+
+            loginBtn = mainMenu.transform.GetChild(5).GetChild(0).GetComponent<Button>();
+            logoutBtn = mainMenu.transform.GetChild(5).GetChild(1).GetComponent<Button>();
+            rankBtn = mainMenu.transform.GetChild(5).GetChild(2).GetComponent<Button>();
+            
+
             rectBtn = mainMenu.transform.GetChild(6).GetChild(0).GetComponent<Button>();
             hexBtn = mainMenu.transform.GetChild(6).GetChild(1).GetComponent<Button>();
             cubeBtn = mainMenu.transform.GetChild(6).GetChild(2).GetComponent<Button>();
@@ -273,7 +278,7 @@ public class UIManager : MonoBehaviour
         exitMenu.exitMenu.SetActive(false);
         MainMenuText();
         loadingUI.gameObject.SetActive(false);
-
+        isLogin = false;
         BGMPlay(0);
     }
 
@@ -316,16 +321,30 @@ public class UIManager : MonoBehaviour
     void LogIn(){
         Social.localUser.Authenticate((bool success) =>
         {
-            if (success) isLogin = true;
+            if (success) {
+                isLogin = true;
+                mainMenu.loginBtn.gameObject.SetActive(false);
+                mainMenu.logoutBtn.gameObject.SetActive(true);
+                mainMenu.rankBtn.gameObject.SetActive(true);
+            }
             else isLogin = false;
         });
         
-        mainMenu.nickName.text = "구글 로그인 여부: " + isLogin;
+        
     }
 
     void LogOut(){
         ((PlayGamesPlatform)Social.Active).SignOut();
-        mainMenu.nickName.text = "구글 로그아웃 ";
+
+        mainMenu.logoutBtn.gameObject.SetActive(false);
+        mainMenu.rankBtn.gameObject.SetActive(false);
+        mainMenu.loginBtn.gameObject.SetActive(true);
+    }
+
+    void ShowRanking(){
+        string log;
+        GPGSBinder.Inst.ReportLeaderboard(GPGSIds.leaderboard_ranking, 1000, success => log = $"{success}");
+        GPGSBinder.Inst.ShowTargetLeaderboardUI(GPGSIds.leaderboard_ranking);
     }
 
     #endregion
@@ -346,14 +365,16 @@ public class UIManager : MonoBehaviour
         mainMenu.tutorial[0].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[0].gameObject, mainMenu.tutorial[1].gameObject));
         mainMenu.tutorial[1].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[1].gameObject));
 
-        //랭킹
-        mainMenu.rankBtn.onClick.AddListener(GoogleLogin);
+        //구글 플레이
+        mainMenu.loginBtn.onClick.AddListener(LogIn);
+        mainMenu.logoutBtn.onClick.AddListener(LogOut);
+        mainMenu.rankBtn.onClick.AddListener(ShowRanking);
+        
     }
 
     //메인 메뉴 UI 텍스트 설정
     void MainMenuText() {
-        mainMenu.nickName.text = PlayerData.Instance.data.userName;
-        mainMenu.score.text = "Score: " + PlayerData.Instance.TotalScore();
+        mainMenu.score.text = "" + PlayerData.Instance.TotalScore();
 
         for(int i=0; i<3; i++){
             mainMenu.stageScore[i].text = "" + (PlayerData.Instance.data.stageTotalScore[i] + PlayerData.Instance.data.masterMaxScore[i]);
