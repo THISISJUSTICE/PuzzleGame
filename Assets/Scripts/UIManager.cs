@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using GooglePlayGames;
 
 public class UIManager : MonoBehaviour
 {
@@ -183,6 +184,8 @@ public class UIManager : MonoBehaviour
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
 
+    public bool isLogin; //구글 로그인이 된 상태인지 확인하는 변수
+
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
 	private const string body = "https://play.google.com/store/apps/details?id=com.CEREALLAB.FruitsLoop&showAllReviews=true"; //변경 필요
@@ -290,6 +293,43 @@ public class UIManager : MonoBehaviour
         pauseTime = 0;
     }
 
+    #region GooglePlay
+
+    void GoogleLogin(){
+        string log = "";
+        GPGSBinder.Inst.Login((success, localUser) => log = $"{success}, {localUser.userName}, {localUser.id}, {localUser.state}, {localUser.underage}");
+
+
+        GPGSBinder.Inst.Logout();
+
+
+        GPGSBinder.Inst.SaveCloud("mysave", "want data", success => log = $"{success}");
+
+      
+        GPGSBinder.Inst.LoadCloud("mysave", (success, data) => log = $"{success}, {data}");
+
+
+        GPGSBinder.Inst.DeleteCloud("mysave", success => log = $"{success}");
+
+    }
+
+    void LogIn(){
+        Social.localUser.Authenticate((bool success) =>
+        {
+            if (success) isLogin = true;
+            else isLogin = false;
+        });
+        
+        mainMenu.nickName.text = "구글 로그인 여부: " + isLogin;
+    }
+
+    void LogOut(){
+        ((PlayGamesPlatform)Social.Active).SignOut();
+        mainMenu.nickName.text = "구글 로그아웃 ";
+    }
+
+    #endregion
+
     #region MainMenu
     //메인 메뉴 UI 설정
     void SetMainMenu()
@@ -305,6 +345,9 @@ public class UIManager : MonoBehaviour
         mainMenu.tutorialBtn.onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorialMenu.gameObject, mainMenu.tutorial[0].gameObject, true));
         mainMenu.tutorial[0].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[0].gameObject, mainMenu.tutorial[1].gameObject));
         mainMenu.tutorial[1].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[1].gameObject));
+
+        //랭킹
+        mainMenu.rankBtn.onClick.AddListener(GoogleLogin);
     }
 
     //메인 메뉴 UI 텍스트 설정
