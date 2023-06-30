@@ -191,7 +191,7 @@ public class UIManager : MonoBehaviour
 
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
-	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.ReversiPuzzle";
+	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.ReversiPuzzle"; //변경 필요
     
     #endregion
 
@@ -305,14 +305,18 @@ public class UIManager : MonoBehaviour
         //     GPGSBinder.Inst.isLogin = success;
         // });
         
-        string log = "";
-        GPGSBinder.Inst.Login((success, localUser) => log = $"{success}, {localUser.userName}, {localUser.id}, {localUser.state}, {localUser.underage}");
-        Debug.Log(log);
-
-        string def = log.Split(',')[0];
-        if(def.Equals("False")) GPGSBinder.Inst.isLogin = false;
-        else GPGSBinder.Inst.isLogin = true;
         
+        //GPGSBinder.Inst.Login((success, localUser) => log = $"{success}, {localUser.userName}, {localUser.id}, {localUser.state}, {localUser.underage}");
+        bool isSucc = false;
+        GPGSBinder.Inst.Login((success, localUser) => isSucc = success);
+
+        // string log = "";
+        // Debug.Log(log);
+        // string def = log.Split(',')[0];
+        // if(def.Equals("False")) GPGSBinder.Inst.isLogin = false;
+        // else GPGSBinder.Inst.isLogin = true;
+        
+        GPGSBinder.Inst.isLogin = isSucc;
         if(GPGSBinder.Inst.isLogin){
             SetSignUI(GPGSBinder.Inst.isLogin);
         }
