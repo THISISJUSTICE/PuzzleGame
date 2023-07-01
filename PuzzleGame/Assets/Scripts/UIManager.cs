@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GooglePlayGames;
+using GoogleMobileAds.Api;
 
 public class UIManager : MonoBehaviour
 {
@@ -192,6 +193,12 @@ public class UIManager : MonoBehaviour
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
 	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.ReversiPuzzle"; //변경 필요
+
+    bool adsCheck; //구글 광고 체크
+    const string adsBannerID = "ca-app-pub-3940256099942544/6300978111"; //하단 배너 아이디(변경 필요)
+    const string adsFrondID = "ca-app-pub-3940256099942544/8691691433"; //전면 광고 아이디(변경 필요)
+    BannerView adsBanner; //하단 배너
+    InterstitialAd adsFront; //전면 광고
     
     #endregion
 
@@ -278,6 +285,12 @@ public class UIManager : MonoBehaviour
         loadingUI.gameObject.SetActive(false);
         GPGSBinder.Inst.isLogin = false;
         BGMPlay(0);
+
+        //광고 초기화
+        MobileAds.Initialize((InitializationStatus initStatus) =>{ });
+        //하단 배너 표시
+        LoadAdsBanner();
+        adsBanner.Show();
     }
 
     //오디오 설정 초기화
@@ -305,16 +318,8 @@ public class UIManager : MonoBehaviour
         //     GPGSBinder.Inst.isLogin = success;
         // });
         
-        
-        //GPGSBinder.Inst.Login((success, localUser) => log = $"{success}, {localUser.userName}, {localUser.id}, {localUser.state}, {localUser.underage}");
         bool isSucc = false;
         GPGSBinder.Inst.Login((success, localUser) => isSucc = success);
-
-        // string log = "";
-        // Debug.Log(log);
-        // string def = log.Split(',')[0];
-        // if(def.Equals("False")) GPGSBinder.Inst.isLogin = false;
-        // else GPGSBinder.Inst.isLogin = true;
         
         GPGSBinder.Inst.isLogin = isSucc;
         if(GPGSBinder.Inst.isLogin){
@@ -340,6 +345,73 @@ public class UIManager : MonoBehaviour
         //string log;
         GPGSBinder.Inst.ReportLeaderboard(GPGSIds.leaderboard_ranking, (long)PlayerData.Instance.TotalScore());
         GPGSBinder.Inst.ShowAllLeaderboardUI();
+    }
+
+    #endregion
+
+    #region GoogleAds
+
+    //하단 배너 생성
+    void CreateAdsBanner()
+    {
+        if(adsBanner != null) adsBanner.Destroy();
+        AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
+        adsBanner = new BannerView(adsBannerID, adaptiveSize, AdPosition.Bottom);    
+    }
+    
+    //하단 배너 로드
+    void LoadAdsBanner()
+    {
+        // create an instance of a banner view first.
+        if(adsBanner == null)
+        {
+            CreateAdsBanner();
+        }
+        // create our request used to load the ad.
+        var adRequest = new AdRequest();
+        adRequest.Keywords.Add("unity-admob-sample");
+
+        // send the request to load the ad.
+        adsBanner.LoadAd(adRequest);
+    }
+
+    //전면 광고 로드
+    public void LoadAdsFront()
+    {
+        // 기존 것을 지우고 새로운 것으로 할당
+        if (adsFront != null)
+        {
+                adsFront.Destroy();
+                adsFront = null;
+        }
+
+        // create our request used to load the ad.
+        var adRequest = new AdRequest();
+        adRequest.Keywords.Add("unity-admob-sample");
+
+        // send the request to load the ad.
+        InterstitialAd.Load(adsFrondID, adRequest,
+            (InterstitialAd ad, LoadAdError error) =>
+            {
+                // if error is not null, the load request failed.
+                if (error != null || ad == null)
+                    return;
+
+                adsFront = ad;
+            });
+        adsFront.OnAdFullScreenContentClosed += () =>
+            {
+                BGMPlay(1);
+            };
+    }
+
+    //전면 광고 표시
+    public void ShowAdsFront()
+    {
+        if (adsFront != null && adsFront.CanShowAd()){
+            adsFront.Show();     
+            BGMPause();
+        }
     }
 
     #endregion
@@ -777,6 +849,7 @@ public class UIManager : MonoBehaviour
 
     public void BGMPlay(int type){
         bgm_Player.bgmAudio.clip = bgm_Player.bgms[type];
+        if(bgm_Player.bgmAudio.isPlaying) return;
         if(type == 0)
             bgm_Player.bgmAudio.Play();      
         else{

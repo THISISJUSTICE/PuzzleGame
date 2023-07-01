@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-// - 구글 admob 구현(출시 후) 
+// - **구글 admob 구현(실제 출시 때 아이디 변경)
 
 // - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기
 
@@ -63,6 +63,8 @@ public class GameManager : MonoBehaviour
     float cameraInitX;
     float cameraInitZoom;
 
+    int playCount; //전면 광고 표시를 위한 횟수
+
     #endregion
 
     void Awake()
@@ -93,6 +95,7 @@ public class GameManager : MonoBehaviour
             stdPos[i] = new Vector3();
             stdRot[i] = new Quaternion();
         }
+        playCount = 0;
     }
 
     //시작할 스테이지, 스테이지 종류를 입력받아 스테이지 실행
@@ -143,6 +146,14 @@ public class GameManager : MonoBehaviour
             StartCoroutine(MasterGame());
         }
         uiManger.BGMPlay(1);
+    }
+
+    //게임 진행 도중 조건 달성 시 전면 광고 표시
+    void Playing_ShowAdsFront(){
+        if(playCount % 15 == 0) {
+            uiManger.LoadAdsFront();
+            uiManger.ShowAdsFront();
+        }
     }
 
     #region Horse_Create_and_Delete
@@ -724,9 +735,12 @@ public class GameManager : MonoBehaviour
         StartCoroutine(MasterScoreRise(mastercurLevel[2] * (mastercurLevel[0] + mastercurLevel[1])));
 
         MasterSave();
+        
 
         //다음 스테이지 시작
         yield return new WaitForSeconds(0.5f);
+        playCount++;
+        Playing_ShowAdsFront();
         StartCoroutine(MasterGame(true));
     }
 
@@ -1352,7 +1366,6 @@ public class GameManager : MonoBehaviour
 
         //스테이지 표시
         uiManger.clearMenu.title.text = "STAGE " + (stage[curKind] + 1);
-
         uiManger.clearMenu.comment.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(0.5f);
@@ -1384,7 +1397,9 @@ public class GameManager : MonoBehaviour
         uiManger.clearMenu.scoreTxt.text = "Score: " + stageScore;
 
         yield return new WaitForSeconds(1f);
-        ClearUI_Btn_OnOff(true);
+        playCount++;
+        Playing_ShowAdsFront();
+        ClearUI_Btn_OnOff(true);            
     }
 
     #endregion
@@ -1404,8 +1419,8 @@ public class GameManager : MonoBehaviour
     {
         //BMG 일시 정지
         uiManger.BGMPause();
-
         yield return new WaitForSeconds(0.5f);
+
         RealDeleteHorse();
         uiManger.ingameMenu.gameObject.SetActive(false);
         uiManger.failMenu.failMenu.SetActive(true);
@@ -1413,8 +1428,11 @@ public class GameManager : MonoBehaviour
 
         uiManger.failMenu.backBtn.interactable = false;
         uiManger.failMenu.exitBtn.interactable = false;
-
         yield return new WaitForSeconds(1f);
+        
+        //전면 광고 표시
+        uiManger.LoadAdsFront();
+        uiManger.ShowAdsFront();
 
         uiManger.failMenu.backBtn.interactable = true;
         uiManger.failMenu.exitBtn.interactable = true;
@@ -1525,6 +1543,8 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
+        playCount++;
+        Playing_ShowAdsFront();
         StartCoroutine(PlaceHorse(createHorsePos));
     }
 
