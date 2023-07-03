@@ -5,10 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-// - **구글 admob 구현(실제 출시 때 아이디 변경)
-
-// - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기
+// - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기, admob 아이디 할당 받은 것으로 수정하기
 
 
 public class GameManager : MonoBehaviour

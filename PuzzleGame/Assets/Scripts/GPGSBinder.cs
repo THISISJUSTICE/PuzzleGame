@@ -14,13 +14,7 @@ public class GPGSBinder
     public static GPGSBinder Inst => inst;
 
     public bool isLogin;
-
-    // ISavedGameClient SavedGame => 
-    //     PlayGamesPlatform.Instance.SavedGame;
-
-    // IEventsClient Events =>
-    //     PlayGamesPlatform.Instance.Events;
-
+    
     void Init()
     {
         var config = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();

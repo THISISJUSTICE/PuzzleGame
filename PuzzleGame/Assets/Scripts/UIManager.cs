@@ -192,7 +192,7 @@ public class UIManager : MonoBehaviour
 
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
-	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.ReversiPuzzle"; //변경 필요
+	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.Reversi_Puzzle";
 
     bool adsCheck; //구글 광고 체크
     const string adsBannerID = "ca-app-pub-3940256099942544/6300978111"; //하단 배너 아이디(변경 필요)
