@@ -208,20 +208,6 @@ public class UIManager : MonoBehaviour
         UISetting();
     }
 
-    //설정 변경이 있으면 저장
-    IEnumerator SaveCycle(){
-        if(!isSaveCoolDown){
-            PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
-            PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
-            PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
-            PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
-            PlayerData.Instance.SaveData();
-            yield return new WaitForSeconds(4);
-            isSaveCoolDown = true;
-            isSaveCoolDown = false;
-        }       
-    }
-
     void Init()
     {
         mainMenu = new MainMenu(transform.Find("MainMenu").gameObject);
@@ -312,25 +298,33 @@ public class UIManager : MonoBehaviour
     #region GooglePlay
 
     void LogIn(){
-        // GPGSBinder.Inst.Login();
-        // Social.localUser.Authenticate((bool success) =>
-        // {
-        //     GPGSBinder.Inst.isLogin = success;
-        // });
-        
-        bool isSucc = false;
-        GPGSBinder.Inst.Login((success, localUser) => isSucc = success);
-        
-        GPGSBinder.Inst.isLogin = isSucc;
-        if(GPGSBinder.Inst.isLogin){
-            SetSignUI(GPGSBinder.Inst.isLogin);
+        if(PlayGamesPlatform.Instance.localUser.authenticated == false){
+            Social.localUser.Authenticate((bool success) => {
+                if(success) {
+                    
+                }
+                else{
+
+                }
+            });
         }
+        StartCoroutine(SignCheck()); 
     }
 
     void LogOut(){
         ((PlayGamesPlatform)Social.Active).SignOut();
-        GPGSBinder.Inst.isLogin = false;
+        StartCoroutine(SignCheck());
+    }
 
+    //지속적으로 로그인 상태를 확인
+    IEnumerator SignCheck(){
+        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
+        SetSignUI(GPGSBinder.Inst.isLogin);
+        yield return new WaitForSeconds(1);
+        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
+        SetSignUI(GPGSBinder.Inst.isLogin);
+        yield return new WaitForSeconds(1);
+        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
         SetSignUI(GPGSBinder.Inst.isLogin);
     }
 
@@ -844,7 +838,18 @@ public class UIManager : MonoBehaviour
     //설정 변화를 확인해서 변화가 멈추면 데이터 저장
     IEnumerator SettingChangeCheck(){   
         yield return new WaitForSeconds(5);
-        StartCoroutine(SaveCycle());
+        //StartCoroutine(SaveCycle());
+        //설정 변경이 있으면 저장
+        if(!isSaveCoolDown){
+            PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
+            PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
+            PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
+            PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
+            PlayerData.Instance.SaveData();
+            yield return new WaitForSeconds(4);
+            isSaveCoolDown = true;
+            isSaveCoolDown = false;
+        }  
     }
 
     public void BGMPlay(int type){

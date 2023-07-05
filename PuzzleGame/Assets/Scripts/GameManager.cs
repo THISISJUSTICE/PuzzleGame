@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 // - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기, admob 아이디 할당 받은 것으로 수정하기
 
-
 public class GameManager : MonoBehaviour
 {
     #region Variable Declaration
@@ -113,7 +112,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        if (textFile.Count <= curstage) finalClear = true; 
+        if (textFile.Count <= curstage) finalClear = true;
         else finalClear = false;
 
         curKind = kind;
@@ -140,14 +139,17 @@ public class GameManager : MonoBehaviour
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(false);
             uiManger.ingameMenu.masterGroup.SetActive(true);
             uiManger.ingameMenu.masterScore.text = "0";
-            StartCoroutine(MasterGame());
+            MasterGame();
         }
         uiManger.BGMPlay(1);
     }
 
     //게임 진행 도중 조건 달성 시 전면 광고 표시
-    void Playing_ShowAdsFront(){
-        if(playCount % 15 == 0) {
+    void Playing_ShowAdsFront()
+    {
+        playCount++;
+        if (playCount % 15 == 0)
+        {
             uiManger.LoadAdsFront();
             uiManger.ShowAdsFront();
         }
@@ -161,7 +163,7 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.stageTitle.text = "STAGE " + (stage + 1);
 
         FiletoBoard(textFile[stage].text);
-        
+
         maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
         realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
     }
@@ -179,7 +181,7 @@ public class GameManager : MonoBehaviour
             line = strRea.ReadLine();
 
             //텍스트 파일을 다 읽었는지 확인
-            if (line == null)   
+            if (line == null)
                 break;
 
             //첫 번째 줄인지 확인
@@ -344,7 +346,7 @@ public class GameManager : MonoBehaviour
     #region MasterMode
 
     //모든 스테이지를 클리어했을 때, 플레이할 수 있는 모드
-    IEnumerator MasterGame(bool next = false)
+    void MasterGame(bool next = false)
     {
         //이전 스테이지를 클리어하고 다음 스테이지를 진행하려는 상황일 때
         if (next)
@@ -368,7 +370,19 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
         uiManger.ingameMenu.masterMaxScore.text = "" + PlayerData.Instance.data.masterMaxScore[curKind];
         MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
-        yield return new WaitForSeconds(0.1f);
+
+        //yield return new WaitForSeconds(0.1f);
+        // CreateHorse();
+        // DefineHorsePos();
+        // StartCoroutine(PlaceHorse(createHorsePos));
+
+        // PlayerData.Instance.data.isMasterDoing[curKind] = true;
+        // MasterSave();
+        Invoke("MasterStart", 0.1f);
+    }
+
+    void MasterStart()
+    {
         CreateHorse();
         DefineHorsePos();
         StartCoroutine(PlaceHorse(createHorsePos));
@@ -378,7 +392,8 @@ public class GameManager : MonoBehaviour
     }
 
     //마스터 모드의 점수 옆에 있는 왕관의 position 배치
-    void MasterMaxCrownMove(float width){
+    void MasterMaxCrownMove(float width)
+    {
         RectTransform imageRect = uiManger.ingameMenu.crownIcon.GetComponent<RectTransform>();
         imageRect.localPosition = new Vector2(600 - width, imageRect.localPosition.y);
     }
@@ -428,17 +443,20 @@ public class GameManager : MonoBehaviour
                 }
 
                 //플립 수 범위 지정
-                if(curClear >= 50){
-                    dMin = du*2;
-                    dMax = (ds*du*du) - du;
+                if (curClear >= 50)
+                {
+                    dMin = du * 2;
+                    dMax = (ds * du * du) - du;
                 }
-                else if(curClear >= 25){
+                else if (curClear >= 25)
+                {
                     dMin = du;
-                    dMax = ds*du*du;
+                    dMax = ds * du * du;
                 }
-                else{
+                else
+                {
                     dMin = 1;
-                    dMax = du + ((s*u*v) / 3);
+                    dMax = du + ((s * u * v) / 3);
                 }
 
                 break;
@@ -475,17 +493,20 @@ public class GameManager : MonoBehaviour
                 }
 
                 //플립 수 범위 지정
-                if(curClear >= 50){
-                    dMin = du*2;
-                    dMax = (ds*du*du) - du;
+                if (curClear >= 50)
+                {
+                    dMin = du * 2;
+                    dMax = (ds * du * du) - du;
                 }
-                else if(curClear >= 25){
+                else if (curClear >= 25)
+                {
                     dMin = du;
-                    dMax = ds*du*du;
+                    dMax = ds * du * du;
                 }
-                else{
+                else
+                {
                     dMin = 1;
-                    dMax = du + ((s*u*v) / 3);
+                    dMax = du + ((s * u * v) / 3);
                 }
 
                 break;
@@ -518,19 +539,20 @@ public class GameManager : MonoBehaviour
     void CreateMasterBoard(int curClear)
     {
         int boardWhiteCount, boardBlankCount; //랜덤 보드의 흰색, 공백의 개수
-        int x=1, y=1, z=1;
+        int x = 1, y = 1, z = 1;
         int[,] flipCdn;
         int[] levelDesign = DefineMasterLevel(curClear);
 
         s = levelDesign[0];
         u = levelDesign[1];
         v = u;
-        if(curKind == 2) Define_AdjacentSide();
+        if (curKind == 2) Define_AdjacentSide();
 
         board = new int[s, u, v];
         boardBlankCount = UnityEngine.Random.Range(0, (s * u * v) / 3);
 
-        if(levelDesign[3] < s*u*v - u){                                 
+        if (levelDesign[3] < s * u * v - u)
+        {
             levelDesign[3] += boardBlankCount;
         }
         boardWhiteCount = UnityEngine.Random.Range(levelDesign[2], levelDesign[3] - boardBlankCount);
@@ -579,16 +601,17 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < boardWhiteCount; i++)
             board[flipCdn[i, 0], flipCdn[i, 1], flipCdn[i, 2]] = 0;
-        
+
 
         //리스트에 지정한 데로 플립
         for (int i = 0; i < boardWhiteCount; i++)
             MasterBoardFlip(flipCdn[i, 1], flipCdn[i, 2], flipCdn[i, 0]);
-        
-        if(CheckClear()){
+
+        if (CheckClear())
+        {
             MasterBoardFlip(x, y, z);
         }
-        
+
     }
 
     //랜덤 보드를 생성하기 위한 플립 함수
@@ -716,9 +739,9 @@ public class GameManager : MonoBehaviour
     }
 
     //마스터 모드의 한 스테이지 클리어 시 호출
-    IEnumerator MasterClear()
+    void MasterClear()
     {
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
         RealDeleteHorse();
         Ingame_Lobby_Setting_OnOff(false);
 
@@ -728,17 +751,25 @@ public class GameManager : MonoBehaviour
         int[] mastercurLevel = DefineMasterLevel(PlayerData.Instance.data.masterCurrentClear[curKind]);
         PlayerData.Instance.data.masterCurrentClear[curKind]++;
         int[] masterNextLevel = DefineMasterLevel(PlayerData.Instance.data.masterCurrentClear[curKind]);
+
         StartCoroutine(MasterFlipRise(masterNextLevel[3] + masterNextLevel[2]));
         StartCoroutine(MasterScoreRise(mastercurLevel[2] * (mastercurLevel[0] + mastercurLevel[1])));
 
         MasterSave();
-        
+
 
         //다음 스테이지 시작
-        yield return new WaitForSeconds(0.5f);
-        playCount++;
+        Invoke("MasterClearStart", 0.5f);
+        //yield return new WaitForSeconds(0.5f);
+        // playCount++;
+        // Playing_ShowAdsFront();
+        // StartCoroutine(MasterGame(true));
+    }
+
+    void MasterClearStart()
+    {
         Playing_ShowAdsFront();
-        StartCoroutine(MasterGame(true));
+        MasterGame(true);
     }
 
     //마스터 모드 스테이지에서 실패했을 때 호출
@@ -756,7 +787,8 @@ public class GameManager : MonoBehaviour
     {
         bool isMaxAnim = false;
         PlayerData.Instance.data.masterCurrentScore[curKind] += masterScore;
-        if (PlayerData.Instance.data.masterMaxScore[curKind] < PlayerData.Instance.data.masterCurrentScore[curKind]) {
+        if (PlayerData.Instance.data.masterMaxScore[curKind] < PlayerData.Instance.data.masterCurrentScore[curKind])
+        {
             PlayerData.Instance.data.masterMaxScore[curKind] = PlayerData.Instance.data.masterCurrentScore[curKind];
             isMaxAnim = true;
         }
@@ -765,11 +797,12 @@ public class GameManager : MonoBehaviour
         for (int i = 1; i <= masterScore; i++)
         {
             uiManger.ingameMenu.masterScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
-            if(isMaxAnim){
+            if (isMaxAnim)
+            {
                 uiManger.ingameMenu.masterMaxScore.text = "" + (PlayerData.Instance.data.masterCurrentScore[curKind] - masterScore + i);
                 MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
             }
-            if(i > 1) uiManger.sounds.scoreSound.Play();
+            if (i > 1) uiManger.sounds.scoreSound.Play();
             yield return new WaitForSeconds(1.1f / masterScore);
         }
     }
@@ -786,7 +819,8 @@ public class GameManager : MonoBehaviour
     }
 
     //현재 진행 중인 마스터 모드의 게임 상태를 백업
-    void MasterSave() {
+    void MasterSave()
+    {
         //보드의 정보를 텍스트 파일로 저장
         SaveStage(Application.persistentDataPath, "/MasterStage" + curKind, realMaxFlip);
 
@@ -855,7 +889,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 6:
                 x = -4;
-                break;   
+                break;
             case 7:
                 x = -4.2f;
                 break;
@@ -1058,7 +1092,9 @@ public class GameManager : MonoBehaviour
     {
         Vector3 pos, initPos = createPosition;
         float addx = 0, addz = 0, initz = 0;
+        isFlip = true; //말 배치가 끝날 때까지 말을 누를 수 없음
         yield return new WaitForSeconds(createHorseTime / (s * u * v));
+
         switch (curKind)
         {
             case 0:
@@ -1079,7 +1115,7 @@ public class GameManager : MonoBehaviour
                 addz = 1;
                 initz = 0;
                 if (s == 6)
-                    Set3DRotate(cubeSide6); 
+                    Set3DRotate(cubeSide6);
                 break;
         }
 
@@ -1103,22 +1139,9 @@ public class GameManager : MonoBehaviour
                 pos.x += addx;
                 if (curKind == 1) pos.z += (j + 1) * 0.5f;
             }
-        }
+        }        
 
-        isFlip = true;
-
-        //배치 애니메이션이 끝나고부터 플립 실행 가능
-        int a = 1, b = 1, c = 1;
-        while (instantHorse[s - c, u - a, v - b] == null)
-        {
-            if (v < b)
-            {
-                b = 1;
-                a++;
-            }
-            else b++;
-        }
-        StartCoroutine(CheckAnim(u - a, v - b, s - c));
+        isFlip = false;
 
         //말 배치가 끝나면 UI 버튼 활성화
         UI_Btn_OnOff(true);
@@ -1136,19 +1159,16 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    //말 하나를 뒤집으면 주변에 있는 말들도 함께 뒤집히게 하는 함수
-    public IEnumerator Flip_in_Board(int hu, int hv, int hs)
+    #region ClickHorse
+
+    //말을 눌렀을 때 실행
+    public void ClickHorse(int hu, int hv, int hs)
     {
         //현재 플립이 실행 중이 아니고, 인게임 UI가 켜져있고, 인게임 세팅 UI가 껴져 있을 때 실행
-        //생성 모드가 아닌 상태에서 클리어하거나 클리어 실패를 하지 않을 때 실행        
+        //생성 모드가 아닌 상태에서 클리어하거나 클리어 실패를 하지 않을 때 실행  
         if (!isFlip && !uiManger.ingameMenu.ingameSettingMenu.activeSelf && uiManger.ingameMenu.gameObject.activeSelf
         && !(CheckClear() && !isCreatorMode) && !IsFail())
         {
-            int tu, tv, ts; //임시로 담을 변수
-            int lu, lv, ls; //가장 마지막에 실행된 애니메이션을 확인하는 변수
-
-            isFlip = true;
-
             //마스터 모드
             if (finalClear)
             {
@@ -1162,170 +1182,192 @@ public class GameManager : MonoBehaviour
                 uiManger.ingameMenu.maxFlipCount.text = "" + (realMaxFlip - flipCount);
             }
 
-            Debug.Log($"s: {hs}, u: {hu}, v: {hv}");
+            StartCoroutine(Flip_in_Board(hu, hv, hs));
 
-            board[hs, hu, hv] = instantHorse[hs, hu, hv].FlipHorse(board[hs, hu, hv]); //지정한 말을 뒤집기      
-            lu = hu;
-            lv = hv;
-            ls = hs;
-            yield return new WaitForSeconds(0.1f);
+            Invoke("AfterCheck", 1f);
 
-            //지정한 말 주변의 말들도 뒤집기(스테이지 종류에 따라 로직 변경)
-            switch (curKind)
-            {
-                case 0:
-                case 1:
-                    for (int i = -1; i <= 1; i++)
-                    {
-                        tu = hu + i;
-                        for (int j = -1; j <= 1; j++)
-                        {
-                            tv = hv + j;
-                            if (i == j)
-                            {
-                                if (i == 0 || curKind == 1) continue;
-                            }
-                            if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
-                            {
-                                board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-
-                        }
-                    }
-                    break;
-
-                case 2:
-                    //adj 3면
-                    if (s == 6 && hv == v - 1)
-                    {
-                        ts = adjSide[hs, 3];
-                        tv = v - 1;
-                        for (int l = hu; l < hu + 3; l++)
-                        {
-                            tu = u - l;
-                            if (tu >= 0 && tu < u && instantHorse[ts, tu, tv] != null)
-                            {
-                                board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                ls = ts;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-                        }
-                    }
-
-                    //adj 0 면
-                    if (hu == 0)
-                    {
-                        ts = adjSide[hs, 0];
-                        tv = 0;
-                        for (int l = -1; l < 2; l++)
-                        {
-                            tu = hv + l;
-                            if (tu >= 0 && tu < u && instantHorse[ts, tu, tv] != null)
-                            {
-                                board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                ls = ts;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-
-                        }
-                    }
-
-                    //s면
-                    for (int i = -1; i <= 1; i++)
-                    {
-                        for (int j = -1; j <= 1; j++)
-                        {
-                            tu = hu + i;
-                            tv = hv + j;
-                            if (tu == hu && tv == hv) continue;
-                            if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
-                            {
-                                board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                ls = hs;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-
-                        }
-                    }
-
-                    //adj1 면
-                    if (hv == 0)
-                    {
-                        ts = adjSide[hs, 1];
-                        tu = 0;
-                        for (int r = -1; r < 2; r++)
-                        {
-                            tv = hu + r;
-                            if (tv >= 0 && tv < v && instantHorse[ts, tu, tv] != null)
-                            {
-                                board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                ls = ts;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-                        }
-                    }
-
-                    //adj 2면
-                    if (s == 6 && hu == u - 1)
-                    {
-                        ts = adjSide[hs, 2];
-                        tu = u - 1;
-                        for (int l = hv; l < hv + 3; l++)
-                        {
-                            tv = v - l;
-                            if (tv >= 0 && tv < v && instantHorse[ts, tu, tv] != null)
-                            {
-                                board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
-                                lu = tu;
-                                lv = tv;
-                                ls = ts;
-                                yield return new WaitForSeconds(0.1f);
-                            }
-                        }
-                    }
-                    break;
-            }
-
-            //클리어 체크
-            if (CheckClear() && !isCreatorMode)
-            {
-                isFlip = false;
-                if (finalClear) StartCoroutine(MasterClear());
-                else StartCoroutine(StageClear());
-            }
-            else if (IsFail())
-            {
-                if (finalClear) MasterFail();
-                else StartCoroutine(StageFail());
-            }
-
-            if (finalClear) MasterSave();
-
-            //가장 마지막에 실행한 애니메이션이 끝나야 다음 애니메이션 실행 가능
-            StartCoroutine(CheckAnim(lu, lv, ls));
+            StartCoroutine(CheckAnim());
         }
     }
 
-    //마지막으로 뒤집은 말의 뒤집기 애니메이션이 끝났는지 확인
-    IEnumerator CheckAnim(int hu, int hv, int hs)
+    int lu, lv, ls; //가장 마지막에 실행된 애니메이션을 확인하는 변수
+
+    //말 하나를 뒤집으면 주변에 있는 말들도 함께 뒤집히게 하는 함수
+    public IEnumerator Flip_in_Board(int hu, int hv, int hs)
     {
-        while (!instantHorse[hs, hu, hv].AnimPlayCheck())
+        int tu, tv, ts; //임시로 담을 변수
+
+        isFlip = true;
+
+        Debug.Log($"s: {hs}, u: {hu}, v: {hv}");
+
+        board[hs, hu, hv] = instantHorse[hs, hu, hv].FlipHorse(board[hs, hu, hv]); //지정한 말을 뒤집기      
+        lu = hu;
+        lv = hv;
+        ls = hs;
+        yield return new WaitForSeconds(0.1f);
+
+        //지정한 말 주변의 말들도 뒤집기(스테이지 종류에 따라 로직 변경)
+        switch (curKind)
+        {
+            case 0:
+            case 1:
+                for (int i = -1; i <= 1; i++)
+                {
+                    tu = hu + i;
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        tv = hv + j;
+                        if (i == j)
+                        {
+                            if (i == 0 || curKind == 1) continue;
+                        }
+                        if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
+                        {
+                            board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+
+                    }
+                }
+                break;
+
+            case 2:
+                //adj 3면
+                if (s == 6 && hv == v - 1)
+                {
+                    ts = adjSide[hs, 3];
+                    tv = v - 1;
+                    for (int l = hu; l < hu + 3; l++)
+                    {
+                        tu = u - l;
+                        if (tu >= 0 && tu < u && instantHorse[ts, tu, tv] != null)
+                        {
+                            board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            ls = ts;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+
+                //adj 0 면
+                if (hu == 0)
+                {
+                    ts = adjSide[hs, 0];
+                    tv = 0;
+                    for (int l = -1; l < 2; l++)
+                    {
+                        tu = hv + l;
+                        if (tu >= 0 && tu < u && instantHorse[ts, tu, tv] != null)
+                        {
+                            board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            ls = ts;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+
+                    }
+                }
+
+                //s면
+                for (int i = -1; i <= 1; i++)
+                {
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        tu = hu + i;
+                        tv = hv + j;
+                        if (tu == hu && tv == hv) continue;
+                        if (tu >= 0 && tu < u && tv >= 0 && tv < v && instantHorse[hs, tu, tv] != null)
+                        {
+                            board[hs, tu, tv] = instantHorse[hs, tu, tv].FlipHorse(board[hs, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            ls = hs;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+
+                    }
+                }
+
+                //adj1 면
+                if (hv == 0)
+                {
+                    ts = adjSide[hs, 1];
+                    tu = 0;
+                    for (int r = -1; r < 2; r++)
+                    {
+                        tv = hu + r;
+                        if (tv >= 0 && tv < v && instantHorse[ts, tu, tv] != null)
+                        {
+                            board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            ls = ts;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+
+                //adj 2면
+                if (s == 6 && hu == u - 1)
+                {
+                    ts = adjSide[hs, 2];
+                    tu = u - 1;
+                    for (int l = hv; l < hv + 3; l++)
+                    {
+                        tv = v - l;
+                        if (tv >= 0 && tv < v && instantHorse[ts, tu, tv] != null)
+                        {
+                            board[ts, tu, tv] = instantHorse[ts, tu, tv].FlipHorse(board[ts, tu, tv]);
+                            lu = tu;
+                            lv = tv;
+                            ls = ts;
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+                break;
+        }
+
+    }
+
+    void AfterCheck(){
+        //클리어 체크
+        if (CheckClear() && !isCreatorMode)
+        {
+            isFlip = false;
+            if (finalClear)
+            {
+                Invoke("MasterClear", 0.4f);
+            }
+            else StartCoroutine(StageClear());
+        }
+        //실패 체크
+        else if (IsFail())
+        {
+            if (finalClear) MasterFail();
+            else StartCoroutine(StageFail());
+        }
+        if (finalClear) MasterSave();
+
+    }
+
+    //마지막으로 뒤집은 말의 뒤집기 애니메이션이 끝났는지 확인
+    IEnumerator CheckAnim()
+    {
+        while (!instantHorse[ls,lu,lv].AnimPlayCheck())
         {
             yield return new WaitForSeconds(0.1f);
         }
         isFlip = false;
     }
+
+    #endregion
 
     #region Clear
 
@@ -1394,9 +1436,8 @@ public class GameManager : MonoBehaviour
         uiManger.clearMenu.scoreTxt.text = "Score: " + stageScore;
 
         yield return new WaitForSeconds(1f);
-        playCount++;
         Playing_ShowAdsFront();
-        ClearUI_Btn_OnOff(true);            
+        ClearUI_Btn_OnOff(true);
     }
 
     #endregion
@@ -1426,7 +1467,7 @@ public class GameManager : MonoBehaviour
         uiManger.failMenu.backBtn.interactable = false;
         uiManger.failMenu.exitBtn.interactable = false;
         yield return new WaitForSeconds(1f);
-        
+
         //전면 광고 표시
         uiManger.LoadAdsFront();
         uiManger.ShowAdsFront();
@@ -1517,7 +1558,7 @@ public class GameManager : MonoBehaviour
         isRandom = false;
     }
     //-------------------------------------------------------------------------------------------------------------
-    
+
     //버튼을 눌렀을 때, 초기 상태와 같게 보드 리셋
     public void ResetBoard()
     {
@@ -1540,12 +1581,11 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
-        playCount++;
         Playing_ShowAdsFront();
         StartCoroutine(PlaceHorse(createHorsePos));
     }
 
-    public void RotateHorizontal3Dobject(float value) 
+    public void RotateHorizontal3Dobject(float value)
     {
         rotateObject.transform.GetChild(0).rotation = Quaternion.Euler(540 * value, rotateObject.eulerAngles.y, rotateObject.eulerAngles.z);
     }
