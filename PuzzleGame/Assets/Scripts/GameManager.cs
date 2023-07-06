@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
             uiManger.ingameMenu.resetBtn.gameObject.SetActive(false);
             uiManger.ingameMenu.masterGroup.SetActive(true);
             uiManger.ingameMenu.masterScore.text = "0";
-            MasterGame();
+            StartCoroutine(MasterGame());
         }
         uiManger.BGMPlay(1);
     }
@@ -346,7 +346,7 @@ public class GameManager : MonoBehaviour
     #region MasterMode
 
     //모든 스테이지를 클리어했을 때, 플레이할 수 있는 모드
-    void MasterGame(bool next = false)
+    IEnumerator MasterGame(bool next = false)
     {
         //이전 스테이지를 클리어하고 다음 스테이지를 진행하려는 상황일 때
         if (next)
@@ -371,18 +371,7 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.masterMaxScore.text = "" + PlayerData.Instance.data.masterMaxScore[curKind];
         MasterMaxCrownMove(uiManger.ingameMenu.masterMaxScore.preferredWidth);
 
-        //yield return new WaitForSeconds(0.1f);
-        // CreateHorse();
-        // DefineHorsePos();
-        // StartCoroutine(PlaceHorse(createHorsePos));
-
-        // PlayerData.Instance.data.isMasterDoing[curKind] = true;
-        // MasterSave();
-        Invoke("MasterStart", 0.1f);
-    }
-
-    void MasterStart()
-    {
+        yield return new WaitForSeconds(0.1f);
         CreateHorse();
         DefineHorsePos();
         StartCoroutine(PlaceHorse(createHorsePos));
@@ -739,9 +728,9 @@ public class GameManager : MonoBehaviour
     }
 
     //마스터 모드의 한 스테이지 클리어 시 호출
-    void MasterClear()
+    IEnumerator MasterClear()
     {
-        //yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
         RealDeleteHorse();
         Ingame_Lobby_Setting_OnOff(false);
 
@@ -759,17 +748,9 @@ public class GameManager : MonoBehaviour
 
 
         //다음 스테이지 시작
-        Invoke("MasterClearStart", 0.5f);
-        //yield return new WaitForSeconds(0.5f);
-        // playCount++;
-        // Playing_ShowAdsFront();
-        // StartCoroutine(MasterGame(true));
-    }
-
-    void MasterClearStart()
-    {
+        yield return new WaitForSeconds(0.5f);
         Playing_ShowAdsFront();
-        MasterGame(true);
+        StartCoroutine(MasterGame(true));
     }
 
     //마스터 모드 스테이지에서 실패했을 때 호출
@@ -1183,10 +1164,7 @@ public class GameManager : MonoBehaviour
             }
 
             StartCoroutine(Flip_in_Board(hu, hv, hs));
-
-            Invoke("AfterCheck", 1f);
-
-            StartCoroutine(CheckAnim());
+            
         }
     }
 
@@ -1334,16 +1312,12 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-    }
-
-    void AfterCheck(){
-        //클리어 체크
         if (CheckClear() && !isCreatorMode)
         {
             isFlip = false;
             if (finalClear)
             {
-                Invoke("MasterClear", 0.4f);
+                StartCoroutine(MasterClear());
             }
             else StartCoroutine(StageClear());
         }
@@ -1355,6 +1329,7 @@ public class GameManager : MonoBehaviour
         }
         if (finalClear) MasterSave();
 
+        StartCoroutine(CheckAnim());
     }
 
     //마지막으로 뒤집은 말의 뒤집기 애니메이션이 끝났는지 확인
