@@ -287,9 +287,11 @@ public class GameManager : MonoBehaviour
                     {
                         if (queHorse[curKind].Count > 0)
                             instantHorse[i, j, k] = queHorse[curKind].Dequeue();
-                        else
+                        else{
                             instantHorse[i, j, k] = Instantiate(basic_horse[curKind], transform.position, Quaternion.Euler(0, 0, 0)).gameObject.GetComponent<Basic_horse>();
-                        instantHorse[i, j, k].Init(j, k, this, i);
+                            instantHorse[i, j, k].Init(this);
+                        }
+                        instantHorse[i, j, k].SetCoordinate(i, j, k);
 
                         if (s > 1)
                         {

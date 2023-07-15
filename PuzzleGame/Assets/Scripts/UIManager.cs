@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using System;
 using GoogleMobileAds.Api;
 
 public class UIManager : MonoBehaviour
@@ -272,6 +274,8 @@ public class UIManager : MonoBehaviour
         GPGSBinder.Inst.isLogin = false;
         BGMPlay(0);
 
+        GooglePlayInit();
+
         //광고 초기화
         MobileAds.Initialize((InitializationStatus initStatus) =>{ });
         //하단 배너 표시
@@ -296,6 +300,13 @@ public class UIManager : MonoBehaviour
     }
 
     #region GooglePlay
+
+    void GooglePlayInit(){
+        var config = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+        PlayGamesPlatform.InitializeInstance(config);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+    }
 
     void LogIn(){
         if(PlayGamesPlatform.Instance.localUser.authenticated == false){
@@ -336,10 +347,12 @@ public class UIManager : MonoBehaviour
     }
 
     void ShowRanking(){
-        //string log;
-        GPGSBinder.Inst.ReportLeaderboard(GPGSIds.leaderboard_ranking, (long)PlayerData.Instance.TotalScore());
-        GPGSBinder.Inst.ShowAllLeaderboardUI();
+        ReportLeaderboard(GPGSIds.leaderboard_ranking, (long)PlayerData.Instance.TotalScore());
+        Social.ShowLeaderboardUI();
     }
+
+    void ReportLeaderboard(string gpgsId, long score, Action<bool> onReported = null) =>
+        Social.ReportScore(score, gpgsId, success => onReported?.Invoke(success));
 
     #endregion
 

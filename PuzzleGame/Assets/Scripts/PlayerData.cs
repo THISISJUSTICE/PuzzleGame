@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
-using Newtonsoft.Json;
 
 // - 랭킹 계산
 
@@ -180,21 +179,21 @@ public class PlayerData : MonoBehaviour
     }
 
     //문자열로 된 JSON 데이터를 받아서 원하는 타입의 객체로 반환
-    T LoadJsonFile<T>(string loadPath, string fileName)
+    Data LoadJsonFile<T>(string loadPath, string fileName)
     {
         FileStream fileStream = new FileStream(string.Format("{0}/{1}.json", loadPath, fileName), FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
         string jsonData = Encoding.UTF8.GetString(data);
-        return JsonConvert.DeserializeObject<T>(jsonData);
+        return JsonUtility.FromJson<Data>(jsonData);
     }
 
     //저장하기
     public void SaveData()
     {
         //클래스를 문자열로 된 Json 데이터로 변환
-        string ToJsonData = JsonConvert.SerializeObject(data);
+        string ToJsonData = JsonUtility.ToJson(data);
 
         //Json 파일을 생성하고 저장(파일이 이미 있으면 덮어쓰기)
         FileStream fileStream = new FileStream(string.Format("{0}/{1}.json", Application.persistentDataPath, FileName), FileMode.Create);
