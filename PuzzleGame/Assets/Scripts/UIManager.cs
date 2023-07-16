@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     #region Variable Declaration
     public GameManager gameManager;
 
+    #region UI Classes
     public class MainMenu {
         public GameObject mainMenu; //게임 시작 화면
         public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //나가기 버튼, 설정 버튼, 설명 버튼, 공유 버튼
@@ -174,6 +175,7 @@ public class UIManager : MonoBehaviour
     }
     public ExitMenu exitMenu; //나가기 창 (yes or no)
 
+    # endregion
     GameObject loadingUI;
     
     public struct Sounds{
@@ -281,6 +283,9 @@ public class UIManager : MonoBehaviour
         //하단 배너 표시
         LoadAdsBanner();
         adsBanner.Show();
+
+        //전면 광고 미리 로드
+        LoadAdsFront();
     }
 
     //오디오 설정 초기화
@@ -408,6 +413,7 @@ public class UIManager : MonoBehaviour
         adsFront.OnAdFullScreenContentClosed += () =>
             {
                 BGMPlay(1);
+                LoadAdsFront();
             };
     }
 

@@ -145,13 +145,12 @@ public class GameManager : MonoBehaviour
     }
 
     //게임 진행 도중 조건 달성 시 전면 광고 표시
-    void Playing_ShowAdsFront(bool ready = false, bool immd = false)
+    void Playing_ShowAdsFront(bool immd = false)
     {
         if(!immd) playCount++;
         if (playCount % 15 == 0 || immd)
         {
-            if(!ready) uiManger.LoadAdsFront();
-            else StartCoroutine(uiManger.ShowAdsFront());
+            StartCoroutine(uiManger.ShowAdsFront());
         }
     }
 
@@ -732,7 +731,6 @@ public class GameManager : MonoBehaviour
     //마스터 모드의 한 스테이지 클리어 시 호출
     IEnumerator MasterClear()
     {
-        Playing_ShowAdsFront();
         yield return new WaitForSeconds(0.4f);
         RealDeleteHorse();
         Ingame_Lobby_Setting_OnOff(false);
@@ -752,7 +750,7 @@ public class GameManager : MonoBehaviour
 
         //다음 스테이지 시작
         yield return new WaitForSeconds(0.5f);
-        Playing_ShowAdsFront(true);
+        Playing_ShowAdsFront();
         StartCoroutine(MasterGame(true));
     }
 
@@ -1373,7 +1371,6 @@ public class GameManager : MonoBehaviour
     //현재 스테이지를 클리어 했을 때 실행
     IEnumerator StageClear()
     {
-        Playing_ShowAdsFront();
         StageManager stageManager = uiManger.lobbyMenu.stageBtns[curKind];
 
         //만약 로비 메뉴가 실행이 안되면 setactive 활성화 후 함수 실행, 비활성화 진행
@@ -1415,7 +1412,7 @@ public class GameManager : MonoBehaviour
         uiManger.clearMenu.scoreTxt.text = "Score: " + stageScore;
 
         yield return new WaitForSeconds(1f);
-        Playing_ShowAdsFront(true);
+        Playing_ShowAdsFront();
         ClearUI_Btn_OnOff(true);
     }
 
@@ -1434,7 +1431,6 @@ public class GameManager : MonoBehaviour
     //스테이지에 실패했을 때 실행
     IEnumerator StageFail()
     {
-        Playing_ShowAdsFront(false, true);
         //BMG 일시 정지
         uiManger.BGMPause();
         yield return new WaitForSeconds(0.5f);
@@ -1449,7 +1445,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         //전면 광고 표시
-        Playing_ShowAdsFront(true, true);
+        Playing_ShowAdsFront(true);
 
         uiManger.failMenu.backBtn.interactable = true;
         uiManger.failMenu.exitBtn.interactable = true;
@@ -1541,7 +1537,6 @@ public class GameManager : MonoBehaviour
     //버튼을 눌렀을 때, 초기 상태와 같게 보드 리셋
     public void ResetBoard()
     {
-        Playing_ShowAdsFront();
         for (int i = 0; i < s; i++)
         {
             for (int j = 0; j < u; j++)
@@ -1561,7 +1556,7 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
-        Playing_ShowAdsFront(true);
+        Playing_ShowAdsFront();
         StartCoroutine(PlaceHorse(createHorsePos));
     }
 
