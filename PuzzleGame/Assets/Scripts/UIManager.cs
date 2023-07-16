@@ -191,6 +191,7 @@ public class UIManager : MonoBehaviour
 
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
+    public bool isLogin; //현재 로그인이 된 상태인지 확인하는 변수
 
     //공유 버튼: 설명, 링크
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
@@ -271,7 +272,6 @@ public class UIManager : MonoBehaviour
         exitMenu.exitMenu.SetActive(false);
         MainMenuText();
         loadingUI.gameObject.SetActive(false);
-        GPGSBinder.Inst.isLogin = false;
         BGMPlay(0);
 
         GooglePlayInit();
@@ -290,7 +290,6 @@ public class UIManager : MonoBehaviour
         sounds.clearStarSound = clearMenu.clearMenu.transform.GetChild(7).GetComponent<AudioSource>();
         sounds.achieve100Sound = clearMenu.clearMenu.transform.GetChild(7).GetChild(2).GetComponent<AudioSource>();
         sounds.failSound = failMenu.failMenu.GetComponent<AudioSource>();
-        gameManager.horseAudio = gameManager.GetComponent<AudioSource>();
         sounds.masterClearSound = ingameMenu.masterGroup.GetComponent<AudioSource>();
         sounds.scoreSound = ingameMenu.masterScore.GetComponent<AudioSource>();
 
@@ -329,14 +328,14 @@ public class UIManager : MonoBehaviour
 
     //지속적으로 로그인 상태를 확인
     IEnumerator SignCheck(){
-        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
-        SetSignUI(GPGSBinder.Inst.isLogin);
+        isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
+        SetSignUI(isLogin);
         yield return new WaitForSeconds(1);
-        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
-        SetSignUI(GPGSBinder.Inst.isLogin);
+        isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
+        SetSignUI(isLogin);
         yield return new WaitForSeconds(1);
-        GPGSBinder.Inst.isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
-        SetSignUI(GPGSBinder.Inst.isLogin);
+        isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
+        SetSignUI(isLogin);
     }
 
     //로그인 상태에 따라 UI 변경
@@ -413,11 +412,15 @@ public class UIManager : MonoBehaviour
     }
 
     //전면 광고 표시
-    public void ShowAdsFront()
+    public IEnumerator ShowAdsFront()
     {
-        if (adsFront != null && adsFront.CanShowAd()){
-            adsFront.Show();     
-            BGMPause();
+        for(int i=0; i<10; i++){
+            if (adsFront != null && adsFront.CanShowAd()){
+                adsFront.Show();     
+                BGMPause();
+                break;
+            }
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -792,7 +795,7 @@ public class UIManager : MonoBehaviour
         sounds.clearStarSound.mute = on;
         sounds.achieve100Sound.mute = on;
         sounds.failSound.mute = on;
-        gameManager.horseAudio.mute = on;
+        gameManager.SetHorseAudio(true, on, 0);
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundCk.isOn = on;
@@ -807,7 +810,7 @@ public class UIManager : MonoBehaviour
         sounds.clearStarSound.volume = value;
         sounds.achieve100Sound.volume = value;
         sounds.failSound.volume = value;
-        gameManager.horseAudio.volume = value;
+        gameManager.SetHorseAudio(false, false, value);
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundScroll.value = value;

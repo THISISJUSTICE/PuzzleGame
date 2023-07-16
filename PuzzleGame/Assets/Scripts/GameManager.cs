@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기, admob 아이디 할당 받은 것으로 수정하기
+// - 말 각각에 오디오 소스 넣기, 광고 오류 수정
 
 public class GameManager : MonoBehaviour
 {
@@ -28,7 +29,6 @@ public class GameManager : MonoBehaviour
     public float createHorseTime; //말을 다 소환할 때까지 걸리는 시간
     public int curKind; //현재 진행하고 있는 스테이지의 종류(0: 사각형, 1: 육각형, 2: 큐브, 3: 벌집)
 
-    public AudioSource horseAudio; //말 재생 소리
     public AudioClip[] flipSounds; //말의 면에 따라 다른 소리 적용
 
     GameObject[] basic_horse; //말 오브젝트(종류 별로 나누기 위해 배열로 선언)
@@ -145,13 +145,13 @@ public class GameManager : MonoBehaviour
     }
 
     //게임 진행 도중 조건 달성 시 전면 광고 표시
-    void Playing_ShowAdsFront()
+    void Playing_ShowAdsFront(bool ready = false, bool immd = false)
     {
-        playCount++;
-        if (playCount % 15 == 0)
+        if(!immd) playCount++;
+        if (playCount % 15 == 0 || immd)
         {
-            uiManger.LoadAdsFront();
-            uiManger.ShowAdsFront();
+            if(!ready) uiManger.LoadAdsFront();
+            else StartCoroutine(uiManger.ShowAdsFront());
         }
     }
 
@@ -732,6 +732,7 @@ public class GameManager : MonoBehaviour
     //마스터 모드의 한 스테이지 클리어 시 호출
     IEnumerator MasterClear()
     {
+        Playing_ShowAdsFront();
         yield return new WaitForSeconds(0.4f);
         RealDeleteHorse();
         Ingame_Lobby_Setting_OnOff(false);
@@ -751,7 +752,7 @@ public class GameManager : MonoBehaviour
 
         //다음 스테이지 시작
         yield return new WaitForSeconds(0.5f);
-        Playing_ShowAdsFront();
+        Playing_ShowAdsFront(true);
         StartCoroutine(MasterGame(true));
     }
 
@@ -1372,6 +1373,7 @@ public class GameManager : MonoBehaviour
     //현재 스테이지를 클리어 했을 때 실행
     IEnumerator StageClear()
     {
+        Playing_ShowAdsFront();
         StageManager stageManager = uiManger.lobbyMenu.stageBtns[curKind];
 
         //만약 로비 메뉴가 실행이 안되면 setactive 활성화 후 함수 실행, 비활성화 진행
@@ -1413,7 +1415,7 @@ public class GameManager : MonoBehaviour
         uiManger.clearMenu.scoreTxt.text = "Score: " + stageScore;
 
         yield return new WaitForSeconds(1f);
-        Playing_ShowAdsFront();
+        Playing_ShowAdsFront(true);
         ClearUI_Btn_OnOff(true);
     }
 
@@ -1432,6 +1434,7 @@ public class GameManager : MonoBehaviour
     //스테이지에 실패했을 때 실행
     IEnumerator StageFail()
     {
+        Playing_ShowAdsFront(false, true);
         //BMG 일시 정지
         uiManger.BGMPause();
         yield return new WaitForSeconds(0.5f);
@@ -1446,8 +1449,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         //전면 광고 표시
-        uiManger.LoadAdsFront();
-        uiManger.ShowAdsFront();
+        Playing_ShowAdsFront(true, true);
 
         uiManger.failMenu.backBtn.interactable = true;
         uiManger.failMenu.exitBtn.interactable = true;
@@ -1539,6 +1541,7 @@ public class GameManager : MonoBehaviour
     //버튼을 눌렀을 때, 초기 상태와 같게 보드 리셋
     public void ResetBoard()
     {
+        Playing_ShowAdsFront();
         for (int i = 0; i < s; i++)
         {
             for (int j = 0; j < u; j++)
@@ -1558,8 +1561,26 @@ public class GameManager : MonoBehaviour
         uiManger.ingameMenu.maxFlipCount.text = "" + realMaxFlip;
 
         UI_Btn_OnOff(false);
-        Playing_ShowAdsFront();
+        Playing_ShowAdsFront(true);
         StartCoroutine(PlaceHorse(createHorsePos));
+    }
+
+    //말 오디오 조정(type이 true면 mute 조정, false면 volume 조정)
+    public void SetHorseAudio(bool type, bool mute, float volume){
+        for (int i = 0; i < s; i++)
+        {
+            for (int j = 0; j < u; j++)
+            {
+                for (int k = 0; k < v; k++)
+                {
+                    if (instantHorse[i, j, k] != null)
+                    {
+                        if(type) instantHorse[i, j, k].SetHorseSoundMute(mute);
+                        else instantHorse[i, j, k].SetHorseSoundVolume(volume);
+                    }
+                }
+            }
+        }
     }
 
     public void RotateHorizontal3Dobject(float value)

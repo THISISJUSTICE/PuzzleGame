@@ -11,6 +11,7 @@ public class Basic_horse : MonoBehaviour
     GameManager gameManager;
     Animator anim;
     Toggle horseSoundToggle;
+    AudioSource horseAudio;
     int s, u, v; //보드상 좌표 지정
 
     //초기화
@@ -18,6 +19,7 @@ public class Basic_horse : MonoBehaviour
         anim = horseMesh.GetComponent<Animator>();
         horseSoundToggle = horseMesh.transform.GetChild(0).GetComponent<Toggle>();
         horseSoundToggle.onValueChanged.AddListener(HorseSound);
+        horseAudio = GetComponent<AudioSource>();
         this.gameManager = gameManager;
     }
 
@@ -35,35 +37,32 @@ public class Basic_horse : MonoBehaviour
         if (curState == 0)
         {
             anim.Play("BSummon");
-            //StartCoroutine(FlipSoundPlay(0.19f, curState));
         }
         else
         {
             anim.Play("WSummon");
-            //StartCoroutine(FlipSoundPlay(0.19f, curState));
         }
     }
 
     //true면 흰색: 0, false면 검은색: 1
     void HorseSound(bool sound){
         if(horseSoundToggle.interactable){
-            if(horseSoundToggle.isOn) gameManager.horseAudio.clip = gameManager.flipSounds[0];
-            else gameManager.horseAudio.clip = gameManager.flipSounds[1];
-            gameManager.horseAudio.Play();
+            if(horseSoundToggle.isOn) horseAudio.clip = gameManager.flipSounds[0];
+            else horseAudio.clip = gameManager.flipSounds[1];
+            horseAudio.Play();
         }
     }
 
-    // //흰색이 바닥에 닿으면 0, 검은색은 1번 클립 재생
-    // IEnumerator FlipSoundPlay(float time, int sound){
-    //     yield return new WaitForSeconds(time);
-    //     gameManager.horseAudio.clip = gameManager.flipSounds[sound];
-    //     gameManager.horseAudio.Play();
-    // }
+    public void SetHorseSoundMute(bool mute){
+        horseAudio.mute = mute;
+    }
+    public void SetHorseSoundVolume(float volume){
+        horseAudio.volume = volume;
+    }
 
     //말이 마우스로 클릭되었을 때 호출
     private void OnMouseDown()
     {
-        Debug.Log("Click Horse");
         if (!AnimPlayCheck())
         {
             gameManager.ClickHorse(u, v, s);
@@ -81,18 +80,15 @@ public class Basic_horse : MonoBehaviour
     //말을 뒤집는 함수
     public int FlipHorse(int curState) 
     {
-        //SetAudioClip(curState);
         if (curState == 1)
         {
             curState = 0;
             anim.Play("FlipWtoB");    
-            //StartCoroutine(FlipSoundPlay(0.32f, 0));
         }
         else
         {
             curState = 1;
             anim.Play("FlipBtoW");
-            //StartCoroutine(FlipSoundPlay(0.32f, 1));
         }
         return curState;
     }
