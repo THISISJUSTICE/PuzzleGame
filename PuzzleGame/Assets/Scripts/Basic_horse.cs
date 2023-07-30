@@ -23,12 +23,14 @@ public class Basic_horse : MonoBehaviour
         this.gameManager = gameManager;
     }
 
-    //좌표 설정
-    public void SetCoordinate(int s, int u, int v)
+    //좌표, 소리 설정
+    public void SetCoordinate(int s, int u, int v, bool mute, float volume)
     {
         this.s = s;
         this.u = u;
         this.v = v;
+        horseAudio.mute = mute;
+        horseAudio.volume = volume;
     }
     
 

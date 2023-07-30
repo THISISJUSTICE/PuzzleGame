@@ -61,6 +61,9 @@ public class GameManager : MonoBehaviour
 
     int playCount; //전면 광고 표시를 위한 횟수
 
+    bool soundMute; //말 프리팹의 음소거 여부
+    float soundVolume; //말 프리팹의 볼륨
+
     #endregion
 
     void Awake()
@@ -92,6 +95,8 @@ public class GameManager : MonoBehaviour
             stdRot[i] = new Quaternion();
         }
         playCount = 0;
+        soundMute = false;
+        soundVolume = 1;
     }
 
     //시작할 스테이지, 스테이지 종류를 입력받아 스테이지 실행
@@ -290,7 +295,7 @@ public class GameManager : MonoBehaviour
                             instantHorse[i, j, k] = Instantiate(basic_horse[curKind], transform.position, Quaternion.Euler(0, 0, 0)).gameObject.GetComponent<Basic_horse>();
                             instantHorse[i, j, k].Init(this);
                         }
-                        instantHorse[i, j, k].SetCoordinate(i, j, k);
+                        instantHorse[i, j, k].SetCoordinate(i, j, k, soundMute, soundVolume);
 
                         if (s > 1)
                         {
@@ -1570,8 +1575,14 @@ public class GameManager : MonoBehaviour
                 {
                     if (instantHorse[i, j, k] != null)
                     {
-                        if(type) instantHorse[i, j, k].SetHorseSoundMute(mute);
-                        else instantHorse[i, j, k].SetHorseSoundVolume(volume);
+                        if(type) {
+                            instantHorse[i, j, k].SetHorseSoundMute(mute);
+                            soundMute = mute;
+                        }
+                        else {
+                            instantHorse[i, j, k].SetHorseSoundVolume(volume);
+                            soundVolume = volume;
+                        }
                     }
                 }
             }
