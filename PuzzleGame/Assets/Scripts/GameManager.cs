@@ -5,8 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-// - 출시하는 버전에는 주석, Debug, Generate 모드, 안 쓰는 project 파일 다 지우기, admob 아이디 할당 받은 것으로 수정하기
-// - 말 각각에 오디오 소스 넣기, 광고 오류 수정
+// - 출시하는 버전에는 주석, Debug, Generate 모드, admob 아이디 할당 받은 것으로 수정하기
 
 public class GameManager : MonoBehaviour
 {
@@ -15,8 +14,8 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera; //메인 카메라
     public UIManager uiManger;
 
-    public InputField stageName; //생성할 스테이지 이름을 결정하는 UI
-    public Toggle creatorMode; //체크되면 스테이지 생성 모드로 변경하는 UI
+    public InputField stageName; //생성할 스테이지 이름을 결정하는 UI(출시 버전엔 삭제)
+    public Toggle creatorMode; //체크되면 스테이지 생성 모드로 변경하는 UI(출시 버전엔 삭제)
     public List<TextAsset> stage0Txt; //0스테이지 파일을 담는 변수
     public List<TextAsset> stage1Txt; //1스테이지 파일을 담는 변수
     public List<TextAsset> stage2Txt; //2스테이지 파일을 담는 변수
