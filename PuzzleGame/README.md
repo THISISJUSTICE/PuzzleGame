@@ -20,9 +20,9 @@
       display: block;
       margin: auto;
     }
-<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/7ce42581-9b6c-482f-b71a-bf3d34728091" width="30%" height="30%"></left>
-<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/6fec2fd8-27a0-4967-86ba-84fa9609c777" width="30%" height="30%"></center>
-<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/6d5bc73c-de99-4876-b38f-1bd23a11fe8b" width="30%" height="30%"></right>
+<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/522eeeae-cbf0-4e0a-9bb3-836e15826a84" width="30%" height="30%"></left>
+<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/8d8f501e-a969-411e-9086-22a6793b5d22" width="30%" height="30%"></center>
+<center><img src="https://github.com/THISISJUSTICE/PuzzleGame/assets/105614494/3d3895df-bc29-4072-8eb8-ddc002428bb1" width="30%" height="30%"></right>
 
 ## 주요 스크립트
 ### (PuzzleGame/PuzzleGame/Assets/Scripts)
