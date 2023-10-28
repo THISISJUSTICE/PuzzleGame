@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour
     int maxFlip; //말 뒤집기 최대 횟수(점수용)
     int realMaxFlip; //실제로 한 스테이지에서 최대로 뒤집을 수 있는 횟수
     int minFlip; //스테이지를 클리어하기 위한 최소 뒤집기 횟수
-    int[] masterTempFlip; //마스터 모드의 남은 플립 수를 임시로 담을 변수
 
     Vector3[] stdPos; //위치를 정한 회전 오브젝트와 면 오브젝트의 초깃값을 저장
     Quaternion[] stdRot; //각도를 정한 회전 오브젝트와 면 오브젝트의 초깃값을 저장
@@ -80,7 +79,6 @@ public class GameManager : MonoBehaviour
         finalClear = false;
         isCreatorMode = false;
         flipCount = 0;
-        masterTempFlip = new int[3];
         queHorse = new Queue<Basic_horse>[3];
         for (int i = 0; i < 3; i++)
             queHorse[i] = new Queue<Basic_horse>();
@@ -167,8 +165,8 @@ public class GameManager : MonoBehaviour
 
         FiletoBoard(textFile[stage].text);
 
-        maxFlip = (u * v * s) * 17 / 10 + (minFlip % u) * 2;
-        realMaxFlip = (maxFlip / 5 + (minFlip / 10)) * 5 + (minFlip % 10);
+        maxFlip = (int)(u * v * s * 1.7f) + minFlip % u * 2;
+        realMaxFlip = maxFlip + minFlip / 2 + (minFlip % 10);
     }
 
     //텍스트 파일의 정보를 보드에 입력
@@ -295,6 +293,7 @@ public class GameManager : MonoBehaviour
                             instantHorse[i, j, k].Init(this);
                         }
                         instantHorse[i, j, k].SetCoordinate(i, j, k, soundMute, soundVolume);
+                        //Debug.Log($"Mute: {soundMute}, volume: {soundVolume}");
 
                         if (s > 1)
                         {
@@ -1566,6 +1565,7 @@ public class GameManager : MonoBehaviour
 
     //말 오디오 조정(type이 true면 mute 조정, false면 volume 조정)
     public void SetHorseAudio(bool type, bool mute, float volume){
+        //Debug.Log($"소리 조정 Mute: {soundMute}, volume: {soundVolume}");
         soundVolume = volume;
         soundMute = mute;
         for (int i = 0; i < s; i++)

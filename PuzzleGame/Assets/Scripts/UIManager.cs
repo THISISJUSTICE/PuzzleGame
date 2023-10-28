@@ -188,6 +188,7 @@ public class UIManager : MonoBehaviour
         public AudioSource scoreSound; //점수가 올라갈 때마다 발생하는 소리
     }
     public Sounds sounds; //효과음
+    float curSoundVolume; //현재 효과음 볼륨을 저장
 
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
@@ -757,6 +758,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region SettingMenu
+
     void SetSettingMenu()
     {
         settingMenu.exitBtn.onClick.AddListener(() => settingMenu.settingMenu.SetActive(false));
@@ -775,9 +777,9 @@ public class UIManager : MonoBehaviour
     void SoundMute(bool on){
         DoSoundMute(on);
         if(on)
-            DoSoundVolume(0); 
+            DoSoundVolume(curSoundVolume); 
         else {
-            DoSoundVolume(0.1f);
+            DoSoundVolume(curSoundVolume);
             sounds.btnSound.Play();
         }
         StopCoroutine(SettingChangeCheck());
@@ -799,7 +801,7 @@ public class UIManager : MonoBehaviour
         sounds.clearStarSound.mute = on;
         sounds.achieve100Sound.mute = on;
         sounds.failSound.mute = on;
-        gameManager.SetHorseAudio(true, on, 0);
+        gameManager.SetHorseAudio(true, on, curSoundVolume);
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundCk.isOn = on;
@@ -815,6 +817,7 @@ public class UIManager : MonoBehaviour
         sounds.achieve100Sound.volume = value;
         sounds.failSound.volume = value;
         gameManager.SetHorseAudio(false, false, value);
+        curSoundVolume = value;
 
         //다른 세팅화면에서 눌렀어도 동기화
         settingMenu.soundScroll.value = value;
