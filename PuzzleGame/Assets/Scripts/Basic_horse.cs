@@ -75,7 +75,7 @@ public class Basic_horse : MonoBehaviour
     public bool AnimPlayCheck() 
     {
         AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
-        if (((stateInfo.IsTag("Flip") || stateInfo.IsTag("Summon")) && stateInfo.normalizedTime < 1.0f)) return true;
+        if ((stateInfo.IsTag("Flip") || stateInfo.IsTag("Summon")) && stateInfo.normalizedTime < 1.0f) return true;
         else return false;  
     }
 

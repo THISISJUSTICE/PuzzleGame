@@ -189,8 +189,6 @@ public class UIManager : MonoBehaviour
     }
     public Sounds sounds; //효과음
 
-    bool isSaveCoolDown = false; //저장 대기 시간
-
     public BGM_Player bgm_Player; //배경 음악
     float pauseTime; //인게임에서 배경음악을 일시 정지했을 때, 음악 플레이 시간을 저장하는 변수
     public bool isLogin; //현재 로그인이 된 상태인지 확인하는 변수
@@ -860,18 +858,13 @@ public class UIManager : MonoBehaviour
     //설정 변화를 확인해서 변화가 멈추면 데이터 저장
     IEnumerator SettingChangeCheck(){   
         yield return new WaitForSeconds(5);
-        //StartCoroutine(SaveCycle());
-        //설정 변경이 있으면 저장
-        if(!isSaveCoolDown){
-            PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
-            PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
-            PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
-            PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
-            PlayerData.Instance.SaveData();
-            yield return new WaitForSeconds(4);
-            isSaveCoolDown = true;
-            isSaveCoolDown = false;
-        }  
+        
+        PlayerData.Instance.data.soundVolume = settingMenu.soundScroll.value;
+        PlayerData.Instance.data.soundCk = settingMenu.soundCk.isOn;
+        PlayerData.Instance.data.bgmVolume = settingMenu.bgmScroll.value;
+        PlayerData.Instance.data.bgmCk = settingMenu.bgmCK.isOn;
+        PlayerData.Instance.SaveData();
+        yield return new WaitForSeconds(4);
     }
 
     public void BGMPlay(int type){

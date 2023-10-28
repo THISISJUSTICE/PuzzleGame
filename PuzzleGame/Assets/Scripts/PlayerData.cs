@@ -29,7 +29,8 @@ public class PlayerData : MonoBehaviour
     {
         public int[] stageTotalScore; //총 점수
         public int[] clearStage; //각 스테이지 별 현재까지 클리어 한 스테이지
-        //저장용 데이터
+        
+        //저장용 데이터(json 저장을 용이하게 하기 위함)
         public List<int> stage0Flip; //0스테이지 별 클리어 시 플립 횟수
         public List<int> stage1Flip; //1스테이지 별 클리어 시 플립 횟수
         public List<int> stage2Flip; //2스테이지 별 클리어 시 플립 횟수
@@ -66,7 +67,7 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    string FileName = "GameData.json"; //게임 데이터 파일 이름 설정
+    string FileName = "GameData"; //게임 데이터 파일 이름 설정
     public Data data;
     public GameManager gameManager;
 

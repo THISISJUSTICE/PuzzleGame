@@ -1566,6 +1566,8 @@ public class GameManager : MonoBehaviour
 
     //말 오디오 조정(type이 true면 mute 조정, false면 volume 조정)
     public void SetHorseAudio(bool type, bool mute, float volume){
+        soundVolume = volume;
+        soundMute = mute;
         for (int i = 0; i < s; i++)
         {
             for (int j = 0; j < u; j++)
@@ -1576,11 +1578,9 @@ public class GameManager : MonoBehaviour
                     {
                         if(type) {
                             instantHorse[i, j, k].SetHorseSoundMute(mute);
-                            soundMute = mute;
                         }
                         else {
                             instantHorse[i, j, k].SetHorseSoundVolume(volume);
-                            soundVolume = volume;
                         }
                     }
                 }
