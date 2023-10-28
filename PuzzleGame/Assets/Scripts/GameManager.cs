@@ -293,7 +293,6 @@ public class GameManager : MonoBehaviour
                             instantHorse[i, j, k].Init(this);
                         }
                         instantHorse[i, j, k].SetCoordinate(i, j, k, soundMute, soundVolume);
-                        //Debug.Log($"Mute: {soundMute}, volume: {soundVolume}");
 
                         if (s > 1)
                         {
@@ -1565,7 +1564,6 @@ public class GameManager : MonoBehaviour
 
     //말 오디오 조정(type이 true면 mute 조정, false면 volume 조정)
     public void SetHorseAudio(bool type, bool mute, float volume){
-        //Debug.Log($"소리 조정 Mute: {soundMute}, volume: {soundVolume}");
         soundVolume = volume;
         soundMute = mute;
         for (int i = 0; i < s; i++)
