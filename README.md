@@ -14,6 +14,9 @@
 
 <https://play.google.com/store/apps/details?id=com.Commar.Reversi_Puzzle>
 
+## 게임 소개 영상
+
+https://www.youtube.com/watch?v=Fsg29UOJ2HQ
 
 ## 시연사진
     center {
