@@ -14,14 +14,14 @@ public class UIManager : MonoBehaviour
 
     #region UI Classes
     public class MainMenu {
-        public GameObject mainMenu; //°ÔÀÓ ½ÃÀÛ È­¸é
-        public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //³ª°¡±â ¹öÆ°, ¼³Á¤ ¹öÆ°, ¼³¸í ¹öÆ°, °øÀ¯ ¹öÆ°
-        public Button rectBtn, hexBtn, cubeBtn; //»ç°¢ ½ºÅ×ÀÌÁö, À°°¢ ½ºÅ×ÀÌÁö, 3Â÷¿ø Å¥ºê ½ºÅ×ÀÌÁö
-        public Text score; //Á¡¼ö
-        public Button loginBtn, logoutBtn, rankBtn; //±¸±Û ·Î±×ÀÎ, ·Î±×¾Æ¿ô, ·©Å· ¹öÆ°
-        public Text[] stageScore, stageLevel; //°¢ ½ºÅ×ÀÌÁö º° Á¡¼ö, Å¬¸®¾î ¼ö
-        public GameObject tutorialMenu; //Æ©Åä¸®¾ó ¸Ş´º
-        public Button[] tutorial; //Æ©Åä¸®¾ó ¸Ş´º 1, ¸Ş´º 2
+        public GameObject mainMenu; //ê²Œì„ ì‹œì‘ í™”ë©´
+        public Button exitBtn, settingBtn, tutorialBtn, shareBtn; //ë‚˜ê°€ê¸° ë²„íŠ¼, ì„¤ì • ë²„íŠ¼, ì„¤ëª… ë²„íŠ¼, ê³µìœ  ë²„íŠ¼
+        public Button rectBtn, hexBtn, cubeBtn; //ì‚¬ê° ìŠ¤í…Œì´ì§€, ìœ¡ê° ìŠ¤í…Œì´ì§€, 3ì°¨ì› íë¸Œ ìŠ¤í…Œì´ì§€
+        public Text score; //ì ìˆ˜
+        public Button loginBtn, logoutBtn, rankBtn; //êµ¬ê¸€ ë¡œê·¸ì¸, ë¡œê·¸ì•„ì›ƒ, ë­í‚¹ ë²„íŠ¼
+        public Text[] stageScore, stageLevel; //ê° ìŠ¤í…Œì´ì§€ ë³„ ì ìˆ˜, í´ë¦¬ì–´ ìˆ˜
+        public GameObject tutorialMenu; //íŠœí† ë¦¬ì–¼ ë©”ë‰´
+        public Button[] tutorial; //íŠœí† ë¦¬ì–¼ ë©”ë‰´ 1, ë©”ë‰´ 2
 
         public MainMenu(GameObject mainMenu) {
             this.mainMenu = mainMenu;
@@ -59,12 +59,12 @@ public class UIManager : MonoBehaviour
         }
 
     }
-    public MainMenu mainMenu; //°ÔÀÓ ½ÃÀÛ È­¸é
+    public MainMenu mainMenu; //ê²Œì„ ì‹œì‘ í™”ë©´
 
     public class LobbyMenu {
-        public GameObject lobbyMenu; //½ºÅ×ÀÌÁö ·Îºñ È­¸é
-        public StageManager[] stageBtns; //½ºÅ×ÀÌÁö ¹öÆ° ±×·ì
-        public Button homeBtn, settingBtn, backBtn; //È¨ ¹öÆ°, ¼³Á¤ ¹öÆ°, µÚ·Î°¡±â ¹öÆ°
+        public GameObject lobbyMenu; //ìŠ¤í…Œì´ì§€ ë¡œë¹„ í™”ë©´
+        public StageManager[] stageBtns; //ìŠ¤í…Œì´ì§€ ë²„íŠ¼ ê·¸ë£¹
+        public Button homeBtn, settingBtn, backBtn; //í™ˆ ë²„íŠ¼, ì„¤ì • ë²„íŠ¼, ë’¤ë¡œê°€ê¸° ë²„íŠ¼
 
         public LobbyMenu(GameObject lobbyMenu) {
             this.lobbyMenu = lobbyMenu;
@@ -83,9 +83,9 @@ public class UIManager : MonoBehaviour
         }
 
     }
-    public LobbyMenu lobbyMenu; //½ºÅ×ÀÌÁö ·Îºñ È­¸é
+    public LobbyMenu lobbyMenu; //ìŠ¤í…Œì´ì§€ ë¡œë¹„ í™”ë©´
 
-    public IngameSetting ingameMenu; //°ÔÀÓ ½ÃÀÛ Áß È­¸é
+    public IngameSetting ingameMenu; //ê²Œì„ ì‹œì‘ ì¤‘ í™”ë©´
 
     public class ClearMenu {
         public GameObject clearMenu;
@@ -113,7 +113,7 @@ public class UIManager : MonoBehaviour
                 scoreStar[i] = animStar.transform.GetChild(i).GetChild(1).GetComponent<Image>();
         }
     }
-    public ClearMenu clearMenu; //Å¬¸®¾î È­¸é
+    public ClearMenu clearMenu; //í´ë¦¬ì–´ í™”ë©´
 
     public class FailMenu {
         public GameObject failMenu;
@@ -157,7 +157,7 @@ public class UIManager : MonoBehaviour
             bgmScroll = settingMenu.transform.GetChild(1).GetChild(4).GetComponent<Scrollbar>();          
         }
     }
-    public SettingMenu settingMenu; //¼¼ÆÃ È­¸é
+    public SettingMenu settingMenu; //ì„¸íŒ… í™”ë©´
 
     public class ExitMenu  {
         public GameObject exitMenu;
@@ -173,36 +173,36 @@ public class UIManager : MonoBehaviour
             noBtn = exitMenu.transform.GetChild(1).GetComponent<Button>();
         }
     }
-    public ExitMenu exitMenu; //³ª°¡±â Ã¢ (yes or no)
+    public ExitMenu exitMenu; //ë‚˜ê°€ê¸° ì°½ (yes or no)
 
     # endregion
     GameObject loadingUI;
     
     public struct Sounds{
-        public AudioSource btnSound; //¹öÆ° ´©¸£´Â ¼Ò¸®
-        public AudioSource clearSound; //Å¬¸®¾î ½Ã ¹ß»ıÇÏ´Â ¼Ò¸®
-        public AudioSource clearStarSound; //Å¬¸®¾î ½Ã º°ÀÌ ¶³¾îÁö´Â ¼Ò¸®
-        public AudioSource achieve100Sound; //¸¸Á¡ ½Ã ¹ß»ıÇÏ´Â ¼Ò¸®
-        public AudioSource failSound; //½ÇÆĞ ½Ã ¹ß»ıÇÏ´Â ¼Ò¸®
-        public AudioSource masterClearSound; //¸¶½ºÅÍ ¸ğµå¿¡¼­ Å¬¸®¾î ½Ã ¹ß»ıÇÏ´Â ¼Ò¸®
-        public AudioSource scoreSound; //Á¡¼ö°¡ ¿Ã¶ó°¥ ¶§¸¶´Ù ¹ß»ıÇÏ´Â ¼Ò¸®
+        public AudioSource btnSound; //ë²„íŠ¼ ëˆ„ë¥´ëŠ” ì†Œë¦¬
+        public AudioSource clearSound; //í´ë¦¬ì–´ ì‹œ ë°œìƒí•˜ëŠ” ì†Œë¦¬
+        public AudioSource clearStarSound; //í´ë¦¬ì–´ ì‹œ ë³„ì´ ë–¨ì–´ì§€ëŠ” ì†Œë¦¬
+        public AudioSource achieve100Sound; //ë§Œì  ì‹œ ë°œìƒí•˜ëŠ” ì†Œë¦¬
+        public AudioSource failSound; //ì‹¤íŒ¨ ì‹œ ë°œìƒí•˜ëŠ” ì†Œë¦¬
+        public AudioSource masterClearSound; //ë§ˆìŠ¤í„° ëª¨ë“œì—ì„œ í´ë¦¬ì–´ ì‹œ ë°œìƒí•˜ëŠ” ì†Œë¦¬
+        public AudioSource scoreSound; //ì ìˆ˜ê°€ ì˜¬ë¼ê°ˆ ë•Œë§ˆë‹¤ ë°œìƒí•˜ëŠ” ì†Œë¦¬
     }
-    public Sounds sounds; //È¿°úÀ½
-    float curSoundVolume; //ÇöÀç È¿°úÀ½ º¼·ıÀ» ÀúÀå
+    public Sounds sounds; //íš¨ê³¼ìŒ
+    float curSoundVolume; //í˜„ì¬ íš¨ê³¼ìŒ ë³¼ë¥¨ì„ ì €ì¥
 
-    public BGM_Player bgm_Player; //¹è°æ À½¾Ç
-    float pauseTime; //ÀÎ°ÔÀÓ¿¡¼­ ¹è°æÀ½¾ÇÀ» ÀÏ½Ã Á¤ÁöÇßÀ» ¶§, À½¾Ç ÇÃ·¹ÀÌ ½Ã°£À» ÀúÀåÇÏ´Â º¯¼ö
-    public bool isLogin; //ÇöÀç ·Î±×ÀÎÀÌ µÈ »óÅÂÀÎÁö È®ÀÎÇÏ´Â º¯¼ö
+    public BGM_Player bgm_Player; //ë°°ê²½ ìŒì•…
+    float pauseTime; //ì¸ê²Œì„ì—ì„œ ë°°ê²½ìŒì•…ì„ ì¼ì‹œ ì •ì§€í–ˆì„ ë•Œ, ìŒì•… í”Œë ˆì´ ì‹œê°„ì„ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
+    public bool isLogin; //í˜„ì¬ ë¡œê·¸ì¸ì´ ëœ ìƒíƒœì¸ì§€ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
 
-    //°øÀ¯ ¹öÆ°: ¼³¸í, ¸µÅ©
+    //ê³µìœ  ë²„íŠ¼: ì„¤ëª…, ë§í¬
     private const string subject = "Experience a fun and strategic game! Unleash your strategic prowess as you flip tiles and engage in a game of wits. It's easy to learn for anyone, but mastering it is challenging. Explore various strategies and pave your path to victory. Play now and dive into the excitement!";
 	private const string body = "https://play.google.com/store/apps/details?id=com.Commar.Reversi_Puzzle";
 
-    bool adsCheck; //±¸±Û ±¤°í Ã¼Å©
-    const string adsBannerID = "ca-app-pub-3940256099942544/6300978111"; //ÇÏ´Ü ¹è³Ê ¾ÆÀÌµğ(º¯°æ ÇÊ¿ä)
-    const string adsFrondID = "ca-app-pub-3940256099942544/8691691433"; //Àü¸é ±¤°í ¾ÆÀÌµğ(º¯°æ ÇÊ¿ä)
-    BannerView adsBanner; //ÇÏ´Ü ¹è³Ê
-    InterstitialAd adsFront; //Àü¸é ±¤°í
+    bool adsCheck; //êµ¬ê¸€ ê´‘ê³  ì²´í¬
+    const string adsBannerID = "ca-app-pub-3940256099942544/6300978111"; //í•˜ë‹¨ ë°°ë„ˆ ì•„ì´ë””(ë³€ê²½ í•„ìš”)
+    const string adsFrondID = "ca-app-pub-3940256099942544/8691691433"; //ì „ë©´ ê´‘ê³  ì•„ì´ë””(ë³€ê²½ í•„ìš”)
+    BannerView adsBanner; //í•˜ë‹¨ ë°°ë„ˆ
+    InterstitialAd adsFront; //ì „ë©´ ê´‘ê³ 
     
     #endregion
 
@@ -241,7 +241,7 @@ public class UIManager : MonoBehaviour
         LateTask();
     }
 
-    //³ªÁß¿¡ ÁøÇàÇÒ ÀÛ¾÷
+    //ë‚˜ì¤‘ì— ì§„í–‰í•  ì‘ì—…
     void LateTask() {
         AudioInit();
         for (int i = 0; i < 3; i++)
@@ -253,14 +253,14 @@ public class UIManager : MonoBehaviour
             lobbyMenu.stageBtns[i].gameObject.SetActive(false);
             lobbyMenu.stageBtns[i].masterStageBtn.opened.onClick.AddListener(DoBack);
         }
-        //È¿°úÀ½, ¹è°æÀ½À» ÀÌÀü¿¡ ¼¼ÆÃÇÑµ¥·Î ¼¼ÆÃ
+        //íš¨ê³¼ìŒ, ë°°ê²½ìŒì„ ì´ì „ì— ì„¸íŒ…í•œë°ë¡œ ì„¸íŒ…
         if(PlayerData.Instance.data.soundCk) DoSoundMute(true);
         else DoSoundVolume(PlayerData.Instance.data.soundVolume);
 
         if(PlayerData.Instance.data.bgmCk) DoBGM_Mute(true);
         else DoBGM_Volume(PlayerData.Instance.data.bgmVolume);
 
-        //¼¼ÆÃÀÌ ³¡³­ UI ºñÈ°¼ºÈ­
+        //ì„¸íŒ…ì´ ëë‚œ UI ë¹„í™œì„±í™”
         mainMenu.tutorialMenu.SetActive(false);
         for(int i =0; i<2; i++) mainMenu.tutorial[i].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
@@ -277,17 +277,17 @@ public class UIManager : MonoBehaviour
 
         GooglePlayInit();
 
-        //±¤°í ÃÊ±âÈ­
+        //ê´‘ê³  ì´ˆê¸°í™”
         MobileAds.Initialize((InitializationStatus initStatus) =>{ });
-        //ÇÏ´Ü ¹è³Ê Ç¥½Ã
+        //í•˜ë‹¨ ë°°ë„ˆ í‘œì‹œ
         LoadAdsBanner();
         adsBanner.Show();
 
-        //Àü¸é ±¤°í ¹Ì¸® ·Îµå
+        //ì „ë©´ ê´‘ê³  ë¯¸ë¦¬ ë¡œë“œ
         LoadAdsFront();
     }
 
-    //¿Àµğ¿À ¼³Á¤ ÃÊ±âÈ­
+    //ì˜¤ë””ì˜¤ ì„¤ì • ì´ˆê¸°í™”
     void AudioInit(){
         sounds.btnSound = GetComponent<AudioSource>();
         sounds.clearSound = clearMenu.clearMenu.GetComponent<AudioSource>();
@@ -330,7 +330,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(SignCheck());
     }
 
-    //Áö¼ÓÀûÀ¸·Î ·Î±×ÀÎ »óÅÂ¸¦ È®ÀÎ
+    //ì§€ì†ì ìœ¼ë¡œ ë¡œê·¸ì¸ ìƒíƒœë¥¼ í™•ì¸
     IEnumerator SignCheck(){
         isLogin = PlayGamesPlatform.Instance.localUser.authenticated;
         SetSignUI(isLogin);
@@ -342,7 +342,7 @@ public class UIManager : MonoBehaviour
         SetSignUI(isLogin);
     }
 
-    //·Î±×ÀÎ »óÅÂ¿¡ µû¶ó UI º¯°æ
+    //ë¡œê·¸ì¸ ìƒíƒœì— ë”°ë¼ UI ë³€ê²½
     void SetSignUI(bool on){
         mainMenu.logoutBtn.gameObject.SetActive(on);
         mainMenu.rankBtn.gameObject.SetActive(on);
@@ -361,7 +361,7 @@ public class UIManager : MonoBehaviour
 
     #region GoogleAds
 
-    //ÇÏ´Ü ¹è³Ê »ı¼º
+    //í•˜ë‹¨ ë°°ë„ˆ ìƒì„±
     void CreateAdsBanner()
     {
         if(adsBanner != null) adsBanner.Destroy();
@@ -369,7 +369,7 @@ public class UIManager : MonoBehaviour
         adsBanner = new BannerView(adsBannerID, adaptiveSize, AdPosition.Bottom);    
     }
     
-    //ÇÏ´Ü ¹è³Ê ·Îµå
+    //í•˜ë‹¨ ë°°ë„ˆ ë¡œë“œ
     void LoadAdsBanner()
     {
         // create an instance of a banner view first.
@@ -385,10 +385,10 @@ public class UIManager : MonoBehaviour
         adsBanner.LoadAd(adRequest);
     }
 
-    //Àü¸é ±¤°í ·Îµå
+    //ì „ë©´ ê´‘ê³  ë¡œë“œ
     public void LoadAdsFront()
     {
-        // ±âÁ¸ °ÍÀ» Áö¿ì°í »õ·Î¿î °ÍÀ¸·Î ÇÒ´ç
+        // ê¸°ì¡´ ê²ƒì„ ì§€ìš°ê³  ìƒˆë¡œìš´ ê²ƒìœ¼ë¡œ í• ë‹¹
         if (adsFront != null)
         {
                 adsFront.Destroy();
@@ -416,7 +416,7 @@ public class UIManager : MonoBehaviour
             };
     }
 
-    //Àü¸é ±¤°í Ç¥½Ã
+    //ì „ë©´ ê´‘ê³  í‘œì‹œ
     public IEnumerator ShowAdsFront()
     {
         for(int i=0; i<10; i++){
@@ -432,7 +432,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region MainMenu
-    //¸ŞÀÎ ¸Ş´º UI ¼³Á¤
+    //ë©”ì¸ ë©”ë‰´ UI ì„¤ì •
     void SetMainMenu()
     {
         mainMenu.exitBtn.onClick.AddListener(DoExit);
@@ -442,19 +442,19 @@ public class UIManager : MonoBehaviour
         mainMenu.cubeBtn.onClick.AddListener(() => DoStage(2)); //Cube
         mainMenu.shareBtn.onClick.AddListener(DoShare);
         
-        //Æ©Åä¸®¾ó
+        //íŠœí† ë¦¬ì–¼
         mainMenu.tutorialBtn.onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorialMenu.gameObject, mainMenu.tutorial[0].gameObject, true));
         mainMenu.tutorial[0].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[0].gameObject, mainMenu.tutorial[1].gameObject));
         mainMenu.tutorial[1].onClick.AddListener(() => DoTutorialMenu(mainMenu.tutorial[1].gameObject));
 
-        //±¸±Û ÇÃ·¹ÀÌ
+        //êµ¬ê¸€ í”Œë ˆì´
         mainMenu.loginBtn.onClick.AddListener(LogIn);
         mainMenu.logoutBtn.onClick.AddListener(LogOut);
         mainMenu.rankBtn.onClick.AddListener(ShowRanking);
         
     }
 
-    //¸ŞÀÎ ¸Ş´º UI ÅØ½ºÆ® ¼³Á¤
+    //ë©”ì¸ ë©”ë‰´ UI í…ìŠ¤íŠ¸ ì„¤ì •
     void MainMenuText() {
         mainMenu.score.text = "" + PlayerData.Instance.TotalScore();
 
@@ -478,10 +478,10 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //½ºÅ×ÀÌÁö ¹öÆ° 4 Á¾·ù(´©¸¦ ½Ã °ÔÀÓ ½ÃÀÛ)
+    //ìŠ¤í…Œì´ì§€ ë²„íŠ¼ 4 ì¢…ë¥˜(ëˆ„ë¥¼ ì‹œ ê²Œì„ ì‹œì‘)
     void DoStage(int kind) {
         mainMenu.mainMenu.SetActive(false);
-        gameManager.GameStart(PlayerData.Instance.data.clearStage[kind] + 1, kind); //ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ¿¡¼­ ¹ŞÀº Á¤º¸·Î ¸Å°³ º¯¼ö ÀÔ·Â
+        gameManager.GameStart(PlayerData.Instance.data.clearStage[kind] + 1, kind); //í”Œë ˆì´ì–´ ë°ì´í„°ì—ì„œ ë°›ì€ ì •ë³´ë¡œ ë§¤ê°œ ë³€ìˆ˜ ì…ë ¥
         ingameMenu.gameObject.SetActive(true);
 
         ingameMenu.stageTitle.gameObject.SetActive(true);
@@ -506,7 +506,7 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //Æ©Åä¸®¾ó ¸Ş´ºÀÇ ´ÙÀ½ ÆäÀÌÁö·Î ÀÌµ¿
+    //íŠœí† ë¦¬ì–¼ ë©”ë‰´ì˜ ë‹¤ìŒ í˜ì´ì§€ë¡œ ì´ë™
     void DoTutorialMenu(GameObject self, GameObject next = null, bool menu = false){
         if(menu){
             self.SetActive(true);
@@ -526,14 +526,14 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region LobbyMenu
-    //·Îºñ ¸Ş´º UI ¼³Á¤
+    //ë¡œë¹„ ë©”ë‰´ UI ì„¤ì •
     void SetLobbyMenu() {
         lobbyMenu.settingBtn.onClick.AddListener(DoSetting);
         lobbyMenu.homeBtn.onClick.AddListener(DoHome);
         lobbyMenu.backBtn.onClick.AddListener(DoBack);
     }
 
-    //È¨ ¹öÆ° ´­·¶À» ¶§(ÇöÀç ÁøÇà ÁßÀÎ ½ºÅ×ÀÌÁö°¡ ÃÊ±âÈ­µÇ°í, È¨ È­¸éÀ¸·Î ÀÌµ¿)
+    //í™ˆ ë²„íŠ¼ ëˆŒë €ì„ ë•Œ(í˜„ì¬ ì§„í–‰ ì¤‘ì¸ ìŠ¤í…Œì´ì§€ê°€ ì´ˆê¸°í™”ë˜ê³ , í™ˆ í™”ë©´ìœ¼ë¡œ ì´ë™)
     void DoHome() {
         lobbyMenu.stageBtns[gameManager.curKind].gameObject.SetActive(false);
         lobbyMenu.lobbyMenu.SetActive(false);
@@ -545,7 +545,7 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //µÚ·Î °¡±â ¹öÆ°(·Îºñ¿¡¼­ °ÔÀÓ È­¸éÀ¸·Î ´Ù½Ã ³Ñ¾î°¨)
+    //ë’¤ë¡œ ê°€ê¸° ë²„íŠ¼(ë¡œë¹„ì—ì„œ ê²Œì„ í™”ë©´ìœ¼ë¡œ ë‹¤ì‹œ ë„˜ì–´ê°)
     void DoBack() {
         int kind = gameManager.curKind;
         lobbyMenu.lobbyMenu.SetActive(false);
@@ -557,25 +557,25 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region IngameMenu
-    //ÀÎ°ÔÀÓ È­¸é ¼¼ÆÃ
+    //ì¸ê²Œì„ í™”ë©´ ì„¸íŒ…
     void SetIngameMenu() {
-        //¸Ş´º ¹öÆ°, ÇÃ¸³ Ä«¿îÆ®, Å¸ÀÌÆ², ¼³Á¤ ¹öÆ°, ¸®¼Â ¹öÆ°
+        //ë©”ë‰´ ë²„íŠ¼, í”Œë¦½ ì¹´ìš´íŠ¸, íƒ€ì´í‹€, ì„¤ì • ë²„íŠ¼, ë¦¬ì…‹ ë²„íŠ¼
         ingameMenu.lobbyBtn.onClick.AddListener(DoLobby);
         ingameMenu.settingBtn.onClick.AddListener(() => ingameMenu.ingameSettingMenu.SetActive(true));
         ingameMenu.resetBtn.onClick.AddListener(() => gameManager.ResetBoard());
 
-        //¿ÀºêÁ§Æ® È¸Àü
+        //ì˜¤ë¸Œì íŠ¸ íšŒì „
         ingameMenu.vScroll.onValueChanged.AddListener(gameManager.RotateVertical3Dobject);
         ingameMenu.hScroll.onValueChanged.AddListener(gameManager.RotateHorizontal3Dobject);
 
-        //ÀÎ°ÔÀÓ ¼¼ÆÃ ¸Ş´º
+        //ì¸ê²Œì„ ì„¸íŒ… ë©”ë‰´
         ingameMenu.cameraReset.onClick.AddListener(gameManager.CameraReset);
         ingameMenu.cameraUpBtn.onClick.AddListener(() => gameManager.CameraVerticalSetting(true));
         ingameMenu.cameraDownBtn.onClick.AddListener(() => gameManager.CameraVerticalSetting(false));
         ingameMenu.cameraZoom.onValueChanged.AddListener(gameManager.CameraZoomSetting);
         ingameMenu.exitBtn.onClick.AddListener(() => ingameMenu.ingameSettingMenu.SetActive(false));
 
-        //¹öÆ° ¼Ò¸® ¼¼ÆÃ
+        //ë²„íŠ¼ ì†Œë¦¬ ì„¸íŒ…
         ingameMenu.settingBtn.onClick.AddListener(() => sounds.btnSound.Play());
         ingameMenu.resetBtn.onClick.AddListener(() => sounds.btnSound.Play());
         ingameMenu.cameraReset.onClick.AddListener(() => sounds.btnSound.Play());
@@ -583,7 +583,7 @@ public class UIManager : MonoBehaviour
         ingameMenu.cameraDownBtn.onClick.AddListener(() => sounds.btnSound.Play());
         ingameMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
 
-        //¼Ò¸® ¿Â¿ÀÇÁ, º¼·ı
+        //ì†Œë¦¬ ì˜¨ì˜¤í”„, ë³¼ë¥¨
         ingameMenu.soundCk.onValueChanged.AddListener(SoundMute);
         ingameMenu.soundScroll.onValueChanged.AddListener(SoundVolume);
         ingameMenu.bgmCK.onValueChanged.AddListener(BGM_Mute);
@@ -608,13 +608,13 @@ public class UIManager : MonoBehaviour
         clearMenu.nextBtn.onClick.AddListener(DoClearNext);
         clearMenu.exitBtn.onClick.AddListener(DoClearExit);
 
-        //¼Ò¸® ¼¼ÆÃ
+        //ì†Œë¦¬ ì„¸íŒ…
         clearMenu.backBtn.onClick.AddListener(() => sounds.btnSound.Play());
         clearMenu.nextBtn.onClick.AddListener(() => sounds.btnSound.Play());
         clearMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
     }
 
-    //½ºÅ×ÀÌÁö Å¬¸®¾î ÈÄ ¹æ±İ ÁøÇàÇÑ ½ºÅ×ÀÌÁö¸¦ ¹Ù·Î ¶Ç ÁøÇà
+    //ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ í›„ ë°©ê¸ˆ ì§„í–‰í•œ ìŠ¤í…Œì´ì§€ë¥¼ ë°”ë¡œ ë˜ ì§„í–‰
     void DoClearBack() {
         DoStageBack();
         clearMenu.clearMenu.SetActive(false);
@@ -622,17 +622,17 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //¹æ±İ ÁøÇàÇÑ ½ºÅ×ÀÌÁö¸¦ ´Ù½Ã ½ÃÀÛ
+    //ë°©ê¸ˆ ì§„í–‰í•œ ìŠ¤í…Œì´ì§€ë¥¼ ë‹¤ì‹œ ì‹œì‘
     void DoStageBack() {
-        int kind = gameManager.curKind; //ÇöÀç ½ºÅ×ÀÌÁö Á¾·ù¸¦ ´ã´Â º¯¼ö
+        int kind = gameManager.curKind; //í˜„ì¬ ìŠ¤í…Œì´ì§€ ì¢…ë¥˜ë¥¼ ë‹´ëŠ” ë³€ìˆ˜
         gameManager.GameStart(gameManager.stage[kind], kind);
         ClearInit();
         sounds.btnSound.Play();
     }
 
-    //½ºÅ×ÀÌÁö Å¬¸®¾î ÈÄ ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ÁøÇà
+    //ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ í›„ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ì§„í–‰
     void DoClearNext() {
-        int kind = gameManager.curKind; //ÇöÀç ½ºÅ×ÀÌÁö Á¾·ù¸¦ ´ã´Â º¯¼ö
+        int kind = gameManager.curKind; //í˜„ì¬ ìŠ¤í…Œì´ì§€ ì¢…ë¥˜ë¥¼ ë‹´ëŠ” ë³€ìˆ˜
         gameManager.stage[kind]++;
         gameManager.GameStart(gameManager.stage[kind], kind);
         clearMenu.clearMenu.SetActive(false);
@@ -641,7 +641,7 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //½ºÅ×ÀÌÁö Å¬¸®¾î ÈÄ ·Îºñ È­¸éÀ¸·Î ÀÌµ¿
+    //ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ í›„ ë¡œë¹„ í™”ë©´ìœ¼ë¡œ ì´ë™
     void DoClearExit() {
         clearMenu.clearMenu.SetActive(false);
         DoLobby();
@@ -650,7 +650,7 @@ public class UIManager : MonoBehaviour
         sounds.btnSound.Play();
     }
 
-    //Å¬¸®¾î UI ÃÊ±âÈ­
+    //í´ë¦¬ì–´ UI ì´ˆê¸°í™”
     void ClearInit() {
         clearMenu.scoreTxt.text = "Score: ";
         for (int i=0; i<3; i++) {
@@ -658,42 +658,42 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //Á¡¼ö¿¡ µû¸¥ º°À» Ç¥½ÃÇÏ°í ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+    //ì ìˆ˜ì— ë”°ë¥¸ ë³„ì„ í‘œì‹œí•˜ê³  ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
     public void ClearStar(int score, bool isRenew)
     {
         switch (score)
         {
             case 100:
-                //º° 3°³
+                //ë³„ 3ê°œ
                 for (int i = 0; i < 3; i++) 
                     clearMenu.scoreStar[i].fillAmount = 1;               
                 break;
             case int n when (n < 100 && n >= 75):
-                //º° 2.5°³
+                //ë³„ 2.5ê°œ
                 clearMenu.scoreStar[0].fillAmount = 1;
                 clearMenu.scoreStar[1].fillAmount = 1;
                 clearMenu.scoreStar[2].fillAmount = 0.5f;
                 break;
             case int n when (n < 75 && n >= 50):
-                //º° 2°³
+                //ë³„ 2ê°œ
                 clearMenu.scoreStar[0].fillAmount = 1;
                 clearMenu.scoreStar[1].fillAmount = 1;
                 clearMenu.scoreStar[2].fillAmount = 0;
                 break;
             case int n when (n < 50 && n >= 25):
-                //º° 1.5°³
+                //ë³„ 1.5ê°œ
                 clearMenu.scoreStar[0].fillAmount = 1;
                 clearMenu.scoreStar[1].fillAmount = 0.5f;
                 clearMenu.scoreStar[2].fillAmount = 0;
                 break;
             case int n when (n < 25 && n >= 15):
-                //º° 1°³
+                //ë³„ 1ê°œ
                 clearMenu.scoreStar[0].fillAmount = 1;
                 clearMenu.scoreStar[1].fillAmount = 0;
                 clearMenu.scoreStar[2].fillAmount = 0;
                 break;
             case 5:
-                //º° 0.5°³
+                //ë³„ 0.5ê°œ
                 clearMenu.scoreStar[0].fillAmount = 0.5f;
                 clearMenu.scoreStar[1].fillAmount = 0;
                 clearMenu.scoreStar[2].fillAmount = 0;
@@ -736,7 +736,7 @@ public class UIManager : MonoBehaviour
         failMenu.exitBtn.onClick.AddListener(DoFailExit);
         failMenu.backBtn.onClick.AddListener(DoFailBack);
 
-        //¼Ò¸® ¼¼ÆÃ
+        //ì†Œë¦¬ ì„¸íŒ…
         failMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
         failMenu.backBtn.onClick.AddListener(() => sounds.btnSound.Play());
     }
@@ -764,16 +764,16 @@ public class UIManager : MonoBehaviour
         settingMenu.exitBtn.onClick.AddListener(() => settingMenu.settingMenu.SetActive(false));
         settingMenu.exitBtn.onClick.AddListener(() => sounds.btnSound.Play());
         
-        //¼Ò¸® ¿Â¿ÀÇÁ, º¼·ı
+        //ì†Œë¦¬ ì˜¨ì˜¤í”„, ë³¼ë¥¨
         settingMenu.soundCk.onValueChanged.AddListener(SoundMute);
         settingMenu.soundScroll.onValueChanged.AddListener(SoundVolume);
 
-        //¹è°æÀ½ ¿Â¿ÀÇÁ, º¼·ı
+        //ë°°ê²½ìŒ ì˜¨ì˜¤í”„, ë³¼ë¥¨
         settingMenu.bgmCK.onValueChanged.AddListener(BGM_Mute);
         settingMenu.bgmScroll.onValueChanged.AddListener(BGM_Volume);
     }
 
-    //onÀÌ true¸é mute
+    //onì´ trueë©´ mute
     void SoundMute(bool on){
         DoSoundMute(on);
         if(on)
@@ -794,7 +794,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(SettingChangeCheck());
     }
 
-    //¹«ÇÑ Àç±Í¿¡ ºüÁöÁö ¾Êµµ·Ï Mute¿Í Volume º¯°æÀ» º°µµ·Î ½ÇÇà
+    //ë¬´í•œ ì¬ê·€ì— ë¹ ì§€ì§€ ì•Šë„ë¡ Muteì™€ Volume ë³€ê²½ì„ ë³„ë„ë¡œ ì‹¤í–‰
     void DoSoundMute(bool on){
         sounds.btnSound.mute = on;
         sounds.clearSound.mute = on;
@@ -803,7 +803,7 @@ public class UIManager : MonoBehaviour
         sounds.failSound.mute = on;
         gameManager.SetHorseAudio(true, on, curSoundVolume);
 
-        //´Ù¸¥ ¼¼ÆÃÈ­¸é¿¡¼­ ´­·¶¾îµµ µ¿±âÈ­
+        //ë‹¤ë¥¸ ì„¸íŒ…í™”ë©´ì—ì„œ ëˆŒë €ì–´ë„ ë™ê¸°í™”
         settingMenu.soundCk.isOn = on;
         ingameMenu.soundCk.isOn = on;
         settingMenu.soundoffImg.SetActive(!on);
@@ -819,7 +819,7 @@ public class UIManager : MonoBehaviour
         gameManager.SetHorseAudio(false, false, value);
         curSoundVolume = value;
 
-        //´Ù¸¥ ¼¼ÆÃÈ­¸é¿¡¼­ ´­·¶¾îµµ µ¿±âÈ­
+        //ë‹¤ë¥¸ ì„¸íŒ…í™”ë©´ì—ì„œ ëˆŒë €ì–´ë„ ë™ê¸°í™”
         settingMenu.soundScroll.value = value;
         ingameMenu.soundScroll.value = value;
     }
@@ -845,7 +845,7 @@ public class UIManager : MonoBehaviour
     void DoBGM_Mute(bool on){
         bgm_Player.bgmAudio.mute = on;
 
-        //´Ù¸¥ ¼¼ÆÃÈ­¸é¿¡¼­ ´­·¶¾îµµ µ¿±âÈ­
+        //ë‹¤ë¥¸ ì„¸íŒ…í™”ë©´ì—ì„œ ëˆŒë €ì–´ë„ ë™ê¸°í™”
         settingMenu.bgmCK.isOn = on;
         ingameMenu.bgmCK.isOn = on;
     }
@@ -853,12 +853,12 @@ public class UIManager : MonoBehaviour
     void DoBGM_Volume(float value){
         bgm_Player.bgmAudio.volume = value;
 
-        //´Ù¸¥ ¼¼ÆÃÈ­¸é¿¡¼­ ´­·¶¾îµµ µ¿±âÈ­
+        //ë‹¤ë¥¸ ì„¸íŒ…í™”ë©´ì—ì„œ ëˆŒë €ì–´ë„ ë™ê¸°í™”
         settingMenu.bgmScroll.value = value;
         ingameMenu.bgmScroll.value = value;
     }
 
-    //¼³Á¤ º¯È­¸¦ È®ÀÎÇØ¼­ º¯È­°¡ ¸ØÃß¸é µ¥ÀÌÅÍ ÀúÀå
+    //ì„¤ì • ë³€í™”ë¥¼ í™•ì¸í•´ì„œ ë³€í™”ê°€ ë©ˆì¶”ë©´ ë°ì´í„° ì €ì¥
     IEnumerator SettingChangeCheck(){   
         yield return new WaitForSeconds(5);
         
