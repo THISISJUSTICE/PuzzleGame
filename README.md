@@ -12,7 +12,7 @@
 
 ## 게임 다운로드
 
-<https://play.google.com/store/apps/details?id=com.Commar.Reversi_Puzzle>
+~~<https://play.google.com/store/apps/details?id=com.Commar.Reversi_Puzzle>~~
 
 ## 게임 소개 영상
 
